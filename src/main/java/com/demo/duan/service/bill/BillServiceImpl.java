@@ -74,9 +74,9 @@ public class BillServiceImpl implements BillService{
 
     private String createCodeId(Integer id_count){
         if (id_count < 10) {
-            return "00" + id_count;
+            return "000" + id_count;
         } else if (id_count >= 10 && id_count < 1000) {
-            return "0" + id_count;
+            return "00" + id_count;
         } else {
             return Long.toString(id_count);
         }
