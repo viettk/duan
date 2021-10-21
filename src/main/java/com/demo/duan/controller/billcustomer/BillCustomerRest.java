@@ -19,7 +19,11 @@ public class BillCustomerRest {
 
     @PostMapping
     public ResponseEntity<BillDto> createByCustomer(@Valid @RequestBody BillInput input){
-        System.out.println("done");
-        return service.createByCustomer(input);
+        return service.createByCustomer(input, "a");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BillDto> updateByCustomer(@PathVariable Integer id, @Valid @RequestBody BillInput input){
+        return service.updateByCustomer(id, input);
     }
 }

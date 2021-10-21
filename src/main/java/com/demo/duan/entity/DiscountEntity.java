@@ -30,9 +30,6 @@ public class DiscountEntity implements Serializable {
     @Column(name = "value_discount")
     private int valueDiscount;
 
-    @Column(name = "total")
-    private float total;
-
     @Column(name = "number")
     private int number;
 
