@@ -16,7 +16,5 @@ public class CustomerDto {
 
     private boolean status;
 
-    private Date register_day;
-
     private Date last_login;
 }

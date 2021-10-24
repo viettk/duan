@@ -5,6 +5,7 @@ import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.input.CartDetailInput;
 import com.demo.duan.service.cartdetail.param.CartDetailParam;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,18 +35,20 @@ public class CartDetailRest {
     }
 
     @PutMapping("/up/{id}")
-    public ResponseEntity<CartDetailDto> updateNumberUp(@PathVariable Integer id){
-        return service.updateNumberUp(id);
+    public ResponseEntity<CartDetailDto> updateNumberUp(@Valid @RequestBody CartDetailInput input){
+        return service.updateNumberUp(input);
     }
 
     @PutMapping("/down/{id}")
-    public ResponseEntity<CartDetailDto> updateNumberDown(@PathVariable Integer id){
-        return service.updateNumberDown(id);
+    public ResponseEntity<CartDetailDto> updateNumberDown(@Valid @RequestBody CartDetailInput input){
+        return service.updateNumberDown(input);
     }
 
-    @DeleteMapping("/{cartId}")
-    public ResponseEntity<CartDetailDto> delete(@PathVariable Integer cartId){
-        return service.delete(cartId);
+    @DeleteMapping("")
+    public ResponseEntity<CartDetailDto> delete(
+            @RequestParam(name = "cartId", required = false) Integer cartId,
+            @RequestParam(name = "productId", required = false) Integer productId){
+        return service.delete(cartId, productId);
     }
 
 }

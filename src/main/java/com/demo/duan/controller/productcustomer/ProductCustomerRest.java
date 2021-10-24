@@ -38,9 +38,18 @@ public class ProductCustomerRest {
         return service.searchBySHF();
     }
 
-    @GetMapping("/category")
-    public ResponseEntity<Page<ProductDto>> searchByCategoryName(ProductParam param, Optional<String> field, String known){
-        return service.searchByCategoryName(param, field, known);
+    @GetMapping("/khac")
+    public ResponseEntity<Page<ProductDto>> searchByKhac(){
+        return service.searchBySHF();
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<Page<ProductDto>> searchByCategoryName(
+            @PathVariable Integer categoryId,
+            ProductParam param,
+            @RequestParam(name = "field", required = false) Optional<String> field,
+            @RequestParam(name = "known", required = false) String known){
+        return service.searchByCategoryName(categoryId, param, field, known);
     }
 
     @GetMapping("/{id}")

@@ -68,8 +68,9 @@ public class CartDetailServiceImpl implements CartDetailService{
             CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
 
             /* Tăng số lượng trong giỏ hàng chi tiết */
-            Integer number = input.getNumber() + entity.getNumber();
-            if(number >15){
+            int number = input.getNumber() + entity.getNumber();
+            int checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
+            if(number+checkNumOfCartDetail >15){
                 throw new RuntimeException("Giỏ hàng không được quá 15 sản phẩm");
             }
 
@@ -116,14 +117,14 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     @Override
     @Transactional
-    public ResponseEntity<CartDetailDto> updateNumberUp(Integer id) {
+    public ResponseEntity<CartDetailDto> updateNumberUp(CartDetailInput input) {
 
-        Integer checkNumOfCartDetail = repository.checkNumberOfCartDetail(id);
+        int checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
         if(checkNumOfCartDetail >=15){
             throw new RuntimeException("Số lượng trong giỏ hàng không vượt quá 15 sản phẩm");
         }
 
-        CartDetailEntity entity = repository.getById(id);
+        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
         Integer newNumber = entity.getNumber() + 1;
 
         /* Kiểm tra sản phẩm có đủ ko */
@@ -142,14 +143,13 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     @Override
     @Transactional
-    public ResponseEntity<CartDetailDto> updateNumberDown(Integer id) {
-        CartDetailEntity entity = repository.getById(id);
+    public ResponseEntity<CartDetailDto> updateNumberDown(CartDetailInput input) {
+        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
         Integer newNumber = entity.getNumber() - 1;
 
         /* Nếu sản phẩm <=0 thì xóa khỏi giỏ hàng */
         if(newNumber <= 0){
-            repository.deleteById(id);
-            return ResponseEntity.ok().body(mapper.entityToDto(entity));
+            delete(input.getCartId(), input.getProductId());
         }
 
         BigDecimal total = entity.getProduct().getPrice().multiply(BigDecimal.valueOf(newNumber));
@@ -174,9 +174,14 @@ public class CartDetailServiceImpl implements CartDetailService{
         }
 
         /* Kiểm tra số lượng trong giỏ phải < 15 */
-        Integer checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
+        int checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
         if(checkNumOfCartDetail >=15){
             throw new RuntimeException("Số lượng trong giỏ hàng không vượt quá 15 sản phẩm");
+        }
+
+        /* Nếu số lượng <=0 thì xóa sản phẩm khỏi giỏ hàng */
+        if(input.getNumber() <= 0){
+            delete(input.getCartId(), input.getProductId());
         }
 
         /* Lấy thông tin Giỏ hàng */
@@ -194,10 +199,10 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     @Override
     @Transactional
-    public ResponseEntity<CartDetailDto> delete(Integer id) {
-        CartDetailEntity entity = repository.getById(id);
-        repository.deleteById(id);
-        CartEntity cartEntity = cartRepository.getById(entity.getCart().getId());
+    public ResponseEntity<CartDetailDto> delete(Integer cartId,Integer productId) {
+        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(cartId, productId);
+        repository.deleteById(productId);
+        CartEntity cartEntity = cartRepository.getById(cartId);
         cartEntity.setTotal(BigDecimal.ZERO);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }

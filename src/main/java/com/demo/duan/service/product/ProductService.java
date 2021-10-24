@@ -17,7 +17,15 @@ public interface ProductService {
 
     ResponseEntity<Page<ProductDto>> searchByStaticModel();
 
-    ResponseEntity<Page<ProductDto>> searchByCategoryName(ProductParam param, Optional<String> field, String known);
+    ResponseEntity<Page<ProductDto>> searchByKhac(ProductParam param, Optional<String> field, String known);
+
+    ResponseEntity<Page<ProductDto>> searchAllSHF(ProductParam param, Optional<String> field, String known);
+
+    ResponseEntity<Page<ProductDto>> searchAllModelKit( ProductParam param, Optional<String> field, String known);
+
+    ResponseEntity<Page<ProductDto>> searchAllStactic(ProductParam param, Optional<String> field, String known);
+
+    ResponseEntity<Page<ProductDto>> searchByCategoryName(Integer categoryId ,ProductParam param, Optional<String> field, String known);
 
     ResponseEntity<ProductDto> getOne(Integer id);
 }

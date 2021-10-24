@@ -17,15 +17,15 @@ public interface CartDetailService {
     public ResponseEntity<CartDetailDto> addToCartDetail(CartDetailInput input);
 
     /* tăng số lượng sp  */
-    public ResponseEntity<CartDetailDto> updateNumberUp(Integer id);
+    public ResponseEntity<CartDetailDto> updateNumberUp(CartDetailInput input);
 
     /* Giảm số lượng sp */
-    public ResponseEntity<CartDetailDto> updateNumberDown(Integer id);
+    public ResponseEntity<CartDetailDto> updateNumberDown(CartDetailInput input);
 
     public ResponseEntity<CartDetailDto> updateNumber(CartDetailInput input);
 
    /* xóa sản phẩm trong giỏ hàng */
-    public ResponseEntity<CartDetailDto> delete(Integer id);
+    public ResponseEntity<CartDetailDto> delete(Integer cartId,Integer productId);
 
     /* Tính thành tiền của Giỏ hàng - Cart */
     public BigDecimal totalOfCart(Integer cartId);

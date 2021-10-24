@@ -58,17 +58,110 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public ResponseEntity<Page<ProductDto>> searchByCategoryName(ProductParam param, Optional<String> field, String known) {
+    public ResponseEntity<Page<ProductDto>> searchByKhac( ProductParam param, Optional<String> field, String known) {
         if(known.equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
             Pageable pageable = PageRequest.of(0, 15, sort);
-            Page<ProductDto> dto = this.productRepository.searchByCategoryName(param, pageable).map(mapper::entityToDto);
+            Page<ProductDto> dto = this.productRepository.searchAllKhac(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else if(!known.equals("up") || known.equals("")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(0, 15, sort);
+            Page<ProductDto> dto = this.productRepository.searchAllKhac(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else{
+            Pageable pageable = PageRequest.of(0, 15);
+            Page<ProductDto> dto = this.productRepository.searchAllKhac(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<ProductDto>> searchAllSHF(ProductParam param, Optional<String> field, String known) {
+        if(known.equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(0, 15, sort);
+            Page<ProductDto> dto = this.productRepository.searchAllSHF(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else if(!known.equals("up") || known.equals("")){
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
             Pageable pageable = PageRequest.of(0, 15, sort);
-            Page<ProductDto> dto = this.productRepository.searchByCategoryName(param, pageable).map(mapper::entityToDto);
+            Page<ProductDto> dto = this.productRepository.searchAllSHF(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Pageable pageable = PageRequest.of(0, 15);
+            Page<ProductDto> dto = this.productRepository.searchAllSHF(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<ProductDto>> searchAllModelKit(ProductParam param, Optional<String> field, String known) {
+        if(known.equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(0, 15, sort);
+            Page<ProductDto> dto = this.productRepository.searchAllModelKit(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else if(!known.equals("up") || known.equals("")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(0, 15, sort);
+            Page<ProductDto> dto = this.productRepository.searchAllModelKit(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Pageable pageable = PageRequest.of(0, 15);
+            Page<ProductDto> dto = this.productRepository.searchAllModelKit(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<ProductDto>> searchAllStactic( ProductParam param, Optional<String> field, String known) {
+        if(known.equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(0, 15, sort);
+            Page<ProductDto> dto = this.productRepository.searchAllStaticModel(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else if(!known.equals("up") || known.equals("")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(0, 15, sort);
+            Page<ProductDto> dto = this.productRepository.searchAllStaticModel(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Pageable pageable = PageRequest.of(0, 15);
+            Page<ProductDto> dto = this.productRepository.searchAllStaticModel(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<ProductDto>> searchByCategoryName(Integer categoryId,ProductParam param, Optional<String> field, String known) {
+        if(known.equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(0, 15, sort);
+            Page<ProductDto> dto = this.productRepository.searchByCategoryName(categoryId, param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else if(!known.equals("up") || known.equals("")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(0, 15, sort);
+            Page<ProductDto> dto = this.productRepository.searchByCategoryName(categoryId, param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Pageable pageable = PageRequest.of(0, 15);
+            Page<ProductDto> dto = this.productRepository.searchByCategoryName(categoryId, param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
     }

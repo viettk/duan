@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,14 +30,44 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     @Query("from ProductEntity p where p.status = false and p.category.parent_name like 'Model Kit'")
     Page<ProductEntity> searchByModelKit(Pageable pageable );
 
+
+
     /* xem, lọc sản phẩm theo từng danh mục con */
-    @Query("from ProductEntity p where p.status = false " +
+    @Query("from ProductEntity p where p.status = false and p.category.id = :categoryId " +
             "and (:#{#product.name} is null or p.name like :#{#product.name})" +
             "and (:#{#product.categoryId} is null or p.category.id = :#{#product.categoryId})" +
             "and (:#{#product.price} is null or p.price = :#{#product.price})")
-    Page<ProductEntity> searchByCategoryName(@Param("product") ProductParam product, Pageable pageable );
+    Page<ProductEntity> searchByCategoryName(@Param("categoryId") Integer categoryId ,@Param("product") ProductParam product, Pageable pageable );
+
+
+    @Query("from ProductEntity p where p.status = false and p.category.name like 'SHF' " +
+            "and (:#{#product.name} is null or p.name like :#{#product.name})" +
+            "and (:#{#product.price} is null or p.price = :#{#product.price})")
+    Page<ProductEntity> searchAllSHF(@Param("product") ProductParam product, Pageable pageable );
+
+    @Query("from ProductEntity p where p.status = false and p.category.name like 'Khác' " +
+            "and (:#{#product.name} is null or p.name like :#{#product.name})" +
+            "and (:#{#product.price} is null or p.price = :#{#product.price})")
+    Page<ProductEntity> searchAllKhac(@Param("product") ProductParam product, Pageable pageable );
+
+    @Query("from ProductEntity p where p.status = false and p.category.name like 'StaticModel' " +
+            "and (:#{#product.name} is null or p.name like :#{#product.name})" +
+            "and (:#{#product.price} is null or p.price = :#{#product.price})")
+    Page<ProductEntity> searchAllStaticModel(@Param("product") ProductParam product, Pageable pageable );
+
+    @Query("from ProductEntity p where p.status = false and p.category.name like 'Model Kit' " +
+            "and (:#{#product.name} is null or p.name like :#{#product.name})" +
+            "and (:#{#product.price} is null or p.price = :#{#product.price})")
+    Page<ProductEntity> searchAllModelKit(@Param("product") ProductParam product, Pageable pageable );
 
     Optional<ProductEntity> findByIdAndStatusIsFalse(Integer id);
 
+    /* tìm sản phẩm liên quan theo giá */
+    @Query("from ProductEntity p where p.status =false and" +
+            " p.category.id = :categoryId order by p.id ASC")
+    List<ProductEntity> relatedProducts(Integer categoryId);
+
     Optional<ProductEntity> findByIdAndStatusIsTrue(Integer id);
+
+
 }

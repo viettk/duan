@@ -72,7 +72,9 @@ public class BillServiceImpl implements BillService{
         /* Trừ mã giảm giá */
         discount.setNumber(discount.getNumber() - 1);
 
-        return ResponseEntity.ok().body(mapper.entityToDto(entity));
+        /* Nếu là lần đầu tiên khách đặt hàng thì sẽ lưu giá địa chỉ của khách  */
+
+      return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
     @Override
