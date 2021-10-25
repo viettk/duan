@@ -1,6 +1,9 @@
 package com.demo.duan.repository.category;
 
 import com.demo.duan.entity.CategoryEntity;
+import com.demo.duan.service.category.param.CategoryParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,4 +16,8 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("select count(c) from CategoryEntity c where c.name= :name and c.parent_name= :parent_name")
     long countCategory(@Param("name") String name, @Param("parent_name") String paren_name);
+
+    @Query("from CategoryEntity c where (:#{#param.name} is null or c.name like :#{#param.name})" +
+            "and (:#{#param.parent_name} is null or c.parent_name like :#{#param.parent_name})")
+    Page<CategoryEntity> find(@Param("param")CategoryParam param, Pageable pageable);
 }

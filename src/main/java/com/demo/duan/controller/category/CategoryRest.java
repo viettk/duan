@@ -3,7 +3,10 @@ package com.demo.duan.controller.category;
 import com.demo.duan.service.category.CategoryService;
 import com.demo.duan.service.category.dto.CategoryDto;
 import com.demo.duan.service.category.input.CategoryInput;
+import com.demo.duan.service.category.param.CategoryParam;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.Parameter;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +20,8 @@ public class CategoryRest {
     private final CategoryService service;
 
     @GetMapping
-    public ResponseEntity<CategoryDto> find(){
-        return null;
+    public ResponseEntity<CategoryDto> find(CategoryParam param, Pageable pageable){
+        return service.find(param, pageable);
     };
 
     @PostMapping
