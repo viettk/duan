@@ -12,7 +12,9 @@ import com.demo.duan.service.cartdetail.mapper.CartDetailMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class BillDetailServiceImpl implements BillDetailService{
     private final CartDetailMapper cartDetailMapper;
 
     @Override
+    @Transactional
     public ResponseEntity<List<BillDetailDto>> createByCustomer(BillDetailInput input, Integer cartId) {
         List<CartDetailEntity> lstCartDetail = cartDetailRepository.findListByCartId(cartId);
 
@@ -43,5 +46,11 @@ public class BillDetailServiceImpl implements BillDetailService{
         repository.saveAll(lst);
         List<BillDetailDto> lstDto = mapper.EntitiesToDtos(lst);
         return ResponseEntity.ok().body(lstDto);
+    }
+
+    @Override
+    public BigDecimal totalOfBill(Integer billId) {
+        BigDecimal sum = repository.totalOfBill(billId);
+        return sum;
     }
 }

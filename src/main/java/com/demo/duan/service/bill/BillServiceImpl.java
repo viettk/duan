@@ -3,6 +3,7 @@ package com.demo.duan.service.bill;
 import com.demo.duan.entity.BillEntity;
 import com.demo.duan.entity.DiscountEntity;
 import com.demo.duan.repository.bill.BillRepository;
+import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.repository.discount.DiscountRepository;
 import com.demo.duan.service.bill.dto.BillDto;
@@ -39,7 +40,7 @@ public class BillServiceImpl implements BillService{
 
     @Override
     @Transactional
-    public ResponseEntity<BillDto> createByCustomer(BillInput input, String discountName) {
+    public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input, String discountName) {
 
         Date date = new Date();
 
@@ -64,10 +65,15 @@ public class BillServiceImpl implements BillService{
 
 
         /* Dựa vào login để lấy thông tin khách hàng -> lấy cartId */
-        billDetailService.createByCustomer(billDetailInput, 1);
+        billDetailService.createByCustomer(billDetailInput, cartId);
+
+        /* Set lại thành tiền cho hóa đơn */
+        BigDecimal totalOfBill =  billDetailService.totalOfBill(entity.getId());
+        entity.setTotal(totalOfBill);
+        repository.save(entity);
 
         /* Xóa giỏ hàng */
-        cartDetailRepository.deleteAllByCart_Id(1);
+        cartDetailRepository.deleteAllByCart_Id(cartId);
 
         /* Trừ mã giảm giá */
         discount.setNumber(discount.getNumber() - 1);

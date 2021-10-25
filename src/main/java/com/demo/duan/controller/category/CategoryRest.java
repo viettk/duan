@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 @RequestMapping("/danh-muc")
 public class CategoryRest {
 

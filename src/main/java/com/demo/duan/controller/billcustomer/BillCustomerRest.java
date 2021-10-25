@@ -18,8 +18,11 @@ public class BillCustomerRest {
     private final BillService service;
 
     @PostMapping
-    public ResponseEntity<BillDto> createByCustomer(@Valid @RequestBody BillInput input){
-        return service.createByCustomer(input, "a");
+    public ResponseEntity<BillDto> createByCustomer(
+            Integer cartId ,
+            @Valid @RequestBody BillInput input,
+            String discountName){
+        return service.createByCustomer(cartId,input, discountName);
     }
 
     @PutMapping("/{id}")

@@ -16,6 +16,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/yeu-thich")
+@CrossOrigin(origins = "*")
 public class FavoriteRest {
     private final FavoriteService service;
 
