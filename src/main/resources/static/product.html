@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body ng-app="admin-app"  ng-controller="product-ctrl">
+<form  class="panel panel-defaut" >
+	<div class="panel-heading">PRODUCT EDITION</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-sm-4 text-center">
+				<label for="image">
+					<img >
+				</label>
+			</div>
+			<div class="col-sm-8">
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<div>Image1</div>
+						<input type="file" name="photo1" ng-model='file'  onchange="angular.element(this).scope().imageChanged1(this.files)"   class="form-control"   >
+					</div>
+						<div class="form-group col-sm-6">
+							<div>Image2</div>
+							<input type="file" name="photo2"  onchange="angular.element(this).scope().imageChanged2(this.files)"    class="form-control"  >
+						</div>
+					</div>
+					<div class="row">
+					<div class="form-group col-sm-6">
+						<div>Image3</div>
+						<input type="file" name="photo3"  onchange="angular.element(this).scope().imageChanged3(this.files)"  class="form-control"  >
+					</div>
+					<div class="form-group col-sm-6">
+						<div>Image4</div>
+						<input type="file" name="photo4" onchange="angular.element(this).scope().imageChanged4(this.files)"   class="form-control"    >
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div class="panel-footer text-center">
+		<button  ng-click="create()" class="btn btn-primary">
+			<b class="glyphicon glyphicon-plus"></b> Create
+		</button>
+	</div>
+</form>
+
+</body>
+<script src="product-ctrl.js"></script>
+</html>

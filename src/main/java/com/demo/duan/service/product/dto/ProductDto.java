@@ -2,6 +2,7 @@ package com.demo.duan.service.product.dto;
 
 import com.demo.duan.entity.PhotoEntity;
 import com.demo.duan.service.category.dto.CategoryDto;
+import com.demo.duan.service.photo.dto.PhotoDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ProductDto {
+    private Integer id;
+
     private CategoryDto category;
 
     private String name;
@@ -22,13 +25,16 @@ public class ProductDto {
 
     private BigDecimal price;
 
-    private Date crate_date;
+    private Date createDate;
 
     private Integer number;
 
     private String describe;
 
     private String photo;
+
+    private List<PhotoDTO> photos;
+
 
 
 //    private List<PhotoEntity> photos ;

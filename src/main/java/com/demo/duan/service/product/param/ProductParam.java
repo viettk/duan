@@ -10,11 +10,12 @@ import java.util.Date;
 @Getter
 @Setter
 public class ProductParam {
+    private Integer id;
     private Integer categoryId;
 
     private String name;
 
     private BigDecimal price;
 
-    private Date crate_date;
+    private Date create_date;
 }

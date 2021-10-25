@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
 
     /* select theo danh mục cha: SHF */
-    @Query("from ProductEntity p where p.status = false and p.category.parent_name like 'SHF'")
+    @Query("from ProductEntity p where p.status = true and p.category.parent_name = 'SHF'")
     Page<ProductEntity> searchBySHF(Pageable pageable );
 
     /* select theo danh mục cha: Mô hình tĩnh */
@@ -70,4 +70,16 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     Optional<ProductEntity> findByIdAndStatusIsTrue(Integer id);
 
     List<ProductEntity> findTop5ByCategory_Id(Integer categoryId);
+
+    //    ------------------select product -----------------
+    @Query("select p from ProductEntity p where " +
+            "(:#{#product.name} is null or p.name like %:#{#product.name}%)" +
+        "and (:#{#product.id} is null or p.id = :#{#product.id})" +
+            "and (:#{#product.categoryId} is null or p.category.id = :#{#product.categoryId})" +
+            "and (:#{#product.price} is null or p.price >= :#{#product.price})")
+    Page<ProductEntity> searchProduct(@Param("product") ProductParam product, Pageable pageable);
+
+    List<ProductEntity> findByIdInAndStatusIsFalse(Integer[] ids);
+
+    List<ProductEntity> findByIdInAndStatusIsTrue(Integer[] ids);
 }
