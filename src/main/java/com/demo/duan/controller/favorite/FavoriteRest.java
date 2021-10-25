@@ -19,6 +19,12 @@ import java.util.Optional;
 public class FavoriteRest {
     private final FavoriteService service;
 
+    /* Sản phẩm có bao nhiêu lượt thích */
+    @GetMapping("/sp/{id}")
+    public int getProduct(@PathVariable Integer id){
+        return service.getProduct(id);
+    }
+
     @GetMapping("/{customerId}")
     public ResponseEntity<Page<FavoriteDto>> find(@PathVariable Integer customerId ,FavoriteParam param, Optional<String> field, String known){
         return service.find(customerId ,param, field, known);

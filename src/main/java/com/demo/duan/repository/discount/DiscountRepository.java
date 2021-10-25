@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface DiscountRepository extends JpaRepository<DiscountEntity, Integer> {
     @Query("from DiscountEntity d where d.name=:name and d.number > 0")
     Optional<DiscountEntity> searchDiscountByCustomer(@Param("name") String name);
+
+    long countAllByName(String name);
 }

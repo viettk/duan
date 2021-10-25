@@ -21,4 +21,6 @@ public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Intege
 
     FavoriteEntity findByCustomer_IdAndAndProduct_Id(Integer customerId, Integer productId);
 
+    int countAllByProduct_Id(Integer productId);
+
 }

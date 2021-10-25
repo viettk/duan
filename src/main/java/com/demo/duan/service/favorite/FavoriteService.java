@@ -6,7 +6,6 @@ import com.demo.duan.service.favorite.param.FavoriteParam;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Map;
 import java.util.Optional;
 
 public interface FavoriteService {
@@ -15,4 +14,6 @@ public interface FavoriteService {
     public ResponseEntity<FavoriteDto> create(FavoriteInput input);
 
     public ResponseEntity<FavoriteDto> delete(Integer customerId, Integer productId);
+
+    public int getProduct(Integer productId);
 }

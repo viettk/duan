@@ -1,9 +1,7 @@
 package com.demo.duan.service.favorite;
 
-import com.demo.duan.entity.CustomerEntity;
 import com.demo.duan.entity.FavoriteEntity;
 import com.demo.duan.entity.ProductEntity;
-import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.favorite.FavoriteRepository;
 import com.demo.duan.repository.product.ProductRepository;
 import com.demo.duan.service.favorite.dto.FavoriteDto;
@@ -72,5 +70,11 @@ public class FavoriteServiceImpl implements FavoriteService{
         FavoriteEntity entity = repository.findByCustomer_IdAndAndProduct_Id(customerId, productId);
         repository.delete(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
+    }
+
+    @Override
+    public int getProduct(Integer productId) {
+        int count = repository.countAllByProduct_Id(productId);
+        return count;
     }
 }

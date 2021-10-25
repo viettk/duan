@@ -69,5 +69,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
     Optional<ProductEntity> findByIdAndStatusIsTrue(Integer id);
 
-
+    List<ProductEntity> findTop5ByCategory_Id(Integer categoryId);
 }
