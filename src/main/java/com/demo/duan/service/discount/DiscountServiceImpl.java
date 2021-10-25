@@ -5,7 +5,10 @@ import com.demo.duan.repository.discount.DiscountRepository;
 import com.demo.duan.service.discount.dto.DiscountDto;
 import com.demo.duan.service.discount.input.DiscountInput;
 import com.demo.duan.service.discount.mapper.DiscountMapper;
+import com.demo.duan.service.discount.param.DiscountParam;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,13 @@ public class DiscountServiceImpl implements DiscountService{
     private final DiscountMapper mapper;
 
     private final DiscountRepository repository;
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<DiscountDto>> find(DiscountParam param, Pageable pageable) {
+        Page<DiscountDto> lstdtos = repository.find(param, pageable).map(mapper::entityToDto);
+        return ResponseEntity.ok().body(lstdtos);
+    }
 
     @Override
     @Transactional

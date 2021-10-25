@@ -34,29 +34,29 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
     /* xem, lọc sản phẩm theo từng danh mục con */
     @Query("from ProductEntity p where p.status = false and p.category.id = :categoryId " +
-            "and (:#{#product.name} is null or p.name like :#{#product.name})" +
-            "and (:#{#product.categoryId} is null or p.category.id = :#{#product.categoryId})" +
-            "and (:#{#product.price} is null or p.price = :#{#product.price})")
+            "and (:#{#product.name} is null or p.name like %:#{#product.name}%)" +
+            "and (:#{#product.categoryId} is null or p.category.id >= :#{#product.categoryId})" +
+            "and (:#{#product.price} is null or p.price >= :#{#product.price})")
     Page<ProductEntity> searchByCategoryName(@Param("categoryId") Integer categoryId ,@Param("product") ProductParam product, Pageable pageable );
 
 
     @Query("from ProductEntity p where p.status = false and p.category.name like 'SHF' " +
-            "and (:#{#product.name} is null or p.name like :#{#product.name})" +
-            "and (:#{#product.price} is null or p.price = :#{#product.price})")
+            "and (:#{#product.name} is null or p.name like %:#{#product.name}%)" +
+            "and (:#{#product.price} is null or p.price >= :#{#product.price})")
     Page<ProductEntity> searchAllSHF(@Param("product") ProductParam product, Pageable pageable );
 
     @Query("from ProductEntity p where p.status = false and p.category.name like 'Khác' " +
-            "and (:#{#product.name} is null or p.name like :#{#product.name})" +
+            "and (:#{#product.name} is null or p.name like %:#{#product.name}%)" +
             "and (:#{#product.price} is null or p.price = :#{#product.price})")
     Page<ProductEntity> searchAllKhac(@Param("product") ProductParam product, Pageable pageable );
 
     @Query("from ProductEntity p where p.status = false and p.category.name like 'StaticModel' " +
             "and (:#{#product.name} is null or p.name like :#{#product.name})" +
-            "and (:#{#product.price} is null or p.price = :#{#product.price})")
+            "and (:#{#product.price} is null or p.price >= :#{#product.price})")
     Page<ProductEntity> searchAllStaticModel(@Param("product") ProductParam product, Pageable pageable );
 
     @Query("from ProductEntity p where p.status = false and p.category.name like 'Model Kit' " +
-            "and (:#{#product.name} is null or p.name like :#{#product.name})" +
+            "and (:#{#product.name} is null or p.name like %:#{#product.name}%)" +
             "and (:#{#product.price} is null or p.price = :#{#product.price})")
     Page<ProductEntity> searchAllModelKit(@Param("product") ProductParam product, Pageable pageable );
 

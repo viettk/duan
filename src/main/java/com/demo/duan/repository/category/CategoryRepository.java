@@ -17,7 +17,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
     @Query("select count(c) from CategoryEntity c where c.name= :name and c.parent_name= :parent_name")
     long countCategory(@Param("name") String name, @Param("parent_name") String paren_name);
 
-    @Query("from CategoryEntity c where (:#{#param.name} is null or c.name like :#{#param.name})" +
-            "and (:#{#param.parent_name} is null or c.parent_name like :#{#param.parent_name})")
+    @Query("from CategoryEntity c where (:#{#param.name} is null or c.name like %:#{#param.name}%)" +
+            "and (:#{#param.parent_name} is null or c.parent_name like %:#{#param.parent_name}%)")
     Page<CategoryEntity> find(@Param("param")CategoryParam param, Pageable pageable);
 }
