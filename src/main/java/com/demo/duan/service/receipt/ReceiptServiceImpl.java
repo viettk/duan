@@ -60,20 +60,24 @@ public class    ReceiptServiceImpl implements ReceiptService {
         Date day_date = new Date();
         StaffEntity staff = staffRepository.findById(input.getStaffId()).get();
         ReceiptEntity entity = repository.getById(id);
+
+        // tạo thời gian
         long millisIn48Hours = 1000 * 60 * 60 * 48 ;
+
+        // kiểm tra thời gian xem đã quá 48h chưa
         if (day_date.getTime() < entity.getCreate_date().getTime() +millisIn48Hours){
             entity.setStaff(staff);
             entity.setCreate_date(day_date);
             mapper.inputToEntity(input , entity);
             repository.save(entity);
         }else {
-            System.out.println("Đã quá thời gian");
+            throw new RuntimeException("Đã quá thời gian!");
         }
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
     @Override
-    public ResponseEntity<ReceiptDto> findByDate(Date date)throws RuntimeException {
+    public ResponseEntity<ReceiptDto> findByDate(   Date date)throws RuntimeException {
         ReceiptEntity entity = repository.findByDate(date).orElseThrow(() -> new RuntimeException("Ngay khong ton tai"));
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
@@ -84,23 +88,7 @@ public class    ReceiptServiceImpl implements ReceiptService {
 //        return ResponseEntity.ok().body(result);
 //    }
 
-    private Date getStartOfDay(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DATE);
-        calendar.set(year, month, day, 0, 0, 0);
-        return calendar.getTime();
-    }
 
-    private Date getEndOfDay(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DATE);
-        calendar.set(year, month, day, 23, 59, 59);
-        return calendar.getTime();
-    }
 
     @Scheduled(cron="0 0 0 1 * ?")
     public void reloadId(int num){

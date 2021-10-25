@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/rest/receiptDetail")
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class ReceiptDetailRest {
     private  final ReceiptDetailService service;

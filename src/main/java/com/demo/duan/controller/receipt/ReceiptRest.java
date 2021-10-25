@@ -15,6 +15,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/rest/receipt")
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class ReceiptRest {
     private final ReceiptService service;

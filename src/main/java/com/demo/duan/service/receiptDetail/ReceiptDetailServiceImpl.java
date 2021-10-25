@@ -37,9 +37,7 @@ public class ReceiptDetailServiceImpl implements ReceiptDetailService {
 
     @Override
     public ResponseEntity<ReceiptDetailDto> findByIdRecript(Integer receipt_id) throws RuntimeException {
-        System.out.println("v1");
         ReceiptDetailEntity entity = receiptDetailRepository.findByIdRecript(receipt_id).orElseThrow(() -> new RuntimeException("Id khong ton tai"));
-        System.out.println("v2");
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
 
@@ -49,12 +47,16 @@ public class ReceiptDetailServiceImpl implements ReceiptDetailService {
     public ResponseEntity<ReceiptDetailDto> create(ReceiptDetailInput input) {
         ReceiptEntity receipt = receiptRepository.findById(input.getReceiptId()).get();
         ProductEntity product = productRepository.getById(input.getProductId());
+        // tính tống tiền số lượng * đơn giá
         BigDecimal total = input.getPrice().multiply(BigDecimal.valueOf(input.getNumber()));
+
         ReceiptDetailEntity receiptDetailEntity = mapper.inputToEntity(input);
         receiptDetailEntity.setReceipt(receipt);
         receiptDetailEntity.setProduct(product);
         receiptDetailEntity.setTotal(total);
         receiptDetailRepository.save(receiptDetailEntity);
+
+        // cập nhập số lượng vào trong kho
         Integer saveNumber = input.getNumber() + product.getNumber();
         product.setNumber(saveNumber);
         productRepository.save(product);
@@ -67,6 +69,7 @@ public class ReceiptDetailServiceImpl implements ReceiptDetailService {
         ReceiptDetailEntity receiptDetailEntity = receiptDetailRepository.getById(id);
         ProductEntity product = productRepository.getById(input.getProductId());
 
+        // kiểm tra số lượng trong phiếu nhập chi tiết có khác với số lượng nhập trong ô input hay ko
         if (receiptDetailEntity.getNumber() != input.getNumber()){
             Integer saveNumber = product.getNumber() - receiptDetailEntity.getNumber()+ input.getNumber();
             product.setNumber(saveNumber);
