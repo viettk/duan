@@ -7,10 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface CategoryService {
-    public ResponseEntity<Page<CategoryDto>> find(CategoryParam param, Pageable pageable);
+
+    public ResponseEntity<List<CategoryDto>> find(CategoryParam param);
 
     public ResponseEntity<CategoryDto> create(CategoryInput input);
 
     public ResponseEntity<CategoryDto> update(Integer id ,CategoryInput input);
+
+    public ResponseEntity<List<String>> findParent();
+
+    public ResponseEntity<CategoryDto> get(Integer id);
 }

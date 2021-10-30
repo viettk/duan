@@ -21,7 +21,9 @@ public class BillCustomerRest {
     public ResponseEntity<BillDto> createByCustomer(
             Integer cartId ,
             @Valid @RequestBody BillInput input,
-            String discountName){
+            @RequestParam(name ="discountName", required = false) String discountName){
+        System.out.println(cartId);
+        System.out.println(discountName);
         return service.createByCustomer(cartId,input, discountName);
     }
 

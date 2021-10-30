@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,5 +20,8 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("from CategoryEntity c where (:#{#param.name} is null or c.name like %:#{#param.name}%)" +
             "and (:#{#param.parent_name} is null or c.parent_name like %:#{#param.parent_name}%)")
-    Page<CategoryEntity> find(@Param("param")CategoryParam param, Pageable pageable);
+    List<CategoryEntity> find(@Param("param")CategoryParam param);
+
+    @Query("select distinct(c.parent_name) from CategoryEntity c")
+    List<String> findParent();
 }

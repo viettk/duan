@@ -11,6 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -21,12 +24,15 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository repository;
 
     @Override
-    public ResponseEntity<Page<CategoryDto>> find(CategoryParam param, Pageable pageable) {
-        Page<CategoryDto> categoryDtos = repository.find(param, pageable).map(mapper::entityToDto);
-        return ResponseEntity.ok().body(categoryDtos);
+    @Transactional
+    public ResponseEntity<List<CategoryDto>> find(CategoryParam param) {
+        List<CategoryEntity> entity = repository.find(param);
+        List<CategoryDto> dto = mapper.EntitiesToDtos(entity);
+        return ResponseEntity.ok().body(dto);
     }
 
     @Override
+    @Transactional
     public ResponseEntity<CategoryDto> create(CategoryInput input) {
 
         /* Kiểm tra đã tồn tại danh mục hay chưa */
@@ -42,6 +48,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
+    @Transactional
     public ResponseEntity<CategoryDto> update(Integer id ,CategoryInput input) {
 
         CategoryEntity entity = repository.findById(id)
@@ -50,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService{
         /* Kiểm tra đã tồn tại danh mục hay chưa */
         long count = repository.countCategory(input.getName(), input.getParent_name());
 
-        if(count > 1){
+        if(count > 0){
             throw new RuntimeException("Danh mục đã tồn tại");
         }
 
@@ -58,5 +65,20 @@ public class CategoryServiceImpl implements CategoryService{
         repository.save(entity);
 
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<String>> findParent() {
+        List<String> lstEntities = repository.findParent();
+        return ResponseEntity.ok().body(lstEntities);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CategoryDto> get(Integer id) {
+        CategoryEntity entity = repository.getById(id);
+        CategoryDto dto = mapper.entityToDto(entity);
+        return ResponseEntity.ok().body(dto);
     }
 }

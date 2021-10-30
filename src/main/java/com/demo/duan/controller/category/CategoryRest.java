@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -22,16 +23,27 @@ public class CategoryRest {
     private final CategoryService service;
 
     @GetMapping
-    public ResponseEntity<Page<CategoryDto>> find(CategoryParam param, Pageable pageable){
-        return service.find(param, pageable);
+    public ResponseEntity<List<CategoryDto>> find(CategoryParam param){
+        return service.find(param);
     };
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDto> get(@PathVariable Integer id){
+        return service.get(id);
+    };
+
+
+    @GetMapping("/cha")
+    public ResponseEntity<List<String>> findParent(){
+        return service.findParent();
+    }
 
     @PostMapping
     public ResponseEntity<CategoryDto> create(@Valid @RequestBody CategoryInput input){
         return service.create(input);
     };
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> update(@PathVariable Integer id, @Valid @RequestBody CategoryInput input){
         return service.update(id, input);
     }
