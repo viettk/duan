@@ -7,21 +7,46 @@ import com.demo.duan.service.staff.input.StaffInput;
 import com.demo.duan.service.staff.mapper.StaffMapper;
 import com.demo.duan.service.staff.param.StaffParam;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 @Service
 @AllArgsConstructor
-public class StaffServiceImpl implements StaffService{
+@Slf4j
+public class StaffServiceImpl implements StaffService, UserDetailsService {
     private final StaffRepository repository;
     private final StaffMapper mapper;
 
+    // login
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        StaffEntity staff = repository.findByEmail(username).orElseThrow( () -> new UsernameNotFoundException("không tồn tại email này"));
+        if (staff == null){
+            log.error("Không tồn tại tài khoản này");
+            throw new UsernameNotFoundException("Không tồn tại tài khoản này");
+        } else {
+            log.info("Tài khoản tồn tại: {}", username);
+        }
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(staff.getRole()));
+        return new User(staff.getEmail(), staff.getPassword(), authorities);
+    }
+
+    // service
     @Override
     @Transactional
     public ResponseEntity<Page<StaffDto>> getStaff(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
@@ -100,4 +125,5 @@ public class StaffServiceImpl implements StaffService{
         StaffEntity entity = this.repository.findByEmail(username).orElseThrow(() -> new RuntimeException("Không tồn tại nhân viên này"));
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
+
 }
