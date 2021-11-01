@@ -23,7 +23,7 @@ public class StaffInput {
     private String name;
 
     @NotBlank(message = "Role không được để trống")
-    private Integer role;
+    private String role;
 
     private boolean status;
 

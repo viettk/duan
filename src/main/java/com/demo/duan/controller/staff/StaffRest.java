@@ -14,12 +14,12 @@ import java.util.Optional;
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/staff")
+@RequestMapping("/admin/staff")
 public class StaffRest {
 
     private final StaffService service;
 
-    @GetMapping("/get")
+    @GetMapping
     public ResponseEntity<Page<StaffDto>>getAll(
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page,
@@ -29,7 +29,7 @@ public class StaffRest {
         return this.service.getStaff(limit,page,field,known);
     }
 
-    @GetMapping("/get-by-email")
+    @GetMapping("/email")
     public ResponseEntity<StaffDto>getByEmail(@RequestParam("email") String email){
         return this.service.getByUsername(email);
     }
@@ -45,12 +45,12 @@ public class StaffRest {
         return this.service.searchByParam(param, limit, page, field, known);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public Object createStaff(@RequestBody StaffInput staffInput){
         return this.service.createStaff(staffInput);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<StaffDto>updateStaff(@RequestBody StaffInput staffInput, @PathVariable("id") Integer id){
         return  this.service.updateStaff(id, staffInput);
     }
