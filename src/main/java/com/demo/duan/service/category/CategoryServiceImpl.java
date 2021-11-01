@@ -8,12 +8,15 @@ import com.demo.duan.service.category.mapper.CategoryMapper;
 import com.demo.duan.service.category.param.CategoryParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -25,10 +28,13 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     @Transactional
-    public ResponseEntity<List<CategoryDto>> find(CategoryParam param) {
-        List<CategoryEntity> entity = repository.find(param);
-        List<CategoryDto> dto = mapper.EntitiesToDtos(entity);
-        return ResponseEntity.ok().body(dto);
+    public ResponseEntity<Page<CategoryDto>> find(
+            CategoryParam param,
+            Optional<Integer> limit,
+            Optional<Integer> page ) {
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(10));
+        Page<CategoryDto> entity = repository.find(param, pageable).map(mapper::entityToDto);
+        return ResponseEntity.ok().body(entity);
     }
 
     @Override

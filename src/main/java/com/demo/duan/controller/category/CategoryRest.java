@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -23,8 +24,11 @@ public class CategoryRest {
     private final CategoryService service;
 
     @GetMapping
-    public ResponseEntity<List<CategoryDto>> find(CategoryParam param){
-        return service.find(param);
+    public ResponseEntity<Page<CategoryDto>> find(
+            CategoryParam param,
+            @RequestParam("_limit") Optional<Integer> limit,
+            @RequestParam("_page") Optional<Integer> page){
+        return service.find(param, limit, page);
     };
 
     @GetMapping("/{id}")

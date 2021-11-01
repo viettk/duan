@@ -1,11 +1,15 @@
 package com.demo.duan.service.bill;
 
 import com.demo.duan.entity.BillEntity;
+import com.demo.duan.entity.CustomerEntity;
 import com.demo.duan.entity.DiscountEntity;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
+import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.discount.DiscountRepository;
+import com.demo.duan.service.address.AdressService;
+import com.demo.duan.service.address.input.AdressInput;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.mapper.BillMapper;
@@ -38,16 +42,21 @@ public class BillServiceImpl implements BillService{
 
     private final DiscountRepository discountRepository;
 
+    private final AdressService dressService;
+
+    private final CustomerRepository customerRepository;
+
     @Override
     @Transactional
     public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input, String discountName) {
 
         Date date = new Date();
-
+        DiscountEntity discount = new DiscountEntity();
         /* Kiểm tra mã giảm giá có khả dụng hay ko */
-        DiscountEntity discount = discountRepository.searchDiscountByCustomer(discountName)
-                .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
-
+        if(!discountName.equals("")){
+            discount = discountRepository.searchDiscountByCustomer(discountName)
+                    .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
+        }
         /* lưu hóa đơn vào máy */
         BillEntity entity = mapper.inputToEntity(input);
         entity = repository.saveAndFlush(entity);
@@ -79,6 +88,20 @@ public class BillServiceImpl implements BillService{
         discount.setNumber(discount.getNumber() - 1);
 
         /* Nếu là lần đầu tiên khách đặt hàng thì sẽ lưu giá địa chỉ của khách  */
+        long count = repository.countAllByEmail(input.getEmail());
+        if(count == 1){
+            AdressInput adressInput = new AdressInput();
+            adressInput.setName(input.getName());
+            adressInput.setPhone(input.getPhone());
+            adressInput.setAddress(input.getAddress());
+            adressInput.setCity(input.getCity());
+            adressInput.setDistrict(input.getDistrict());
+            adressInput.setStatus(true);
+
+            CustomerEntity customer = customerRepository.getByEmail(input.getEmail());
+            adressInput.setCustomerInput(customer.getId());
+            dressService.create(adressInput);
+        }
 
       return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }

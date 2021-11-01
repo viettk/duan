@@ -8,10 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryService {
 
-    public ResponseEntity<List<CategoryDto>> find(CategoryParam param);
+    public ResponseEntity<Page<CategoryDto>> find(CategoryParam param, Optional<Integer> limit, Optional<Integer> page );
 
     public ResponseEntity<CategoryDto> create(CategoryInput input);
 

@@ -20,7 +20,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("from CategoryEntity c where (:#{#param.name} is null or c.name like %:#{#param.name}%)" +
             "and (:#{#param.parent_name} is null or c.parent_name like %:#{#param.parent_name}%)")
-    List<CategoryEntity> find(@Param("param")CategoryParam param);
+    Page<CategoryEntity> find(@Param("param")CategoryParam param, Pageable pageable);
 
     @Query("select distinct(c.parent_name) from CategoryEntity c")
     List<String> findParent();
