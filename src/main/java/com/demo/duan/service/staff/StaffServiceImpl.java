@@ -1,7 +1,10 @@
 package com.demo.duan.service.staff;
 
+import com.demo.duan.entity.CustomerEntity;
 import com.demo.duan.entity.StaffEntity;
+import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.staff.StaffRepository;
+import com.demo.duan.service.customer.CustomerService;
 import com.demo.duan.service.staff.dto.StaffDto;
 import com.demo.duan.service.staff.input.StaffInput;
 import com.demo.duan.service.staff.mapper.StaffMapper;
@@ -30,19 +33,24 @@ import java.util.Optional;
 public class StaffServiceImpl implements StaffService, UserDetailsService {
     private final StaffRepository repository;
     private final StaffMapper mapper;
+    private final CustomerRepository customerRepository;
 
     // login
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         StaffEntity staff = repository.findByEmail(username).orElseThrow( () -> new UsernameNotFoundException("không tồn tại email này"));
+        CustomerEntity customer = customerRepository.findByEmail(username).orElseThrow( () -> new UsernameNotFoundException("không tồn tại email này"));
         if (staff == null){
-            log.error("Không tồn tại tài khoản này");
-            throw new UsernameNotFoundException("Không tồn tại tài khoản này");
+//            if (customer == null){
+                log.error("Không tồn tại tài khoản này");
+                throw new UsernameNotFoundException("Không tồn tại tài khoản này");
+//            }
         } else {
             log.info("Tài khoản tồn tại: {}", username);
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(staff.getRole()));
+        System.out.println(staff.getEmail()+ staff.getPassword()+ authorities);
         return new User(staff.getEmail(), staff.getPassword(), authorities);
     }
 

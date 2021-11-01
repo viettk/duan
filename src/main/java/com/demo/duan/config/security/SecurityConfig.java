@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -30,6 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.authorizeRequests().antMatchers("/login").permitAll();
+        http.authorizeRequests().antMatchers(GET, "*/staff/**").hasAnyAuthority("ROLE_STAFF");
         http.authorizeRequests().anyRequest().permitAll();
         http.addFilter(new UserAuthenticationFillter(authenticationManagerBean()));
     }

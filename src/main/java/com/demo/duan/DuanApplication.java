@@ -16,4 +16,5 @@ public class DuanApplication {
     BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

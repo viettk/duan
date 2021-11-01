@@ -19,7 +19,7 @@ public class StaffDto {
     private String name;
 
     @Column(name="role")
-    private Integer role;
+    private String role;
 
     @Column(name="status")
     private boolean status;

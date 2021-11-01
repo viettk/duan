@@ -1,13 +1,15 @@
 package com.demo.duan.service.staff.input;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class StaffInput {
 
     @NotBlank(message = "Email không được để trống")
@@ -23,7 +25,7 @@ public class StaffInput {
     private String name;
 
     @NotBlank(message = "Role không được để trống")
-    private Integer role;
+    private String role;
 
     private boolean status;
 
