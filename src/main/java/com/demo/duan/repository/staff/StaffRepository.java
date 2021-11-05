@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface StaffRepository extends JpaRepository<StaffEntity, Integer> {
     Optional<StaffEntity>findByEmail(String email);
 
+    @Query("select s from StaffEntity s where s.email=:email")
+    StaffEntity getByEmail(@Param("email") String email);
     //tìm kiếm theo tên, email.
     @Query("from StaffEntity s where (:#{#staff.name} is null or s.name like %:#{#staff.name}%)" +
             "and (:#{#staff.email} is null or s.email like %:#{#staff.email}%)"

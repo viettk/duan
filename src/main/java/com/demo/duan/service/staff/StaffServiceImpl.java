@@ -21,6 +21,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,12 +36,13 @@ public class StaffServiceImpl implements StaffService, UserDetailsService {
     private final StaffRepository repository;
     private final StaffMapper mapper;
     private final CustomerRepository customerRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     // login
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        StaffEntity staff = repository.findByEmail(username).orElseThrow( () -> new UsernameNotFoundException("không tồn tại email này"));
-        CustomerEntity customer = customerRepository.findByEmail(username).orElseThrow( () -> new UsernameNotFoundException("không tồn tại email này"));
+        StaffEntity staff = repository.getByEmail(username);
+        CustomerEntity customer = customerRepository.getByEmail(username);
         if (staff == null){
 //            if (customer == null){
                 log.error("Không tồn tại tài khoản này");
@@ -50,7 +53,6 @@ public class StaffServiceImpl implements StaffService, UserDetailsService {
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(staff.getRole()));
-        System.out.println(staff.getEmail()+ staff.getPassword()+ authorities);
         return new User(staff.getEmail(), staff.getPassword(), authorities);
     }
 
@@ -84,6 +86,8 @@ public class StaffServiceImpl implements StaffService, UserDetailsService {
         }
         StaffEntity entity = this.mapper.inputToEntity(input);
         this.mapper.inputToEntity(input);
+        entity.setPassword(passwordEncoder.encode(input.getPassword()));
+        System.out.println("thanh cong"+input.getPassword());
         this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
