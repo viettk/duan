@@ -27,6 +27,7 @@ public class BillServiceImpl implements BillService{
     @Override
     @Transactional
     public ResponseEntity<BillDto> updateByCustomer(Integer id ,BillInput input) {
+        Date day = new Date();
         BillEntity entity = repository.getById(id);
         String status = entity.getStatus_order();
         switch (status){
@@ -46,7 +47,9 @@ public class BillServiceImpl implements BillService{
                 throw new RuntimeException("Bạn không thể cập nhật Hóa đơn");
         }
         /* Cập nhật hóa đơn và lưu vào db */
+        entity.setUpdate_date(day);
         mapper.inputToEntity(input, entity);
+
         repository.save(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
@@ -62,7 +65,9 @@ public class BillServiceImpl implements BillService{
                 b->{
                     if ((day.getTime() - b.getCreate_date().getTime()) >= thoigiam)
                         b.setStatus_order("Đang chuẩn bị");
-                    repository.save(b);
+                        b.setUpdate_date(day);
+                        repository.save(b);
+                    System.out.println("Thành công kiểm tra trong data");
                 }
         );
         return ResponseEntity.ok().body(mapper.EntitiesToDtos(list));
