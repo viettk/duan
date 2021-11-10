@@ -2,6 +2,7 @@ package com.demo.duan.service.product;
 
 import com.demo.duan.service.product.dto.ProductDto;
 import com.demo.duan.service.product.input.ProductCreateInput;
+import com.demo.duan.service.product.input.ProductUpdateInput;
 import com.demo.duan.service.product.param.ProductParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public interface ProductService {
 
     ResponseEntity<ProductDto> createProduct(String folder, ProductCreateInput input,  Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
 
-    ResponseEntity<ProductDto> updateProduct(Integer id,ProductCreateInput input,Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
+    ResponseEntity<ProductDto> updateProduct(String folder, Integer id, ProductUpdateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
 
     ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param , Pageable page);
 

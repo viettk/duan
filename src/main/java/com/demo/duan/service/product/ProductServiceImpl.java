@@ -8,7 +8,9 @@ import com.demo.duan.repository.photo.PhotoRepository;
 import com.demo.duan.repository.product.ProductRepository;
 import com.demo.duan.service.product.dto.ProductDto;
 import com.demo.duan.service.product.input.ProductCreateInput;
+import com.demo.duan.service.product.input.ProductUpdateInput;
 import com.demo.duan.service.product.mapper.ProductMapper;
+import com.demo.duan.service.product.mapper.ProductUpdateMapper;
 import com.demo.duan.service.product.param.ProductParam;
 import com.demo.duan.service.upload.UpLoadService;
 import lombok.AllArgsConstructor;
@@ -33,6 +35,8 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
 
     private final ProductMapper mapper;
+
+    private final ProductUpdateMapper updateMapper;
 
     private final CategoryRepository categoryRepository;
 
@@ -218,36 +222,38 @@ public class ProductServiceImpl implements ProductService{
             File filePhoto = upLoadService.savePhoto(photo4.get(), folder);
             photoRepository.save(new PhotoEntity(null,filePhoto.getName(),productSave));
         }
-        return ResponseEntity.ok(mapper.entityToDto(productSave));
+        ProductEntity productFinal = productRepository.getById(product.getId());
+        return ResponseEntity.ok(mapper.entityToDto(productFinal));
     }
 
     @Override
-    public ResponseEntity<ProductDto> updateProduct(String folder,Integer id, ProductCreateInput input,Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4) {
-        ProductEntity product = productRepository.findById(id).get();
+    @Transactional
+    public ResponseEntity<ProductDto> updateProduct(String folder, Integer id, ProductUpdateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4) {
+        ProductEntity product = productRepository.getById(id);
+        updateMapper.inputToEntity(input,product);
         CategoryEntity category = categoryRepository.getById(input.getCategoryID());
         product.setCategory(category);
-        mapper.inputToEntity(input,product);
         //thêm ảnh vào sản phẩm
         if(!photo1.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo1.get(), folder);
             product.setPhoto(filePhoto.getName());
         }
         //thêm sản phẩm
-        ProductEntity productSave = productRepository.save(product);
+        productRepository.save(product);
         if(!photo2.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo2.get(), folder);
-            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),productSave));
+            photoRepository.save(new PhotoEntity(input.getIdPhoto2(),filePhoto.getName(),product));
         }
         if(!photo3.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo3.get(), folder);
-            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),productSave));
+            photoRepository.save(new PhotoEntity(input.getIdPhoto3(),filePhoto.getName(),product));
         }
         if(!photo4.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo4.get(), folder);
-            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),productSave));
+            photoRepository.save(new PhotoEntity(input.getIdPhoto4(),filePhoto.getName(),product));
         }
-        return ResponseEntity.ok(mapper.entityToDto(productSave));
-        return null;
+        ProductEntity productFinal = productRepository.getById(product.getId());
+        return ResponseEntity.ok(mapper.entityToDto(productFinal));
     }
 
     // Tìm kiếm sản phẩm
