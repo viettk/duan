@@ -1,6 +1,7 @@
 package com.demo.duan.service.bill;
 
 import com.demo.duan.entity.BillEntity;
+import com.demo.duan.entity.ThongkeEntity;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.service.bill.dto.BillDto;
@@ -8,6 +9,7 @@ import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.mapper.BillMapper;
 import com.demo.duan.service.billdetail.BillDetailService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,13 @@ public class BillServiceImpl implements BillService{
                 }
         );
         return ResponseEntity.ok().body(mapper.EntitiesToDtos(list));
+    }
+
+    @Override
+    public ResponseEntity<List<ThongkeEntity>> getMonth(Date startDate , Date endDate)  {
+//        List<ThongkeEntity> view = repository.Thongke(startDate,endDate);
+//        return ResponseEntity.ok().body(view);
+        return null;
     }
 
     @Scheduled(cron="0 0 0 1 * ?")

@@ -36,7 +36,7 @@ public class ReceiptDetailRest {
     }
     /*cập nhật phiếu nhập chi tiết*/
     @PutMapping("/{id}")
-    public  ResponseEntity<ReceiptDetailDto> update(@PathVariable Integer id , @Valid @RequestBody ReceiptDetailInput input ){
+        public  ResponseEntity<ReceiptDetailDto> update(@PathVariable Integer id , @Valid @RequestBody ReceiptDetailInput input ){
         System.out.println("ok chưa");
         return service.update(id , input);
     }
