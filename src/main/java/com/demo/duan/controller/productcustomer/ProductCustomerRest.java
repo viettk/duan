@@ -1,11 +1,11 @@
 package com.demo.duan.controller.productcustomer;
 
+import com.demo.duan.service.category.param.CategoryParam;
 import com.demo.duan.service.product.ProductService;
 import com.demo.duan.service.product.dto.ProductDto;
 import com.demo.duan.service.product.param.ProductParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,18 +39,39 @@ public class ProductCustomerRest {
     }
 
     @GetMapping("/khac")
-    public ResponseEntity<Page<ProductDto>> searchByKhac(){
-        return service.searchBySHF();
+    public ResponseEntity<Page<ProductDto>> searchByKhac(
+            ProductParam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) Optional<String> known,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page
+    ){
+        return service.searchByKhac(param, field, known, limit, page);
+    }
+
+    @GetMapping("/cha/{parent}")
+    public ResponseEntity<Page<ProductDto>> getByParentName(
+            CategoryParam cate,
+            ProductParam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) String known,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit
+    ){
+        return service.searchAllByParent(cate, param, field, known, limit, page);
     }
 
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<Page<ProductDto>> searchByCategoryName(
             @PathVariable Integer categoryId,
             ProductParam param,
-            @RequestParam(name = "field", required = false) Optional<String> field,
-            @RequestParam(name = "known", required = false) String known){
-        return service.searchByCategoryName(categoryId, param, field, known);
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) String known,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit){
+        return service.searchByCategoryName(categoryId, param, field, known, limit, page);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getOne(@PathVariable Integer id){

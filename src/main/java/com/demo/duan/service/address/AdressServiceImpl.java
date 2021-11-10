@@ -26,9 +26,16 @@ public class AdressServiceImpl implements AdressService {
 
     @Override
     @Transactional
-    public ResponseEntity<List<AdressDto>> find() {
-        List<AdressEntity> lst = repository.findAll();
+    public ResponseEntity<List<AdressDto>> find(Integer customer_id) {
+        List<AdressEntity> lst = repository.findAllByCustomer_Id(customer_id);
         List<AdressDto> dto = mapper.EntitiesToDtos(lst);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @Override
+    public ResponseEntity<AdressDto> getOne(Integer customer_id) {
+        AdressEntity entity = repository.getById(customer_id);
+        AdressDto dto = mapper.entityToDto(entity);
         return ResponseEntity.ok().body(dto);
     }
 
@@ -36,6 +43,7 @@ public class AdressServiceImpl implements AdressService {
     @Transactional
     public ResponseEntity<AdressDto> create(AdressInput input) {
 
+        System.out.println(input.getCustomerInput());
         /* KHông cần thiết - Kiểm tra tài khoản đã có hay chưa */
         CustomerEntity customerEntity =customerRepository.findById(input.getCustomerInput())
                 .orElseThrow(()-> new RuntimeException("Bạn chưa có tài khoản"));
@@ -46,7 +54,7 @@ public class AdressServiceImpl implements AdressService {
 
         /* Nếu số lượng địa chỉ > 5 thì ko đc thêm địa chỉ nữa */
         long num = repository.countAllByCustomer_Id(input.getCustomerInput());
-        if(num >= 3){
+        if(num > 3){
             throw new RuntimeException("Chỉ có tối đa 3 địa chỉ");
         }
 

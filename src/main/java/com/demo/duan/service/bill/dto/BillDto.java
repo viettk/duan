@@ -29,6 +29,8 @@ public class BillDto {
 
     private String district;
 
+    private String wards;
+
     private String status_order;
 
     private String describe;

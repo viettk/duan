@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class ProductParam {
-    private Integer categoryId;
+    private String categoryName;
 
     private String name;
 

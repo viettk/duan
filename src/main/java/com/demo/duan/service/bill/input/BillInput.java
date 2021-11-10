@@ -3,10 +3,7 @@ package com.demo.duan.service.bill.input;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -19,6 +16,7 @@ public class BillInput {
     private String email;
 
     @NotBlank(message = "Không được để trống!")
+    @Size(min = 1, max = 100)
     private String name;
 
     @NotNull(message = "Không được để trống!")
@@ -33,7 +31,9 @@ public class BillInput {
     private String city;
     @NotBlank(message = "Không được để trống!")
     private String district;
-    @NotNull(message = "Không được để trống")
+
+    @NotBlank String wards;
+
     private String status_order;
 
     private String describe;
@@ -43,6 +43,8 @@ public class BillInput {
     private String themb;
 
     private String themc;
+
+    private String discountName;
 
 //    private Integer staff;
 }

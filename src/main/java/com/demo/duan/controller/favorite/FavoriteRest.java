@@ -38,9 +38,8 @@ public class FavoriteRest {
 
     @DeleteMapping
     public ResponseEntity<FavoriteDto> update(
-            @RequestParam(name = "customerId", required = false) Integer customerId,
-            @RequestParam(name = "productId", required = false) Integer productId
+            @Valid @RequestBody FavoriteInput input
     ){
-        return service.delete(customerId, productId);
+        return service.delete(input);
     }
 }

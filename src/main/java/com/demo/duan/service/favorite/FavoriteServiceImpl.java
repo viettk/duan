@@ -1,7 +1,9 @@
 package com.demo.duan.service.favorite;
 
+import com.demo.duan.entity.CustomerEntity;
 import com.demo.duan.entity.FavoriteEntity;
 import com.demo.duan.entity.ProductEntity;
+import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.favorite.FavoriteRepository;
 import com.demo.duan.repository.product.ProductRepository;
 import com.demo.duan.service.favorite.dto.FavoriteDto;
@@ -29,6 +31,8 @@ public class FavoriteServiceImpl implements FavoriteService{
 
     private final ProductRepository productRepository;
 
+    private final CustomerRepository customerRepository;
+
     @Override
     @Transactional
     public ResponseEntity<Page<FavoriteDto>> find(Integer customerId ,FavoriteParam param, Optional<String> field, String known) {
@@ -54,20 +58,29 @@ public class FavoriteServiceImpl implements FavoriteService{
     @Override
     @Transactional
     public ResponseEntity<FavoriteDto> create(FavoriteInput input) {
-
         /* Kiểm tra sản phẩm có tồn tại hay đang bị vô hiệu hóa hay ko */
-        ProductEntity product = productRepository.findByIdAndStatusIsFalse(input.getProductId())
+        ProductEntity product = productRepository.findByIdAndStatusIsTrue(input.getProductId())
                 .orElseThrow(()->new RuntimeException("Sản phẩm không khả dụng"));
 
-        FavoriteEntity entity = mapper.inputToEntity(input);
-        repository.save(entity);
+        CustomerEntity customer = customerRepository.getById(input.getCustomerId());
+        FavoriteEntity entity = new FavoriteEntity();
+        entity.setProduct(product);
+        entity.setCustomer(customer);
+
+        int num = repository.countAllByProduct_IdAndCustomer_Id(input.getProductId(), input.getCustomerId());
+        if(num >= 1){
+            delete(input);
+        }
+        else{
+            repository.save(entity);
+        }
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
     @Override
     @Transactional
-    public ResponseEntity<FavoriteDto> delete(Integer customerId, Integer productId) {
-        FavoriteEntity entity = repository.findByCustomer_IdAndAndProduct_Id(customerId, productId);
+    public ResponseEntity<FavoriteDto> delete(FavoriteInput input) {
+        FavoriteEntity entity = repository.findByCustomer_IdAndAndProduct_Id(input.getCustomerId(), input.getProductId());
         repository.delete(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }

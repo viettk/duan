@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class CartDetailDto {
+
+    private Integer id;
+
     private ProductDto product;
 
     private CartDto cart;

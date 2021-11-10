@@ -21,4 +21,8 @@ public interface CategoryService {
     public ResponseEntity<List<String>> findParent();
 
     public ResponseEntity<CategoryDto> get(Integer id);
+
+    public ResponseEntity<List<CategoryDto>> getAll();
+
+    public ResponseEntity<List<CategoryDto>> getKit();
 }

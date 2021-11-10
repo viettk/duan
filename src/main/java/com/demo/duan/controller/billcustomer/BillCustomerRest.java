@@ -17,14 +17,11 @@ public class BillCustomerRest {
 
     private final BillService service;
 
-    @PostMapping
+    @PostMapping("/dat/{cartId}")
     public ResponseEntity<BillDto> createByCustomer(
-            Integer cartId ,
-            @Valid @RequestBody BillInput input,
-            @RequestParam(name ="discountName", required = false) String discountName){
-        System.out.println(cartId);
-        System.out.println(discountName);
-        return service.createByCustomer(cartId,input, discountName);
+            @PathVariable Integer cartId ,
+            @Valid @RequestBody BillInput input){
+        return service.createByCustomer(cartId,input);
     }
 
     @PutMapping("/{id}")

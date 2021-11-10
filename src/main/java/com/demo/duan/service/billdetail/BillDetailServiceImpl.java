@@ -1,7 +1,9 @@
 package com.demo.duan.service.billdetail;
 
 import com.demo.duan.entity.BillDetailEntity;
+import com.demo.duan.entity.BillEntity;
 import com.demo.duan.entity.CartDetailEntity;
+import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
@@ -30,25 +32,31 @@ public class BillDetailServiceImpl implements BillDetailService{
 
     private final CartDetailMapper cartDetailMapper;
 
+    private final BillRepository billRepository;
+
     @Override
     @Transactional
     public ResponseEntity<List<BillDetailDto>> createByCustomer(BillDetailInput input, Integer cartId) {
         List<CartDetailEntity> lstCartDetail = cartDetailRepository.findListByCartId(cartId);
 
-        List<BillDetailEntity> lst = new ArrayList<>();
         for(CartDetailEntity  x : lstCartDetail){
-            for(BillDetailEntity y: lst){
-                y.setProduct(x.getProduct());
-                y.setNumber(x.getNumber());
-                y.setPrice(x.getProduct().getPrice());
-            }
+            input.setNumber(x.getNumber());
+            input.setPrice(x.getProduct().getPrice());
+
+            BillEntity billEntity = billRepository.getById(input.getBillId());
+            BillDetailEntity entity = mapper.inputToEntity(input);
+            entity.setProduct(x.getProduct());
+            entity.setBill(billEntity);
+            repository.save(entity);
         }
-        repository.saveAll(lst);
+//        repository.saveAll(lst);
+        List<BillDetailEntity> lst = new ArrayList<>();
         List<BillDetailDto> lstDto = mapper.EntitiesToDtos(lst);
         return ResponseEntity.ok().body(lstDto);
     }
 
     @Override
+    @Transactional
     public BigDecimal totalOfBill(Integer billId) {
         BigDecimal sum = repository.totalOfBill(billId);
         return sum;

@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface AdressService {
-    public ResponseEntity<List<AdressDto>> find();
+    public ResponseEntity<List<AdressDto>> find(Integer customer_id);
+
+    public ResponseEntity<AdressDto> getOne(Integer customer_id);
 
     public ResponseEntity<AdressDto> create(AdressInput input);
 

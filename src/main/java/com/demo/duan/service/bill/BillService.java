@@ -5,7 +5,7 @@ import com.demo.duan.service.bill.input.BillInput;
 import org.springframework.http.ResponseEntity;
 
 public interface BillService {
-    public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input, String discountName);
+    public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input);
 
     public ResponseEntity<BillDto> updateByCustomer(Integer id ,BillInput input);
 }

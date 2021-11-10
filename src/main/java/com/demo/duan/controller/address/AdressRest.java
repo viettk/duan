@@ -18,9 +18,14 @@ public class AdressRest {
 
     private final AdressService service;
 
-    @GetMapping
-    public ResponseEntity<List<AdressDto>> find(){
-        return service.find();
+    @GetMapping("/all/{customer_id}")
+    public ResponseEntity<List<AdressDto>> find(@PathVariable Integer customer_id){
+        return service.find(customer_id);
+    }
+
+    @GetMapping("/{customer_id}")
+    public ResponseEntity<AdressDto> getOne(@PathVariable Integer customer_id){
+        return service.getOne(customer_id);
     }
 
     @PostMapping
@@ -29,7 +34,7 @@ public class AdressRest {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AdressDto> create(@PathVariable Integer id, @Valid @RequestBody AdressInput input){
+    public ResponseEntity<AdressDto> update(@PathVariable Integer id, @Valid @RequestBody AdressInput input){
         return service.update(id, input);
     }
     

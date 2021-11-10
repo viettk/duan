@@ -1,6 +1,7 @@
 package com.demo.duan.repository.category;
 
 import com.demo.duan.entity.CategoryEntity;
+import com.demo.duan.service.category.dto.CategoryDto;
 import com.demo.duan.service.category.param.CategoryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("select distinct(c.parent_name) from CategoryEntity c")
     List<String> findParent();
+
+    @Query("from CategoryEntity c where c.parent_name = 'Model Kit' ")
+    List<CategoryEntity> getAllCategoryKit();
 }

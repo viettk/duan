@@ -3,6 +3,7 @@ package com.demo.duan.controller.cartdetail;
 import com.demo.duan.service.cartdetail.CartDetailService;
 import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.input.CartDetailInput;
+import com.demo.duan.service.cartdetail.input.CartDetalInputDelete;
 import com.demo.duan.service.cartdetail.param.CartDetailParam;
 import lombok.AllArgsConstructor;
 import org.hibernate.annotations.Parameter;
@@ -24,6 +25,11 @@ public class CartDetailRest {
         return service.find(param);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CartDetailDto> getOne(@PathVariable Integer id){
+        return service.getOne(id);
+    }
+
     @PostMapping
     public ResponseEntity<CartDetailDto> addToCart(@Valid @RequestBody CartDetailInput input){
         return service.addToCartDetail(input);
@@ -34,21 +40,19 @@ public class CartDetailRest {
         return service.updateNumber(input);
     }
 
-    @PutMapping("/up/{id}")
+    @PutMapping("/up")
     public ResponseEntity<CartDetailDto> updateNumberUp(@Valid @RequestBody CartDetailInput input){
         return service.updateNumberUp(input);
     }
 
-    @PutMapping("/down/{id}")
+    @PutMapping("/down")
     public ResponseEntity<CartDetailDto> updateNumberDown(@Valid @RequestBody CartDetailInput input){
         return service.updateNumberDown(input);
     }
 
     @DeleteMapping("")
-    public ResponseEntity<CartDetailDto> delete(
-            @RequestParam(name = "cartId", required = false) Integer cartId,
-            @RequestParam(name = "productId", required = false) Integer productId){
-        return service.delete(cartId, productId);
+    public ResponseEntity<CartDetailDto> delete(@Valid @RequestBody CartDetalInputDelete input){
+        return service.delete(input);
     }
 
 }

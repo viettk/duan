@@ -30,7 +30,7 @@ public interface CartDetailRepository extends JpaRepository<CartDetailEntity, In
     BigDecimal totalOfCart(@Param("cartId") Integer cartId);
 
     @Query("select sum(cd.number) from CartDetailEntity cd where cd.cart.id = :cartId")
-    int checkNumberOfCartDetail(@Param("cartId") Integer cartId);
+    Integer checkNumberOfCartDetail(@Param("cartId") Integer cartId);
 
     void deleteAllByCart_Id(Integer cartId);
 }

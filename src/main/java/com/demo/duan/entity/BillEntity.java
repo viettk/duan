@@ -61,6 +61,9 @@ public class BillEntity implements Serializable {
     @Column(name="describe")
     private String describe;
 
+    @Column(name="wards")
+    private String wards;
+
     @Column(name="thema")
     private String thema;
 

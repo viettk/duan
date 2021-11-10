@@ -48,13 +48,12 @@ public class BillServiceImpl implements BillService{
 
     @Override
     @Transactional
-    public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input, String discountName) {
-
+    public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input) {
         Date date = new Date();
         DiscountEntity discount = new DiscountEntity();
         /* Kiểm tra mã giảm giá có khả dụng hay ko */
-        if(!discountName.equals("")){
-            discount = discountRepository.searchDiscountByCustomer(discountName)
+        if(!input.getDiscountName().equals("")){
+            discount = discountRepository.searchDiscountByCustomer(input.getDiscountName())
                     .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
         }
         /* lưu hóa đơn vào máy */
@@ -71,7 +70,6 @@ public class BillServiceImpl implements BillService{
         /* tạo hóa đơn chi tiết */
         BillDetailInput billDetailInput = new BillDetailInput();
         billDetailInput.setBillId(entity.getId());
-
 
         /* Dựa vào login để lấy thông tin khách hàng -> lấy cartId */
         billDetailService.createByCustomer(billDetailInput, cartId);
@@ -96,6 +94,7 @@ public class BillServiceImpl implements BillService{
             adressInput.setAddress(input.getAddress());
             adressInput.setCity(input.getCity());
             adressInput.setDistrict(input.getDistrict());
+
             adressInput.setStatus(true);
 
             CustomerEntity customer = customerRepository.getByEmail(input.getEmail());

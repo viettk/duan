@@ -5,9 +5,7 @@ import com.demo.duan.service.category.dto.CategoryDto;
 import com.demo.duan.service.category.input.CategoryInput;
 import com.demo.duan.service.category.param.CategoryParam;
 import lombok.AllArgsConstructor;
-import org.hibernate.annotations.Parameter;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +29,11 @@ public class CategoryRest {
         return service.find(param, limit, page);
     };
 
+    @GetMapping("/all")
+    public ResponseEntity<List<CategoryDto>> getAll(){
+        return service.getAll();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> get(@PathVariable Integer id){
         return service.get(id);
@@ -51,4 +54,10 @@ public class CategoryRest {
     public ResponseEntity<CategoryDto> update(@PathVariable Integer id, @Valid @RequestBody CategoryInput input){
         return service.update(id, input);
     }
+
+    @GetMapping("/kit")
+    public ResponseEntity<List<CategoryDto>> getKit(){
+        return service.getKit();
+    }
+
 }

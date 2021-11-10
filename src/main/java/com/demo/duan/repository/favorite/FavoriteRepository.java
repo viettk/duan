@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Integer> {
 
-    @Query("from FavoriteEntity f where f.product.status=false " +
+    @Query("from FavoriteEntity f where f.product.status=true " +
             "and (:#{#product.name} is null or f.product.name like %:#{#product.name}%)" +
             "and (:#{#product.price} is null or f.product.price >= :#{#product.price})" +
             "and f.customer.id = :customerId")
@@ -22,5 +22,7 @@ public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Intege
     FavoriteEntity findByCustomer_IdAndAndProduct_Id(Integer customerId, Integer productId);
 
     int countAllByProduct_Id(Integer productId);
+
+    int countAllByProduct_IdAndCustomer_Id(Integer productId, Integer customerId);
 
 }

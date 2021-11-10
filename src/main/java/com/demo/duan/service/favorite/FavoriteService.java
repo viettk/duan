@@ -13,7 +13,7 @@ public interface FavoriteService {
 
     public ResponseEntity<FavoriteDto> create(FavoriteInput input);
 
-    public ResponseEntity<FavoriteDto> delete(Integer customerId, Integer productId);
+    public ResponseEntity<FavoriteDto> delete(FavoriteInput input);
 
     public int getProduct(Integer productId);
 }

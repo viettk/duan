@@ -3,6 +3,7 @@ package com.demo.duan.service.cartdetail;
 import com.demo.duan.entity.ProductEntity;
 import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.input.CartDetailInput;
+import com.demo.duan.service.cartdetail.input.CartDetalInputDelete;
 import com.demo.duan.service.cartdetail.param.CartDetailParam;
 import com.demo.duan.service.product.dto.ProductDto;
 import com.demo.duan.service.product.param.ProductParam;
@@ -25,12 +26,15 @@ public interface CartDetailService {
     public ResponseEntity<CartDetailDto> updateNumber(CartDetailInput input);
 
    /* xóa sản phẩm trong giỏ hàng */
-    public ResponseEntity<CartDetailDto> delete(Integer cartId,Integer productId);
+    public ResponseEntity<CartDetailDto> delete(CartDetalInputDelete input);
 
     /* Tính thành tiền của Giỏ hàng - Cart */
     public BigDecimal totalOfCart(Integer cartId);
 
     /* Kiểm tra số lượng sp trong giỏ hàng */
     Integer numberOfCartDetail(Integer cartId);
+
+    /* lấy sản phẩm trong 1 giỏ hàng chi tiếts */
+    public ResponseEntity<CartDetailDto> getOne(Integer cartDetailId);
 
 }

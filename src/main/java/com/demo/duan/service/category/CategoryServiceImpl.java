@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService{
             CategoryParam param,
             Optional<Integer> limit,
             Optional<Integer> page ) {
-        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(10));
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), Sort.by(Sort.Direction.DESC, "id"));
         Page<CategoryDto> entity = repository.find(param, pageable).map(mapper::entityToDto);
         return ResponseEntity.ok().body(entity);
     }
@@ -86,5 +87,21 @@ public class CategoryServiceImpl implements CategoryService{
         CategoryEntity entity = repository.getById(id);
         CategoryDto dto = mapper.entityToDto(entity);
         return ResponseEntity.ok().body(dto);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<CategoryDto>> getAll() {
+        List<CategoryEntity> entities = repository.findAll();
+        List<CategoryDto> dtos = mapper.EntitiesToDtos(entities);
+        return ResponseEntity.ok().body(dtos);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<CategoryDto>> getKit() {
+        List<CategoryEntity> entities = repository.getAllCategoryKit();
+        List<CategoryDto> dtos = mapper.EntitiesToDtos(entities);
+        return ResponseEntity.ok().body(dtos);
     }
 }
