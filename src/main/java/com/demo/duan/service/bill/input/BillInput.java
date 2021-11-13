@@ -15,24 +15,25 @@ public class BillInput {
     @Email(message = "Email không đúng định dang")
     private String email;
 
-    @NotBlank(message = "Không được để trống!")
+    @NotBlank(message = "Tên không được để trống!")
     @Size(min = 1, max = 100)
     private String name;
 
-    @NotNull(message = "Không được để trống!")
+    @NotNull(message = "SDDT không được để trống!")
     @Positive(message = "SĐT phải là chữ số")
     private String phone;
 
     private boolean status_pay;
 
-    @NotNull(message = "Không được bỏ trống!")
+    @NotNull(message = "Địa chỉ không được bỏ trống!")
     private String address;
-    @NotBlank(message = "Không được để trống!")
+    @NotBlank(message = "Tỉnh/thành phố không được để trống!")
     private String city;
-    @NotBlank(message = "Không được để trống!")
+    @NotBlank(message = "Quận/huyện không được để trống!")
     private String district;
 
-    @NotBlank String wards;
+    @NotBlank(message = "Phương/xã không được để trống!")
+    String wards;
 
     private String status_order;
 
@@ -46,5 +47,5 @@ public class BillInput {
 
     private String discountName;
 
-//    private Integer staff;
+//    private Integer staffId;
 }

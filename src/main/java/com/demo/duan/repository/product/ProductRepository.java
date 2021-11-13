@@ -76,4 +76,22 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     @Query("from ProductEntity p where (:#{#product.name} is null or p.name like %:#{#product.name}%)" +
             "and (:#{#product.categoryName} is null or p.category.name = :#{#product.categoryName})")
     Page<ProductEntity> searchByAdmin(@Param("product") ProductParam product, Pageable pageable );
+
+    // ---------------------------dũng--------------------
+    @Query("select p from ProductEntity p where " +
+            "(:#{#product.name} is null or p.name like %:#{#product.name}%)" +
+            "and (:#{#product.id} is null or p.id = :#{#product.id})" +
+            "and (:#{#product.categoryId} is null or p.category.id = :#{#product.categoryId})" +
+            "and (:#{#product.price} is null or p.price >= :#{#product.price})")
+    Page<ProductEntity> searchProduct(@Param("product") ProductParam product, Pageable pageable);
+
+
+    List<ProductEntity> findByIdInAndStatusIsFalse(Integer[] ids);
+
+    List<ProductEntity> findByIdInAndStatusIsTrue(Integer[] ids);
+
+
+    /* Cho phiếu nhập chi tiết */
+    @Query("from ProductEntity p where :name is null or p.name like %:name%")
+    List<ProductEntity> search(String name);
 }

@@ -13,5 +13,4 @@ public interface AdressRepository extends JpaRepository<AdressEntity, Integer> {
     long countAllByCustomer_Id(Integer customer_id);
 
     List<AdressEntity> findAllByCustomer_Id(Integer customer_id);
-    
 }

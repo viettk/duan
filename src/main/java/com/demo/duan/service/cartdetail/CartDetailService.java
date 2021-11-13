@@ -37,4 +37,9 @@ public interface CartDetailService {
     /* lấy sản phẩm trong 1 giỏ hàng chi tiếts */
     public ResponseEntity<CartDetailDto> getOne(Integer cartDetailId);
 
+    public boolean checkNumberOfCart(Integer cartid, Integer productId);
+
+    /* lấy thông tin cân nặng của sản phẩm trong giỏ hàng */
+    public Float getAllWeight(Integer cartId);
+
 }

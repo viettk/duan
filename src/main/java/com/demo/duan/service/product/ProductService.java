@@ -2,11 +2,15 @@ package com.demo.duan.service.product;
 
 import com.demo.duan.service.category.param.CategoryParam;
 import com.demo.duan.service.product.dto.ProductDto;
+import com.demo.duan.service.product.input.ProductCreateInput;
+import com.demo.duan.service.product.input.ProductUpdateInput;
 import com.demo.duan.service.product.param.ProductParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
@@ -34,4 +38,17 @@ public interface ProductService {
     ResponseEntity<ProductDto> getOne(Integer id);
 
     ResponseEntity<ProductDto> getOneAdmin(Integer id);
+
+    //dũng
+    ResponseEntity<ProductDto> createProduct(String folder, ProductCreateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
+
+    ResponseEntity<ProductDto> updateProduct(String folder, Integer id, ProductUpdateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
+
+    ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param , Pageable page);
+
+    ResponseEntity<List<ProductDto>> hideProduct(Integer[] ids);
+
+    ResponseEntity<List<ProductDto>> presentProduct(Integer[] ids);
+
+    ResponseEntity<List<ProductDto>> findAll(String name);
 }

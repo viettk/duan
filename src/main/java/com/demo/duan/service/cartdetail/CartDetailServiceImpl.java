@@ -34,6 +34,7 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     private final CartRepository cartRepository;
 
+
     @Override
     @Transactional
     public ResponseEntity<List<CartDetailDto>> find(CartDetailParam param) {
@@ -119,7 +120,6 @@ public class CartDetailServiceImpl implements CartDetailService{
     public ResponseEntity<CartDetailDto> updateNumberUp(CartDetailInput input) {
 
         int checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
-        System.out.println(checkNumOfCartDetail);
         if(checkNumOfCartDetail >=15){
             throw new RuntimeException("Số lượng trong giỏ hàng không vượt quá 15 sản phẩm");
         }
@@ -153,7 +153,6 @@ public class CartDetailServiceImpl implements CartDetailService{
             CartDetalInputDelete newInput = new CartDetalInputDelete();
             newInput.setCartId(input.getCartId());
             newInput.setProductId(input.getProductId());
-            System.out.println(newInput.getCartId());
             delete(newInput);
             return ResponseEntity.ok().body(mapper.entityToDto(entity));
         }
@@ -233,5 +232,17 @@ public class CartDetailServiceImpl implements CartDetailService{
     public ResponseEntity<CartDetailDto> getOne(Integer cartDetailId) {
         CartDetailEntity entity = repository.getById(cartDetailId);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
+    }
+
+    @Override
+    public boolean checkNumberOfCart(Integer cartid, Integer productId) {
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public Float getAllWeight(Integer cartId) {
+        Float sumWeight = repository.tinhTongCanNangCart(cartId);
+        return sumWeight;
     }
 }

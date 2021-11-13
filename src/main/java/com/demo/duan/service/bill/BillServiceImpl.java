@@ -1,10 +1,13 @@
 package com.demo.duan.service.bill;
 
 import com.demo.duan.entity.BillEntity;
+import com.demo.duan.entity.CartEntity;
 import com.demo.duan.entity.CustomerEntity;
 import com.demo.duan.entity.DiscountEntity;
+import com.demo.duan.repository.adress.AdressRepository;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
+import com.demo.duan.repository.cart.CartRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.discount.DiscountRepository;
@@ -46,6 +49,10 @@ public class BillServiceImpl implements BillService{
 
     private final CustomerRepository customerRepository;
 
+    private final CartRepository cartRepository;
+
+    private final AdressRepository adressRepository;
+
     @Override
     @Transactional
     public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input) {
@@ -65,6 +72,7 @@ public class BillServiceImpl implements BillService{
         entity.setTotal(BigDecimal.ZERO);
         entity.setDiscount(discount);
         entity.setId_code(createCodeId(entity.getId()));
+
         repository.save(entity);
 
         /* tạo hóa đơn chi tiết */
@@ -81,13 +89,17 @@ public class BillServiceImpl implements BillService{
 
         /* Xóa giỏ hàng */
         cartDetailRepository.deleteAllByCart_Id(cartId);
+        CartEntity cartEntity = cartRepository.getById(cartId);
+        cartEntity.setTotal(BigDecimal.ZERO);
 
         /* Trừ mã giảm giá */
         discount.setNumber(discount.getNumber() - 1);
 
         /* Nếu là lần đầu tiên khách đặt hàng thì sẽ lưu giá địa chỉ của khách  */
         long count = repository.countAllByEmail(input.getEmail());
-        if(count == 1){
+        CustomerEntity customerEntity = customerRepository.getByEmail(input.getEmail());
+        long num = adressRepository.countAllByCustomer_Id(customerEntity.getId());
+        if(count == 1 && num == 0){
             AdressInput adressInput = new AdressInput();
             adressInput.setName(input.getName());
             adressInput.setPhone(input.getPhone());
@@ -100,9 +112,11 @@ public class BillServiceImpl implements BillService{
             CustomerEntity customer = customerRepository.getByEmail(input.getEmail());
             adressInput.setCustomerInput(customer.getId());
             dressService.create(adressInput);
+            return ResponseEntity.ok().body(mapper.entityToDto(entity));
+        } else{
+            return ResponseEntity.ok().body(mapper.entityToDto(entity));
         }
 
-      return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
     @Override

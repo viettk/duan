@@ -55,4 +55,9 @@ public class CartDetailRest {
         return service.delete(input);
     }
 
+    @GetMapping("/get-weight")
+    public Float getWeight(Integer cartId){
+        return service.getAllWeight(cartId);
+    }
+
 }

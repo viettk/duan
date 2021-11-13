@@ -1,5 +1,6 @@
 package com.demo.duan.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,11 @@ public class ReceiptDetailEntity implements Serializable {
     @Column(name="id")
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne @JoinColumn(name = "product_id")
     private ProductEntity product;
 
+    @JsonIgnore
     @ManyToOne @JoinColumn(name = "receipt_id")
     private ReceiptEntity receipt;
 
