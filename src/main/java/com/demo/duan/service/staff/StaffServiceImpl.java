@@ -59,7 +59,10 @@ public class StaffServiceImpl implements StaffService{
     @Transactional
     public ResponseEntity<StaffDto> updateStaff(Integer id, StaffInput input) throws RuntimeException {
         StaffEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có nhân viên này"));
+        String password = entity.getPassword();
+        System.out.println(password);
         this.mapper.inputToEntity(input, entity);
+        entity.setPassword(password);
         this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
