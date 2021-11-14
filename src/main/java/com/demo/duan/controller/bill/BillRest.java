@@ -18,7 +18,7 @@ public class BillRest {
 
     private final BillService service;
 
-    @GetMapping("/get")
+    @GetMapping
     public ResponseEntity<Page<BillDto>>getAll(
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page,
@@ -27,7 +27,7 @@ public class BillRest {
     ){
         return this.service.getAll(limit,page,field,known);
     }
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<BillDto>getOne(@PathVariable("id") Integer id){
         return this.service.getOne(id);
     }
@@ -43,7 +43,7 @@ public class BillRest {
         return this.service.getByEmail(email,limit,page,field,known);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<BillDto>updateBill(@PathVariable("id") Integer id, BillInput input){
         return this.service.update(input, id);
     }
