@@ -2,8 +2,10 @@ package com.demo.duan.service.billdetail;
 
 import com.demo.duan.entity.BillDetailEntity;
 import com.demo.duan.entity.CartDetailEntity;
+import com.demo.duan.entity.ProductEntity;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
+import com.demo.duan.repository.product.ProductRepository;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
 import com.demo.duan.service.billdetail.mapper.BillDetailMapper;
@@ -13,7 +15,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +33,8 @@ public class BillDetailServiceImpl implements BillDetailService{
     private final CartDetailRepository cartDetailRepository;
 
     private final CartDetailMapper cartDetailMapper;
+
+    private final ProductRepository productRepository;
 
     @Override
     public ResponseEntity<List<BillDetailDto>> createByCustomer(BillDetailInput input, Integer cartId) {
@@ -67,5 +73,29 @@ public class BillDetailServiceImpl implements BillDetailService{
         this.mapper.inputToEntity(input, entity);
         this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<BillDetailDto> update(BillDetailInput input, Integer id) {
+        BillDetailEntity billDetailEntity = repository.getById(id);
+        ProductEntity product = productRepository.getById(input.getProductId());
+        if (billDetailEntity.getNumber() != input.getNumber()){
+            Integer saveNumber = product.getNumber() - billDetailEntity.getNumber() + input.getNumber();
+            product.setNumber(saveNumber);
+            productRepository.save(product);
+        }
+        billDetailEntity.setNumber(input.getNumber());
+        billDetailEntity.setPrice(input.getPrice());
+        BigDecimal total = input.getPrice().multiply(BigDecimal.valueOf(input.getNumber()));
+        billDetailEntity.setTotal(total);
+        repository.save(billDetailEntity);
+        return ResponseEntity.ok().body(mapper.entityToDto(billDetailEntity));
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        repository.deleteById(id);
+        throw new RuntimeException("Xóa thành công");
     }
 }
