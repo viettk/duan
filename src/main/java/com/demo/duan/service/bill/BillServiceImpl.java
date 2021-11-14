@@ -111,6 +111,12 @@ public class BillServiceImpl implements BillService{
         }
         return id_code;
     }
+
+    @Override
+    public ResponseEntity<BillDto> createByCustomer(BillInput input) {
+        return null;
+    }
+
     @Override
     public ResponseEntity<Page<BillDto>> getAll(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
         if (known.equals("up")){
