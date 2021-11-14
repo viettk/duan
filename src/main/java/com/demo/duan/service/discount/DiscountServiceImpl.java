@@ -64,4 +64,12 @@ public class DiscountServiceImpl implements DiscountService{
         mapper.inputToEntity(input, entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
+
+    @Override
+    @Transactional
+    public Integer apdung(String discountName) {
+        DiscountEntity discount = repository.searchDiscountByCustomer(discountName)
+                .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
+        return discount.getValueDiscount();
+    }
 }

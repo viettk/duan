@@ -46,6 +46,7 @@ public class CategoryServiceImpl implements CategoryService{
         long count = repository.countCategory(input.getName(), input.getParent_name());
 
         if(count > 0){
+            System.out.println("lỗi");
             throw new RuntimeException("Danh mục đã tồn tại");
         }
 

@@ -13,4 +13,6 @@ public interface DiscountService {
     public ResponseEntity<DiscountDto> create(DiscountInput input);
 
     public ResponseEntity<DiscountDto> update(Integer id, DiscountInput input);
+
+    public Integer apdung(String discountName);
 }

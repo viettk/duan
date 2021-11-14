@@ -10,4 +10,5 @@ import java.math.BigDecimal;
 public class ReceiptDetailparam {
     private String productName;
     private BigDecimal price;
+    private String sku;
 }

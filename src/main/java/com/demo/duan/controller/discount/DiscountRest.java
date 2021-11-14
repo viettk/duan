@@ -40,4 +40,8 @@ public class DiscountRest {
         return service.update(id, input);
     }
 
+    @GetMapping("/apdung")
+    public Integer apdung(String discountName){
+        return service.apdung(discountName);
+    }
 }

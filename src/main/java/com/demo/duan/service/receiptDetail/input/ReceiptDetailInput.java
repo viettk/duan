@@ -14,12 +14,17 @@ import java.math.BigDecimal;
 @Setter
 
 public class ReceiptDetailInput {
+
+    @NotNull(message = "Sản phẩm không được để trống")
     private Integer productId;
+
     private Integer receiptId;
-    @NotNull(message = "Vui lòng điền số lượng nhập sản phẩm")
+
+    @NotNull(message = "Số lượng nhập không được để trống")
     @Min(value = 1 , message = "Số lượng nhập phải lớn hơn 0")
     private Integer number;
-    @NotNull(message = "Mời bạn điền giá nhâp của sản phẩm")
+
+    @NotNull(message = "Giá nhập không được để trống")
     @Min(value = 1 , message = "Giá nhập phải lớn hơn 0" )
     private BigDecimal price;
 }

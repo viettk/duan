@@ -25,4 +25,9 @@ public interface ReceiptRepository extends JpaRepository<ReceiptEntity, Integer>
     /* search theo ngay */
     @Query("SELECt r FROM ReceiptEntity r WHERE r.create_date =:data_day")
     Optional<ReceiptEntity> findByDate(@Param("data_day") Date date);
+
+
+    @Query(value = "select  ct.product_id , sum(ct.number) from Bill_detail  ct , Bill hd\n" +
+            "where ct.bill_id = hd.id and Month(update_date) =10 and YEAR(update_date)=2021 ", nativeQuery = true)
+    public String a();
 }

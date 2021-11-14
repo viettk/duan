@@ -19,8 +19,9 @@ import java.util.Optional;
 @Repository
 public interface ReceiptDetailRepository extends JpaRepository<ReceiptDetailEntity, Integer> {
     @Query("from ReceiptDetailEntity p where p.receipt.id = :receiptId " +
-            "and (:#{#product.productName} is null or p.product.name = :#{#product.productName})" +
-            "and (:#{#product.price} is null or p.product.price = :#{#product.price})")
+            "and (:#{#product.productName} is null or p.product.name like %:#{#product.productName}%)" +
+            "and (:#{#product.price} is null or p.product.price = :#{#product.price})" +
+            "and (:#{#product.sku} is null or p.product.sku like %:#{#product.sku}%)")
     Page<ReceiptDetailEntity> searchByAdmin(Integer receiptId ,@Param("product") ReceiptDetailparam product, Pageable pageable );
 
     @Query("select r from ReceiptDetailEntity r where r.receipt=:id")

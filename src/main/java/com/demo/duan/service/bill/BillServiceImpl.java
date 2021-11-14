@@ -58,11 +58,7 @@ public class BillServiceImpl implements BillService{
     public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input) {
         Date date = new Date();
         DiscountEntity discount = new DiscountEntity();
-        /* Kiểm tra mã giảm giá có khả dụng hay ko */
-        if(!input.getDiscountName().equals("")){
-            discount = discountRepository.searchDiscountByCustomer(input.getDiscountName())
-                    .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
-        }
+
         /* lưu hóa đơn vào máy */
         BillEntity entity = mapper.inputToEntity(input);
         entity = repository.saveAndFlush(entity);
@@ -70,11 +66,18 @@ public class BillServiceImpl implements BillService{
         entity.setCreate_date(date);
         entity.setUpdate_date(date);
         entity.setTotal(BigDecimal.ZERO);
-        entity.setDiscount(discount);
+
+        /* Kiểm tra mã giảm giá có khả dụng hay ko */
+        if(!input.getDiscountName().equals("")){
+            discount = discountRepository.searchDiscountByCustomer(input.getDiscountName())
+                    .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
+            entity.setDiscount(discount);
+            /* Trừ mã giảm giá */
+            discount.setNumber(discount.getNumber() - 1);
+        }
+
         entity.setId_code(createCodeId(entity.getId()));
-
         repository.save(entity);
-
         /* tạo hóa đơn chi tiết */
         BillDetailInput billDetailInput = new BillDetailInput();
         billDetailInput.setBillId(entity.getId());
@@ -92,13 +95,13 @@ public class BillServiceImpl implements BillService{
         CartEntity cartEntity = cartRepository.getById(cartId);
         cartEntity.setTotal(BigDecimal.ZERO);
 
-        /* Trừ mã giảm giá */
-        discount.setNumber(discount.getNumber() - 1);
-
         /* Nếu là lần đầu tiên khách đặt hàng thì sẽ lưu giá địa chỉ của khách  */
         long count = repository.countAllByEmail(input.getEmail());
         CustomerEntity customerEntity = customerRepository.getByEmail(input.getEmail());
+        System.out.println(customerEntity.getEmail());
         long num = adressRepository.countAllByCustomer_Id(customerEntity.getId());
+        System.out.println(num);
+
         if(count == 1 && num == 0){
             AdressInput adressInput = new AdressInput();
             adressInput.setName(input.getName());
