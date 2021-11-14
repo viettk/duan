@@ -1,5 +1,6 @@
 package com.demo.duan.service.bill;
 
+<<<<<<< HEAD
 import com.demo.duan.entity.ThongkeEntity;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
@@ -26,4 +27,12 @@ public interface BillService {
     public ResponseEntity<BillDto> updateByCustomer(Integer id ,BillInput input);
     public ResponseEntity<List<BillDto>> getStatus();
     public ResponseEntity<List<ThongkeEntity>> getMonth(Date startDate , Date endDate);
+=======
+import com.demo.duan.service.bill.dto.BillDto;
+import com.demo.duan.service.bill.input.BillInput;
+import org.springframework.http.ResponseEntity;
+
+public interface BillService {
+    public ResponseEntity<BillDto> createByCustomer(BillInput input);
+>>>>>>> parent of 11e5ca7 (bill mânger)
 }

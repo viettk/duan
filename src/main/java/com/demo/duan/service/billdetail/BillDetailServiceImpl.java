@@ -12,7 +12,6 @@ import com.demo.duan.service.billdetail.mapper.BillDetailMapper;
 import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.mapper.CartDetailMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -52,6 +50,7 @@ public class BillDetailServiceImpl implements BillDetailService{
         List<BillDetailDto> lstDto = mapper.EntitiesToDtos(lst);
         return ResponseEntity.ok().body(lstDto);
     }
+<<<<<<< HEAD
 
     @Override
     public ResponseEntity<List<BillDetailDto>> getByBill(Integer idBill, Optional<String> field, String known) {
@@ -98,4 +97,6 @@ public class BillDetailServiceImpl implements BillDetailService{
         repository.deleteById(id);
         throw new RuntimeException("Xóa thành công");
     }
+=======
+>>>>>>> parent of 11e5ca7 (bill mânger)
 }
