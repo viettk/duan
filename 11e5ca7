@@ -1,0 +1,87 @@
+[33mcommit 72aa362dc77e95a42ff451acabc00c7abfa03cab[m[33m ([m[1;36mHEAD -> [m[1;32mbillmanager[m[33m, [m[1;31morigin/billmanager[m[33m)[m
+Author: thuanmao1342 <thuannvph10843@fpt.edu.vn>
+Date:   Sun Nov 14 15:12:18 2021 +0700
+
+    update bill
+
+[33mcommit be64b2065597e9113ec7e94d907804d4ba247084[m
+Merge: 11e5ca7 2f5a78e
+Author: thuanmao1342 <thuannvph10843@fpt.edu.vn>
+Date:   Sun Nov 14 15:09:35 2021 +0700
+
+    Merge remote-tracking branch 'origin/origin/receiptmanager' into billmanager
+    
+    # Conflicts:
+    #       src/main/java/com/demo/duan/repository/bill/BillRepository.java
+    #       src/main/java/com/demo/duan/service/bill/BillService.java
+    #       src/main/java/com/demo/duan/service/bill/BillServiceImpl.java
+    #       src/main/java/com/demo/duan/service/billdetail/BillDetailService.java
+    #       src/main/java/com/demo/duan/service/billdetail/BillDetailServiceImpl.java
+
+[33mcommit 2f5a78ed2bff17a7301e1a2ca5bad85a2b8ae878[m[33m ([m[1;31morigin/origin/receiptmanager[m[33m, [m[1;32morigin/receiptmanager[m[33m)[m
+Author: thanhsfpt <69475043+thanhsfpt@users.noreply.github.com>
+Date:   Wed Nov 10 21:35:05 2021 +0700
+
+    update bill
+
+[33mcommit 227eb51b04d13db331d0e33e57e2105d08ee0091[m
+Author: thanhsfpt <69475043+thanhsfpt@users.noreply.github.com>
+Date:   Sun Nov 7 00:25:01 2021 +0700
+
+    Trạng thái hóa đơn sau 24h
+
+[33mcommit c58b88cfb4fef846c39a1b5f6929f9badec8333b[m
+Author: thanhsfpt <69475043+thanhsfpt@users.noreply.github.com>
+Date:   Sun Nov 7 00:09:31 2021 +0700
+
+    Cập nhập hóa đơn , trạng thái hóa đơn sau 24h
+
+[33mcommit 11e5ca760e2b85e449cfd75bf7cc2b83218d64d6[m
+Author: thuanmao1342 <thuannvph10843@fpt.edu.vn>
+Date:   Mon Oct 25 23:28:50 2021 +0700
+
+    bill mânger
+    
+    quản lý hóa đơn và hóa đơn chi tiết
+
+[33mcommit a0ddaf2d4f24f294bcf3683c2c5a0705e6588c6c[m
+Author: thanhsfpt <69475043+thanhsfpt@users.noreply.github.com>
+Date:   Mon Oct 25 22:25:51 2021 +0700
+
+    update comment
+
+[33mcommit a6c82e83db000af8226316b1f50d9407e82472c0[m
+Author: thuanmao1342 <thuannvph10843@fpt.edu.vn>
+Date:   Mon Oct 25 21:32:25 2021 +0700
+
+    Update StaffRepository.java
+
+[33mcommit 1d6bedbe2b822ac49fddf0d3e12823e3e486d006[m
+Author: thuanmao1342 <thuannvph10843@fpt.edu.vn>
+Date:   Mon Oct 25 21:19:35 2021 +0700
+
+    Staffmanager
+    
+    quản lý nhân viên, thêm, sửa, vô hiệu hóa, tìm kiếm nhân viên
+
+[33mcommit 6c8c52fea96673afabfec19a8967bf36a1845c6c[m
+Author: thanhsfpt <69475043+thanhsfpt@users.noreply.github.com>
+Date:   Mon Oct 25 18:16:52 2021 +0700
+
+    add , update,,view.  phiếu nhập và chiếu nhập chi tiết
+    
+    chưa code đc search phiếu nhập theo khoảng thowig gian
+
+[33mcommit 1e40002f2d53465f88ec5c877b5883d07313c1a2[m
+Author: thuanmao1342 <thuannvph10843@fpt.edu.vn>
+Date:   Sat Oct 23 20:31:16 2021 +0700
+
+    staff
+    
+    get all, them , sua nhan vien
+
+[33mcommit 57b32b7f1b546da292fd9bbed2b7f12003ab92c9[m[33m ([m[1;31morigin/viettk[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: viettk <viettkph09818@fpt.edu.vn>
+Date:   Tue Oct 19 23:11:06 2021 +0700
+
+    entity
