@@ -21,4 +21,6 @@ public interface BillService {
 
     ResponseEntity<BillDto>update(BillInput input, Integer id);
 
+    ResponseEntity<List<BillEntity>> demo();
+
 }

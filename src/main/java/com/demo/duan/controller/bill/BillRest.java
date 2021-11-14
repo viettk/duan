@@ -1,5 +1,6 @@
 package com.demo.duan.controller.bill;
 
+import com.demo.duan.entity.BillEntity;
 import com.demo.duan.service.bill.BillService;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin("*")
@@ -18,7 +20,7 @@ public class BillRest {
 
     private final BillService service;
 
-    @GetMapping("/get")
+    @GetMapping
     public ResponseEntity<Page<BillDto>>getAll(
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page,
@@ -27,12 +29,12 @@ public class BillRest {
     ){
         return this.service.getAll(limit,page,field,known);
     }
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<BillDto>getOne(@PathVariable("id") Integer id){
         return this.service.getOne(id);
     }
 
-    @GetMapping("/get/{email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<Page<BillDto>>getByEmail(
             @PathVariable("email") String email,
             @RequestParam("_limit") Optional<Integer> limit,
@@ -43,8 +45,12 @@ public class BillRest {
         return this.service.getByEmail(email,limit,page,field,known);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<BillDto>updateBill(@PathVariable("id") Integer id, BillInput input){
         return this.service.update(input, id);
+    }
+    @GetMapping("/demo")
+    public ResponseEntity<List<BillEntity>>demo(){
+        return this.service.demo();
     }
 }

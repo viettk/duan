@@ -106,5 +106,11 @@ public class BillServiceImpl implements BillService{
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
 
+    @Override
+    public ResponseEntity<List<BillEntity>> demo() {
+        List<BillEntity> entity = this.repository.findAll();
+        return ResponseEntity.ok().body(entity);
+    }
+
 
 }
