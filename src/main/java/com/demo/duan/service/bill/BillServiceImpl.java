@@ -1,6 +1,7 @@
 package com.demo.duan.service.bill;
 
 import com.demo.duan.entity.BillEntity;
+import com.demo.duan.entity.ThongkeEntity;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.service.bill.dto.BillDto;
@@ -11,12 +12,18 @@ import com.demo.duan.service.billdetail.input.BillDetailInput;
 import com.demo.duan.service.staff.dto.StaffDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
@@ -31,34 +38,78 @@ public class BillServiceImpl implements BillService{
     private final BillRepository repository;
 
     private  final BillMapper mapper;
-
-    private final BillDetailService billDetailService;
-
-    private final CartDetailRepository cartDetailRepository;
-
     @Override
     @Transactional
-    public ResponseEntity<BillDto> createByCustomer(BillInput input) {
-        System.out.println(input.getCity());
-        BillEntity entity = mapper.inputToEntity(input);
-        entity.setStatus_order("Chờ xác nhận");
+    public ResponseEntity<BillDto> updateByCustomer(Integer id ,BillInput input) {
+        Date day = new Date();
+        BillEntity entity = repository.getById(id);
+        String status = entity.getStatus_order();
+        switch (status){
+            case "Chờ xác nhận":
+                input.setStatus_order("Đang chuẩn bị");
+                break;
+            case "Đang chuẩn bị":
+                input.setStatus_order("Đang giao");
+                break;
+            case "Đang giao":
+                input.setStatus_order("Đã giao");
+                break;
+            case "Đã giao":
+                input.setStatus_order("Giao thành công");
+                break;
+            default:
+                throw new RuntimeException("Bạn không thể cập nhật Hóa đơn");
+        }
+        /* Cập nhật hóa đơn và lưu vào db */
+        entity.setUpdate_date(day);
+        mapper.inputToEntity(input, entity);
+
         repository.save(entity);
-
-        System.out.println("0");
-        BillDetailInput billDetailInput = new BillDetailInput();
-        billDetailInput.setBillId(entity.getId());
-
-        System.out.println("1");
-
-        /* Dựa vào login để lấy thông tin khách hàng -> lấy cartId */
-        billDetailService.createByCustomer(billDetailInput, 1);
-
-        System.out.println("2");
-        /* Xóa giỏ hàng */
-        cartDetailRepository.deleteAllByCart_Id(1);
-
-        System.out.println("3");
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
+    }
+
+    @Override
+    public ResponseEntity<List<BillDto>> getStatus() {
+        List<BillEntity> list = this.repository.all("Chờ xác nhận");
+        long thoigiam = 1000 * 60 * 60 * 24;
+        Date day = new Date();
+
+        list.forEach(
+
+                b->{
+                    if ((day.getTime() - b.getCreate_date().getTime()) >= thoigiam)
+                        b.setStatus_order("Đang chuẩn bị");
+                        b.setUpdate_date(day);
+                        repository.save(b);
+                    System.out.println("Thành công kiểm tra trong data");
+                }
+        );
+        return ResponseEntity.ok().body(mapper.EntitiesToDtos(list));
+    }
+
+    @Override
+    public ResponseEntity<List<ThongkeEntity>> getMonth(Date startDate , Date endDate)  {
+//        List<ThongkeEntity> view = repository.Thongke(startDate,endDate);
+//        return ResponseEntity.ok().body(view);
+        return null;
+    }
+
+    @Scheduled(cron="0 0 0 1 * ?")
+    public void reloadId(int num){
+        num= 1;
+    }
+
+    /* tao id_code */
+    private String createCodeId(Integer id_count){
+        int num = 0;
+        reloadId(num);
+        String id_code = "";
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        for(num = 1; num < id_count; num++){
+            id_code ="HD" + localDate.getMonthValue()+"-"+localDate.getYear()+"-"+num;
+        }
+        return id_code;
     }
     @Override
     public ResponseEntity<Page<BillDto>> getAll(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
