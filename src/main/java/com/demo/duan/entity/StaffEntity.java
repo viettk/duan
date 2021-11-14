@@ -36,7 +36,7 @@ public class StaffEntity implements Serializable {
     private String name;
 
     @Column(name="role")
-    private Integer role;
+    private String role;
 
     @Column(name="status")
     private boolean status;
