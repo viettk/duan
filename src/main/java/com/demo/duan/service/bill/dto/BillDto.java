@@ -9,6 +9,8 @@ import java.util.Date;
 @Getter
 @Setter
 public class BillDto {
+    private Integer id;
+
     private String email;
 
     private Date create_date;

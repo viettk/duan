@@ -1,11 +1,10 @@
 package com.demo.duan.service.billdetail;
 
-import com.demo.duan.entity.BillDetailEntity;
-import com.demo.duan.entity.BillEntity;
-import com.demo.duan.entity.CartDetailEntity;
+import com.demo.duan.entity.*;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
+import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
 import com.demo.duan.service.billdetail.mapper.BillDetailMapper;
@@ -50,6 +49,35 @@ public class BillDetailServiceImpl implements BillDetailService{
             repository.save(entity);
         }
 //        repository.saveAll(lst);
+        List<BillDetailEntity> lst = new ArrayList<>();
+        List<BillDetailDto> lstDto = mapper.EntitiesToDtos(lst);
+        return ResponseEntity.ok().body(lstDto);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<BillDetailDto>> createByCustomerNotLogin(Integer id, List<LocalStorageBillDetail> inputs) {
+
+        for(LocalStorageBillDetail x : inputs){
+            BillDetailInput input = new BillDetailInput();
+            input.setNumber(x.getNumber());
+            input.setPrice(x.getPrice());
+            BillEntity billEntity = billRepository.getById(id);
+
+            BillDetailEntity entity = mapper.inputToEntity(input);
+
+            ProductEntity productEntity = new ProductEntity();
+            productEntity.setId(x.getProduct_id());
+            entity.setProduct(productEntity);
+
+            entity.setBill(billEntity);
+            entity.setTotal(x.getTotal());
+            repository.save(entity);
+
+            BigDecimal totalOfBill =  totalOfBill(billEntity.getId());
+            billEntity.setTotal(totalOfBill);
+            billRepository.save(billEntity);
+        }
         List<BillDetailEntity> lst = new ArrayList<>();
         List<BillDetailDto> lstDto = mapper.EntitiesToDtos(lst);
         return ResponseEntity.ok().body(lstDto);

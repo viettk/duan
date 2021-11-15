@@ -14,6 +14,6 @@ import java.util.List;
 @Repository
 public interface BillDetailRepository extends JpaRepository<BillDetailEntity, Integer> {
 
-    @Query("select sum(b.price) from BillDetailEntity b where b.bill.id = :billId")
+    @Query("select sum(b.total) from BillDetailEntity b where b.bill.id = :billId")
     BigDecimal totalOfBill(@Param("billId") Integer billId );
 }

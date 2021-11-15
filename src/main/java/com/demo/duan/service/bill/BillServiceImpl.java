@@ -1,9 +1,6 @@
 package com.demo.duan.service.bill;
 
-import com.demo.duan.entity.BillEntity;
-import com.demo.duan.entity.CartEntity;
-import com.demo.duan.entity.CustomerEntity;
-import com.demo.duan.entity.DiscountEntity;
+import com.demo.duan.entity.*;
 import com.demo.duan.repository.adress.AdressRepository;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
@@ -30,6 +27,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -52,6 +50,8 @@ public class BillServiceImpl implements BillService{
     private final CartRepository cartRepository;
 
     private final AdressRepository adressRepository;
+
+    private final BillDetailRepository billDetailRepository;
 
     @Override
     @Transactional
@@ -96,30 +96,56 @@ public class BillServiceImpl implements BillService{
         cartEntity.setTotal(BigDecimal.ZERO);
 
         /* Nếu là lần đầu tiên khách đặt hàng thì sẽ lưu giá địa chỉ của khách  */
-        long count = repository.countAllByEmail(input.getEmail());
-        CustomerEntity customerEntity = customerRepository.getByEmail(input.getEmail());
-        System.out.println(customerEntity.getEmail());
-        long num = adressRepository.countAllByCustomer_Id(customerEntity.getId());
-        System.out.println(num);
-
-        if(count == 1 && num == 0){
-            AdressInput adressInput = new AdressInput();
-            adressInput.setName(input.getName());
-            adressInput.setPhone(input.getPhone());
-            adressInput.setAddress(input.getAddress());
-            adressInput.setCity(input.getCity());
-            adressInput.setDistrict(input.getDistrict());
-
-            adressInput.setStatus(true);
-
-            CustomerEntity customer = customerRepository.getByEmail(input.getEmail());
-            adressInput.setCustomerInput(customer.getId());
-            dressService.create(adressInput);
+//        long count = repository.countAllByEmail(input.getEmail());
+//
+//        long num = adressRepository.countAllByEmail(input.getEmail());
+//
+//        if(count == 1 && num == 0){
+//            CustomerEntity customerEntity = customerRepository.getByEmail(input.getEmail());
+//            AdressInput adressInput = new AdressInput();
+//            adressInput.setName(input.getName());
+//            adressInput.setPhone(input.getPhone());
+//            adressInput.setAddress(input.getAddress());
+//            adressInput.setCity(input.getCity());
+//            adressInput.setDistrict(input.getDistrict());
+//
+//            adressInput.setStatus(true);
+//
+//            CustomerEntity customer = customerRepository.getByEmail(input.getEmail());
+//            adressInput.setCustomerInput(customer.getId());
+//            dressService.create(adressInput);
+//            return ResponseEntity.ok().body(mapper.entityToDto(entity));
+//        } else{
             return ResponseEntity.ok().body(mapper.entityToDto(entity));
-        } else{
-            return ResponseEntity.ok().body(mapper.entityToDto(entity));
+
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<BillDto> createByCustomerNotLogin(BillInput input) {
+        Date date = new Date();
+        DiscountEntity discount = new DiscountEntity();
+
+        /* lưu hóa đơn vào máy */
+        BillEntity entity = mapper.inputToEntity(input);
+        entity = repository.saveAndFlush(entity);
+        entity.setStatus_order("Chờ xác nhận");
+        entity.setCreate_date(date);
+        entity.setUpdate_date(date);
+        entity.setTotal(BigDecimal.ZERO);
+
+        /* Kiểm tra mã giảm giá có khả dụng hay ko */
+        if(!input.getDiscountName().equals("")){
+            discount = discountRepository.searchDiscountByCustomer(input.getDiscountName())
+                    .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
+            entity.setDiscount(discount);
+            /* Trừ mã giảm giá */
+            discount.setNumber(discount.getNumber() - 1);
         }
 
+        entity.setId_code(createCodeId(entity.getId()));
+        repository.save(entity);
+        return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
     @Override
