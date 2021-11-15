@@ -1,15 +1,13 @@
 package com.demo.duan.service.bill;
 
+import com.demo.duan.entity.BillDetailEntity;
 import com.demo.duan.entity.BillEntity;
-import com.demo.duan.entity.ThongkeEntity;
 import com.demo.duan.repository.bill.BillRepository;
-import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.mapper.BillMapper;
-import com.demo.duan.service.billdetail.BillDetailService;
+import com.demo.duan.service.product.dto.ProductDto;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -76,10 +74,45 @@ public class BillServiceImpl implements BillService{
     }
 
     @Override
-    public ResponseEntity<List<ThongkeEntity>> getMonth(Date startDate , Date endDate)  {
-//        List<ThongkeEntity> view = repository.Thongke(startDate,endDate);
-//        return ResponseEntity.ok().body(view);
-        return null;
+    public Integer getMonth(Integer month , Integer year)  {
+        Integer view = repository.Thongke(month , year);
+        if(view <= 0){
+            view = 0;
+        }
+        System.out.println(view);
+        return view;
+
+    }
+
+    @Override
+    public Double getdoanhthu(Integer month) {
+        Double viewdt = repository.Thongkedoanhthu(month);
+        return viewdt;
+    }
+
+    @Override
+    public ResponseEntity<Object>  getThongkespbanchay(Integer month) {
+        Object viewsp = repository.Thongkespbanchay(month);
+        return ResponseEntity.ok().body(viewsp);
+    }
+
+    @Override
+    public ResponseEntity<List<Object>> getThongketop5spbanchay() {
+        List<Object> viewsp = repository.Thongketop5spbanchay();
+        System.out.println("ok");
+        return ResponseEntity.ok().body(viewsp);
+    }
+
+    @Override
+    public Integer getdonhang() {
+        Integer viewdonhang = repository.Thongkedonhang();
+        return viewdonhang;
+    }
+
+    @Override
+    public ResponseEntity<List<Object>> getkhachhangmuanhiennhat(Integer month) {
+        List<Object> viewkh=  repository.thongkekhachhang(month);
+        return ResponseEntity.ok().body(viewkh);
     }
 
     @Scheduled(cron="0 0 0 1 * ?")

@@ -1,8 +1,10 @@
 package com.demo.duan.service.bill;
 
+import com.demo.duan.entity.BillDetailEntity;
 import com.demo.duan.entity.ThongkeEntity;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
+import com.demo.duan.service.product.dto.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
@@ -12,5 +14,10 @@ import java.util.List;
 public interface BillService {
     public ResponseEntity<BillDto> updateByCustomer(Integer id ,BillInput input);
     public ResponseEntity<List<BillDto>> getStatus();
-    public ResponseEntity<List<ThongkeEntity>> getMonth(Date startDate , Date endDate);
+    public Object getThongkespbanchay(Integer month);
+    public Integer getMonth(Integer month , Integer year);
+    public Double getdoanhthu(Integer month);
+    public ResponseEntity<List<Object>> getThongketop5spbanchay();
+    public Integer getdonhang();
+    public ResponseEntity<List<Object>> getkhachhangmuanhiennhat(Integer month);
 }
