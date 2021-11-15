@@ -76,7 +76,7 @@ public class BillEntity implements Serializable {
     @ManyToOne @JoinColumn(name = "staff_id")
     private StaffEntity staff;
 
-    @OneToOne @JoinColumn(name = "discount_id")
+    @ManyToOne @JoinColumn(name = "discount_id")
     private DiscountEntity discount;
 
     @OneToMany(mappedBy = "bill")
