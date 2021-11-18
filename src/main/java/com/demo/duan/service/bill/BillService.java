@@ -19,13 +19,11 @@ public interface BillService {
     ResponseEntity<Page<BillDto>>getByEmail(String name, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
 
     ResponseEntity<BillDto>update(BillInput input, Integer id);
-
-    ResponseEntity<List<BillEntity>> demo();
     
     ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input);
     
     ResponseEntity<BillDto> updateStatusPay(Integer id);
 
-    ResponseEntity<Page<BillDto>>getDone(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+    ResponseEntity<Page<BillDto>>getByStatus(boolean pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
 
 }

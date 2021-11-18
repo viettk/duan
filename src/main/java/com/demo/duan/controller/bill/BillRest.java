@@ -29,14 +29,16 @@ public class BillRest {
     ){
         return this.service.getAll(limit,page,field,known);
     }
-    @GetMapping("/done")
-    public ResponseEntity<Page<BillDto>>getDone(
+    @GetMapping("/by-status")
+    public ResponseEntity<Page<BillDto>>getByStatus(
+            @RequestParam("pay") boolean pay,
+            @RequestParam("order") String order,
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page,
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-        return this.service.getDone(limit,page,field,known);
+        return this.service.getByStatus(pay, order, limit, page, field, known);
     }
     @GetMapping("/{id}")
     public ResponseEntity<BillDto>getOne(@PathVariable("id") Integer id){
@@ -57,10 +59,6 @@ public class BillRest {
     @PutMapping("/{id}")
     public ResponseEntity<BillDto>updateBill(@PathVariable("id") Integer id, BillInput input){
         return this.service.update(input, id);
-    }
-    @GetMapping("/demo")
-    public ResponseEntity<List<BillEntity>>demo(){
-        return this.service.demo();
     }
     @PutMapping("/status-order/{id}")
     public ResponseEntity<BillDto>updateStatusOrder(

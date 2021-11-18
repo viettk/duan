@@ -44,5 +44,7 @@ public class BillInput {
 
     private String themc;
 
+    private String id_code;
+
 //    private Integer staff;
 }

@@ -41,4 +41,6 @@ public class BillDto {
     private String themb;
 
     private String themc;
+
+    private String id_code;
 }

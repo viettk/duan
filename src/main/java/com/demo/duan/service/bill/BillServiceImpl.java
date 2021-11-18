@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -103,17 +102,11 @@ public class BillServiceImpl implements BillService{
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
 
-    @Override
-    public ResponseEntity<List<BillEntity>> demo() {
-        List<BillEntity> entity = this.repository.findAll();
-        return ResponseEntity.ok().body(entity);
-    }
 	@Override
 	public ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input) throws RuntimeException{
 		BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
 		String status = "";
 		
-		System.out.println(input.getStatus_order());
 		Date date = new Date();
 		switch (input.getStatus_order()){
 	        case "Xác nhận":
@@ -157,19 +150,11 @@ public class BillServiceImpl implements BillService{
 	}
 
     @Override
-    public ResponseEntity<Page<BillDto>> getDone(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
-        if (known.equals("up")){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<BillDto> result = this.repository.findByDone(pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<BillDto> result = this.repository.findByDone(pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }
+    public ResponseEntity<Page<BillDto>> getByStatus(boolean pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
+        Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+        Page<BillDto> result = this.repository.findByStatus(pay, order, pageable).map(mapper :: entityToDto);
+        return ResponseEntity.ok().body(result);
     }
-
 
 }
