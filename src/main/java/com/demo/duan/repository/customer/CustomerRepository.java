@@ -17,4 +17,5 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity , Integ
     Integer countAllByEmail(String email);
 
     Optional<CustomerEntity> findByEmail(String email);
+    Optional<CustomerEntity> findByEmailAndStatusIsFalse(String email);
 }

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -33,7 +33,7 @@ public class ProductUpdateInput {
 
     private String trait;
 
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     private Integer price_release;
 

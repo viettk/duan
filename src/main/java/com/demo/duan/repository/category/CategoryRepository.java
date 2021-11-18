@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,4 +14,8 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("select count(c) from CategoryEntity c where c.name= :name and c.parent_name= :parent_name")
     long countCategory(@Param("name") String name, @Param("parent_name") String paren_name);
+
+    @Query("select distinct(c.parent_name) from CategoryEntity c")
+    List<String> findParent();
+
 }

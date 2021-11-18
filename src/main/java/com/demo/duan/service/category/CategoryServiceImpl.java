@@ -9,6 +9,9 @@ import com.demo.duan.service.category.param.CategoryParam;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -55,5 +58,20 @@ public class CategoryServiceImpl implements CategoryService{
         repository.save(entity);
 
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<String>> findParent() {
+        List<String> lstEntities = repository.findParent();
+        return ResponseEntity.ok().body(lstEntities);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<CategoryDto>> getAll() {
+        List<CategoryEntity> entities = repository.findAll();
+        List<CategoryDto> dtos = mapper.EntitiesToDtos(entities);
+        return ResponseEntity.ok().body(dtos);
     }
 }

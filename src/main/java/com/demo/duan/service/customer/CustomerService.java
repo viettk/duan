@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface CustomerService {
     /* Khách hàng đăng kí */
-    public ResponseEntity<CustomerDto> create(CustomerInput input);
+    public ResponseEntity<Object> create(CustomerInput input);
 
     /* Khách hàng đổi mật khẩu */
     public ResponseEntity<CustomerDto> update(CustomerInput input);

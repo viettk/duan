@@ -10,12 +10,15 @@ import com.demo.duan.service.customer.input.CustomerInput;
 import com.demo.duan.service.customer.param.CustomerMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -29,22 +32,25 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     @Transactional
-    public ResponseEntity<CustomerDto> create(CustomerInput input) {
+    public ResponseEntity<Object> create(CustomerInput input) {
+        Map<String, String> errors = new HashMap<>();
         /* Kiểm tra email đã tồn tại hay chưa */
-        Integer count = repository.countAllByEmail(input.getEmail());
-        if(count > 0){
-            throw new RuntimeException("Email đã tồn tại");
+        if(repository.findByEmail(input.getEmail()).isPresent()){
+            errors.put("email", "Email đã tồn tại");
         }
-
         /* Kiểm tra nhập lại mật khẩu */
         if(!input.getPassword().equals(input.getRepeatPassword())){
-            throw new RuntimeException("Mật khẩu không khớp nhau");
+//          throw new RuntimeException("Mật khẩu không khớp nhau")
+            errors.put("repeatPassword", "Mật khẩu không khớp");
         }
 
         /* Xác thực địa chỉ Email(không đầy đủ: chỉ kiểm tra tên miền) */
         boolean valid = EmailValidator.getInstance().isValid(input.getEmail());
         if(valid == false){
-            throw new RuntimeException("Email không tồn tại");
+            errors.put("email", "Email không đúng định dạng");
+        }
+        if(!errors.isEmpty()){
+            return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
         }
 
         /* Gửi email, nếu ko đc -> email ko tồn tại */

@@ -33,13 +33,17 @@ public interface ProductService {
 
     ResponseEntity<ProductDto> getOne(Integer id);
 
-    ResponseEntity<ProductDto> createProduct(String folder, ProductCreateInput input,  Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
+    ResponseEntity<Integer> createProduct(ProductCreateInput input);
+
+    ResponseEntity<ProductDto> insertImage(Integer id,String folder, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
 
     ResponseEntity<ProductDto> updateProduct(String folder, Integer id, ProductUpdateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
 
-    ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param , Pageable page);
+    ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page);
 
     ResponseEntity<List<ProductDto>> hideProduct(Integer[] ids);
 
     ResponseEntity<List<ProductDto>> presentProduct(Integer[] ids);
+
+    ResponseEntity<ProductDto> hiddenOneProduct(Integer id);
 }

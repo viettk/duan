@@ -1,12 +1,15 @@
 package com.demo.duan.service.product.input;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.Optional;
 
 @Setter
 @Getter
@@ -17,19 +20,15 @@ public class ProductCreateInput {
     @NotBlank(message = "Không được để trống tên sản phẩm")
     private String name;
 
-    @NotNull(message = "Không được để trống trạng thái")
     private boolean status;
-
-    @NotNull(message = "Không được để trống số lượng sản phẩm")
-    private Integer number;
 
     @Positive(message = "Giá sản phẩm phải > 0 ")
     private BigDecimal price;
 
-    @NotNull(message = "Không được để trống miêu tả sản phẩm")
+    @NotBlank(message = "Không được để trống miêu tả sản phẩm")
     private String describe;
 
-    private Date createDate;
+    private LocalDate createDate = LocalDate.now();
 
 //    @NotEmpty(message = "Không được để trống ảnh chính sản phẩm")
 
@@ -37,7 +36,7 @@ public class ProductCreateInput {
 
     private String trait;
 
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     private Integer price_release;
 

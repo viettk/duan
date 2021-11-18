@@ -12,7 +12,7 @@ import java.util.Date;
 public class ProductParam {
     private Integer id;
     private Integer categoryId;
-
+    private String categoryName;
     private String name;
 
     private BigDecimal price;
