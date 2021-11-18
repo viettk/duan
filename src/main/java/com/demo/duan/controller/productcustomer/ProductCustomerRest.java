@@ -47,7 +47,7 @@ public class ProductCustomerRest {
         return service.getOne(id);
     }
 
-    @PutMapping("/return/{id}")
+    @GetMapping("/return/{id}")
     public ResponseEntity<ProductDto>returnProduct(
             @PathVariable("id") Integer id,
             @RequestParam("number") Integer number

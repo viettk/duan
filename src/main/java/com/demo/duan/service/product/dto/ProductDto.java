@@ -14,6 +14,9 @@ import java.util.List;
 @Getter
 @Setter
 public class ProductDto {
+
+    private Integer id;
+
     private CategoryDto category;
 
     private String name;

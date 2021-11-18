@@ -71,6 +71,7 @@ public class BillDetailServiceImpl implements BillDetailService{
     @Override
     public ResponseEntity<BillDetailDto> getById(Integer id) throws RuntimeException{
         BillDetailEntity entity = this.repository.findById(id).orElseThrow( () -> new RuntimeException("không tồn tại chi tiết hóa đơn này"));
+        System.out.println(entity.getId());
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
 }
