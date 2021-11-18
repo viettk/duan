@@ -20,4 +20,6 @@ public interface ProductService {
     ResponseEntity<Page<ProductDto>> searchByCategoryName(ProductParam param, Optional<String> field, String known);
 
     ResponseEntity<ProductDto> getOne(Integer id);
+
+    ResponseEntity<ProductDto> returnNumber(Integer id, Integer number);
 }

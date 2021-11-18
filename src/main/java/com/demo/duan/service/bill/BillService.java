@@ -4,7 +4,6 @@ import com.demo.duan.entity.BillEntity;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -22,5 +21,11 @@ public interface BillService {
     ResponseEntity<BillDto>update(BillInput input, Integer id);
 
     ResponseEntity<List<BillEntity>> demo();
+    
+    ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input);
+    
+    ResponseEntity<BillDto> updateStatusPay(Integer id);
+
+    ResponseEntity<Page<BillDto>>getDone(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
 
 }

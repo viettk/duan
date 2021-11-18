@@ -5,7 +5,6 @@ import com.demo.duan.service.product.dto.ProductDto;
 import com.demo.duan.service.product.param.ProductParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/home")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class ProductCustomerRest {
     private final ProductService service;
@@ -46,5 +45,13 @@ public class ProductCustomerRest {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getOne(@PathVariable Integer id){
         return service.getOne(id);
+    }
+
+    @PutMapping("/return/{id}")
+    public ResponseEntity<ProductDto>returnProduct(
+            @PathVariable("id") Integer id,
+            @RequestParam("number") Integer number
+    ){
+        return this.service.returnNumber(id, number);
     }
 }

@@ -29,6 +29,15 @@ public class BillRest {
     ){
         return this.service.getAll(limit,page,field,known);
     }
+    @GetMapping("/done")
+    public ResponseEntity<Page<BillDto>>getDone(
+            @RequestParam("_limit") Optional<Integer> limit,
+            @RequestParam("_page") Optional<Integer> page,
+            @RequestParam(value = "_field", required = false) Optional<String> field,
+            @RequestParam(value = "_known", required = false) String known
+    ){
+        return this.service.getDone(limit,page,field,known);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<BillDto>getOne(@PathVariable("id") Integer id){
         return this.service.getOne(id);
@@ -52,5 +61,18 @@ public class BillRest {
     @GetMapping("/demo")
     public ResponseEntity<List<BillEntity>>demo(){
         return this.service.demo();
+    }
+    @PutMapping("/status-order/{id}")
+    public ResponseEntity<BillDto>updateStatusOrder(
+    			@PathVariable("id") Integer id,
+    			@RequestBody BillInput input
+    		){
+    	return this.service.updateStatusOder(id, input);
+    }
+    @PostMapping("/status-pay/{id}")
+    public ResponseEntity<BillDto>updateStatusPay(
+    			@PathVariable("id") Integer id
+    		){
+    	return this.service.updateStatusPay(id);
     }
 }

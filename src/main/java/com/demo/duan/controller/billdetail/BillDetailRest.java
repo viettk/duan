@@ -17,16 +17,20 @@ import java.util.Optional;
 public class BillDetailRest {
     private final BillDetailService service;
 
-    @GetMapping("/get/{idbill}")
+    @GetMapping("/bill/{id}")
     public ResponseEntity<List<BillDetailDto>> getByBillId(
-            @PathVariable("idbill") Integer idBill,
+            @PathVariable("id") Integer idBill,
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
         return this.service.getByBill(idBill,field,known);
     }
 
-    @PutMapping("/update/{id}")
+    @GetMapping("/{id}")
+    public ResponseEntity<BillDetailDto>getById(@PathVariable("id") Integer id){
+        return this.service.getById(id);
+    }
+    @PutMapping("/{id}")
     public ResponseEntity<BillDetailDto>updateBillDetail(@PathVariable("id") Integer id, @RequestBody BillDetailInput input){
         return this.service.updateBillDetail(id, input);
     }

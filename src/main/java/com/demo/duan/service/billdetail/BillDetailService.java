@@ -15,4 +15,6 @@ public interface BillDetailService {
     ResponseEntity<List<BillDetailDto>>getByBill(Integer idBill, Optional<String> field, String known);
 
     ResponseEntity<BillDetailDto>updateBillDetail(Integer id, BillDetailInput input);
+
+    ResponseEntity<BillDetailDto>getById(Integer id);
 }
