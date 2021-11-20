@@ -111,9 +111,11 @@ public class BillServiceImpl implements BillService{
 
     @Override
     public ResponseEntity<List<Object>> getkhachhangmuanhiennhat(Integer month) {
-        List<Object> viewkh=  repository.thongkekhachhang(month);
-        return ResponseEntity.ok().body(viewkh);
+//        List<Object> viewkh=  repository.thongkekhachhang(month);
+//        return ResponseEntity.ok().body(viewkh);
+        return  null;
     }
+
 
     @Scheduled(cron="0 0 0 1 * ?")
     public void reloadId(int num){

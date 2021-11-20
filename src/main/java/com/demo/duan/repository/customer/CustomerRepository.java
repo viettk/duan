@@ -17,4 +17,6 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity , Integ
     Integer countAllByEmail(String email);
 
     Optional<CustomerEntity> findByEmail(String email);
+    @Query(value = "select  * from Customer" , nativeQuery = true)
+    Page<CustomerEntity> getAll(Pageable pageable);
 }
