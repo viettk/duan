@@ -2,11 +2,13 @@ package com.demo.duan.service.bill;
 
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
-import com.demo.duan.service.billdetail.input.BillDetailInput;
+import com.demo.duan.service.billdetail.dto.BillDetailDto;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 public interface BillService {
     public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input);
@@ -14,4 +16,20 @@ public interface BillService {
     public ResponseEntity<BillDto> createByCustomerNotLogin(BillInput input );
 
     public ResponseEntity<BillDto> updateByCustomer(Integer id ,BillInput input);
+
+    public ResponseEntity<Page<BillDto>> getCustomerId(String email, Optional<Integer> page, Optional<Integer> limit);
+
+    public ResponseEntity<List<BillDetailDto>> getBillDetailCustomer(Integer billId);
+
+    public Integer getDonHuy (Integer month, Integer year);
+
+    public Integer getDonTra (Integer month, Integer year);
+
+    public Integer getDonTc (Integer month, Integer year);
+
+    public Object sanPhambanchy(Integer month, Integer year);
+
+    public List<BigDecimal> thongkedoanhthu(Integer year);
+
+
 }

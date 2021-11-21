@@ -22,4 +22,6 @@ public interface StaffRepository extends JpaRepository<StaffEntity, Integer> {
     Page<StaffEntity> searchByParam(@Param("staff") StaffParam staff, Pageable pageable);
 
     Optional<StaffEntity>findByPhone(String phone);
+
+    Optional<StaffEntity> findByEmailAndStatusIsFalse(String email);
 }

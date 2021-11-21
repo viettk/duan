@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -34,10 +34,10 @@ public class DiscountEntity implements Serializable {
     private int number;
 
     @Column(name = "open_day")
-    private Date open_day;
+    private LocalDate open_day;
 
     @Column(name = "end_day")
-    private Date end_day;
+    private LocalDate end_day;
 
     @OneToMany(mappedBy = "discount")
     private List<BillEntity> bills;

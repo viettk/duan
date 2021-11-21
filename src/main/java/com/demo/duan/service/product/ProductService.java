@@ -17,7 +17,7 @@ public interface ProductService {
 
     ResponseEntity<Page<ProductDto>> searchByAdmin(ProductParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page);
 
-    ResponseEntity<Page<ProductDto>> searchNewArrival();
+    ResponseEntity<List<ProductDto>> searchNewArrival();
 
     ResponseEntity<Page<ProductDto>> searchBySHF();
 
@@ -51,4 +51,12 @@ public interface ProductService {
     ResponseEntity<List<ProductDto>> presentProduct(Integer[] ids);
 
     ResponseEntity<List<ProductDto>> findAll(String name);
+
+
+    //thống kê
+    ResponseEntity<List<ProductDto>> Thongketop5spbanchay();
+
+    ResponseEntity<List<ProductDto>> Thongketop5spbanchayTheoTime(Integer month, Integer year);
+
+    List<Integer> soLuongBan5spBanChay(Integer month, Integer year);
 }

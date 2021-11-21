@@ -57,7 +57,6 @@ public class BillDetailServiceImpl implements BillDetailService{
     @Override
     @Transactional
     public ResponseEntity<List<BillDetailDto>> createByCustomerNotLogin(Integer id, List<LocalStorageBillDetail> inputs) {
-
         for(LocalStorageBillDetail x : inputs){
             BillDetailInput input = new BillDetailInput();
             input.setNumber(x.getNumber());

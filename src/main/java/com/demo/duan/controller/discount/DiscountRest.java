@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/discount")
@@ -24,10 +25,14 @@ public class DiscountRest {
     private final DiscountRepository repository;
 
     @GetMapping
-    public ResponseEntity<Page<DiscountDto>> find(DiscountParam param, Pageable pageable){
-        DiscountEntity entity = repository.getById(1);
-        System.out.println(entity.getName());
-        return service.find(param, pageable);
+    public ResponseEntity<Page<DiscountDto>> find(DiscountParam param, Optional<Integer> limit,
+                                                  Optional<Integer> page){
+        return service.find(param, limit, page);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DiscountDto> get(@PathVariable Integer id){
+        return service.get(id);
     }
 
     @PostMapping
@@ -35,7 +40,7 @@ public class DiscountRest {
         return service.create(input);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<DiscountDto> update(@PathVariable Integer id, @Valid @RequestBody DiscountInput input){
         return service.update(id, input);
     }

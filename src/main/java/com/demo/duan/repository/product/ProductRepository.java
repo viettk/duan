@@ -16,8 +16,12 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
-    @Query("from ProductEntity p where p.status = true order by p.id desc")
-    Page<ProductEntity> searchNewArrival(Pageable pageable);
+    @Query(nativeQuery = true,
+            value = "select top 20 p.* " +
+                    "FROM Product  p " +
+                    "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price,p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
+                    "ORDER BY p.id desc ")
+    List<ProductEntity> searchNewArrival();
 
 
     /* select theo danh mục cha: SHF */
@@ -94,4 +98,23 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     /* Cho phiếu nhập chi tiết */
     @Query("from ProductEntity p where :name is null or p.name like %:name%")
     List<ProductEntity> search(String name);
+
+    @Query(nativeQuery = true,
+            value = "SELECT TOP 5 p.* " +
+                    "FROM Product  p join Bill_detail bd on p.id = bd.product_id " +
+                    "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price,p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
+                    "ORDER BY SUM(bd.number) desc")
+    List<ProductEntity> Thongketop5spbanchay();
+
+    @Query(nativeQuery = true,
+            value = "SELECT TOP 5 p.* FROM Product  p join Bill_detail bd on p.id = bd.product_id join Bill b on b.id = bd.bill_id where MONTH(b.create_date) = :month and YEAR(b.create_date) = :year " +
+                    "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price,p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
+                    "ORDER BY SUM(bd.number) desc ")
+    List<ProductEntity> Thongketop5spbanchayTheoThangNam(Integer month, Integer year);
+
+    @Query(nativeQuery = true,
+            value = "SELECT TOP 5 sum(bd.number) FROM Product  p join Bill_detail bd on p.id = bd.product_id join Bill b on b.id = bd.bill_id where MONTH(b.create_date) = :month and YEAR(b.create_date) = :year " +
+                    "GROUP BY  p.id, p.photo, p.name\n" +
+                    "ORDER BY SUM(bd.number) desc ")
+    List<Integer> soLuongBan5spBanChay(Integer month, Integer year);
 }

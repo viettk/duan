@@ -16,4 +16,6 @@ public interface AdressService {
     public ResponseEntity<AdressDto> update(Integer id , AdressInput input);
 
     public ResponseEntity<AdressDto> delete(Integer id);
+
+    public ResponseEntity<AdressDto> getMacdinh(Integer customerId);
 }

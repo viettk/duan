@@ -11,10 +11,4 @@ public class DiscountParam {
     private String name;
 
     private int valueDiscount;
-
-    private int number;
-
-    private Date open_day;
-
-    private Date end_day;
 }

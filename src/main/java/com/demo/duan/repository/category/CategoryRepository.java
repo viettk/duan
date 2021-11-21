@@ -28,4 +28,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("from CategoryEntity c where c.parent_name = 'Model Kit' ")
     List<CategoryEntity> getAllCategoryKit();
+
+    @Query("from CategoryEntity c where c.parent_name = :parentName ")
+    List<CategoryEntity> getAllCategoryByparent(String parentName);
 }

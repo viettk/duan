@@ -2,6 +2,7 @@ package com.demo.duan.service.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,15 +23,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserService customUserDetailsService;
-
+    @Value("${secrert.login}")
+    private String JWT_SECRET;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+
             // Lấy jwt từ request
             String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt,JWT_SECRET)) {
                 // Lấy id user từ chuỗi jwt
-                String email = tokenProvider.getUserIdFromJWT(jwt);
+                String email = tokenProvider.getUserIdFromJWT(jwt,JWT_SECRET);
                 // Lấy thông tin người dùng từ email
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
                 if(userDetails != null) {
@@ -48,6 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+        System.out.println(bearerToken);
         // Kiểm tra xem header Authorization có chứa thông tin jwt không
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);

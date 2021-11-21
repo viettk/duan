@@ -2,6 +2,7 @@ package com.demo.duan.repository.adress;
 
 import com.demo.duan.entity.AdressEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,4 +14,7 @@ public interface AdressRepository extends JpaRepository<AdressEntity, Integer> {
     long countAllByCustomer_Id(Integer customer_id);
 
     List<AdressEntity> findAllByCustomer_Id(Integer customer_id);
+
+    @Query("from AdressEntity  a where a.status = true and a.customer.id = :customerId")
+    AdressEntity findStatus(Integer customerId);
 }

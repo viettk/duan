@@ -3,7 +3,7 @@ package com.demo.duan.service.discount.input;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ public class DiscountInput {
 
     private int number;
 
-    private Date open_day;
+    private LocalDate open_day;
 
-    private Date end_day;
+    private LocalDate end_day;
 }

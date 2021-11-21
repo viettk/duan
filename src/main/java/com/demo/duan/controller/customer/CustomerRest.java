@@ -23,7 +23,7 @@ public class CustomerRest {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<CustomerDto> create(@Valid @RequestBody CustomerInput input){
+    public ResponseEntity<Object> create(@Valid @RequestBody CustomerInput input){
         return service.create(input);
     }
 

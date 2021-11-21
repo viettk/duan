@@ -117,4 +117,10 @@ public class AdressServiceImpl implements AdressService {
         repository.delete(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
+
+    @Override
+    public ResponseEntity<AdressDto> getMacdinh(Integer customerId) {
+        AdressEntity entity = repository.findStatus(customerId);
+        return ResponseEntity.ok().body(mapper.entityToDto(entity));
+    }
 }

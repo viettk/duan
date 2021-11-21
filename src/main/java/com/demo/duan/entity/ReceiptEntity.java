@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -33,7 +33,7 @@ public class ReceiptEntity implements Serializable {
     private BigDecimal total;
 
     @Column(name="create_date")
-    private Date create_date;
+    private LocalDate create_date;
 
     @Column(name="describe")
     private String describe;

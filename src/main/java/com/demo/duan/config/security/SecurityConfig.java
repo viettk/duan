@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -33,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public BCryptPasswordEncoder getPasswordEncoder() {
+    public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -45,9 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/login").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
+                .antMatchers("/api/**").hasAuthority("ROLE_USER")
                 .anyRequest().permitAll() // Tất cả các request khác đều cần phải xác thực mới được truy cập
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // Thêm một lớp Filter kiểm tra jwt

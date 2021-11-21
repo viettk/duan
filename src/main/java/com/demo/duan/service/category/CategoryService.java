@@ -25,4 +25,6 @@ public interface CategoryService {
     public ResponseEntity<List<CategoryDto>> getAll();
 
     public ResponseEntity<List<CategoryDto>> getKit();
+
+    public ResponseEntity<List<CategoryDto>> getCatebyParen(String parentname);
 }

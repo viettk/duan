@@ -8,6 +8,8 @@ import java.util.Date;
 @Getter
 @Setter
 public class CustomerDto {
+    private Integer id;
+
     private String email;
 
     private String name;

@@ -60,4 +60,9 @@ public class CategoryRest {
         return service.getKit();
     }
 
+    @GetMapping("/timtheocha")
+    public ResponseEntity<List<CategoryDto>> getCatebyParen(String parentName){
+        return service.getCatebyParen(parentName);
+    }
+
 }

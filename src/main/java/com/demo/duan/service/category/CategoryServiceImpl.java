@@ -105,4 +105,12 @@ public class CategoryServiceImpl implements CategoryService{
         List<CategoryDto> dtos = mapper.EntitiesToDtos(entities);
         return ResponseEntity.ok().body(dtos);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<CategoryDto>> getCatebyParen(String parentname) {
+        List<CategoryEntity> lstenEntities = repository.getAllCategoryByparent(parentname);
+        List<CategoryDto> dtos = mapper.EntitiesToDtos(lstenEntities);
+        return ResponseEntity.ok().body(dtos);
+    }
 }

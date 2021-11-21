@@ -23,15 +23,13 @@ public class BillDto {
 
     private BigDecimal total;
 
-    private boolean status_pay;
+    private String status_pay;
 
     private String address;
 
     private String city;
 
     private String district;
-
-    private String wards;
 
     private String status_order;
 
@@ -42,4 +40,6 @@ public class BillDto {
     private String themb;
 
     private String themc;
+
+    private String id_code;
 }

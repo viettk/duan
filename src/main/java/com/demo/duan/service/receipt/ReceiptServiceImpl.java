@@ -72,7 +72,7 @@ public class  ReceiptServiceImpl implements ReceiptService {
         ReceiptEntity entity = mapper.inputToEntity(input);
         repository.saveAndFlush(entity);
         entity.setStaff(staff);
-        entity.setCreate_date(day_date);
+        entity.setCreate_date(LocalDate.now());
         entity.setId_code(createCodeId(entity.getId()));
         entity.setTotal(BigDecimal.ZERO);
         repository.save(entity);
@@ -82,15 +82,12 @@ public class  ReceiptServiceImpl implements ReceiptService {
     @Override
     @Transactional
     public ResponseEntity<ReceiptDto> update(Integer id, ReceiptInput input) {
-        Date day_date = new Date();
+        LocalDate day_date = LocalDate.now();
         StaffEntity staff = staffRepository.findById(input.getStaffId()).get();
         ReceiptEntity entity = repository.getById(id);
 
-        // tạo thời gian
-        long millisIn48Hours = 1000 * 60 * 60 * 48 ;
-
         // kiểm tra thời gian xem đã quá 48h chưa
-        if (day_date.getTime() < entity.getCreate_date().getTime() +millisIn48Hours){
+        if(day_date.isAfter(entity.getCreate_date().plusDays(2)) == false){
             entity.setStaff(staff);
             entity.setCreate_date(day_date);
             mapper.inputToEntity(input , entity);

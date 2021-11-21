@@ -70,9 +70,9 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public ResponseEntity<Page<ProductDto>> searchNewArrival() {
-        Pageable pageable = PageRequest.of(0,10);
-        Page<ProductDto> dto = this.productRepository.searchNewArrival(pageable).map(mapper::entityToDto);
+    public ResponseEntity<List<ProductDto>> searchNewArrival() {
+        List<ProductEntity> entities = this.productRepository.searchNewArrival();
+        List<ProductDto> dto = mapper.EntitiesToDtos(entities);
         return ResponseEntity.ok().body(dto);
     }
 
@@ -329,6 +329,28 @@ public class ProductServiceImpl implements ProductService{
         List<ProductEntity> lstenEntities = productRepository.search(name);
         List<ProductDto> lstProductDtos = mapper.EntitiesToDtos(lstenEntities);
         return ResponseEntity.ok().body(lstProductDtos);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<ProductDto>> Thongketop5spbanchay() {
+        List<ProductEntity> lst = productRepository.Thongketop5spbanchay();
+        List<ProductDto> dtos = mapper.EntitiesToDtos(lst);
+        return ResponseEntity.ok().body(dtos);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<ProductDto>> Thongketop5spbanchayTheoTime(Integer month, Integer year) {
+        List<ProductEntity> entityList = productRepository.Thongketop5spbanchayTheoThangNam(month, year);
+        List<ProductDto> productDtos = mapper.EntitiesToDtos(entityList);
+        return ResponseEntity.ok().body(productDtos);
+    }
+
+    @Override
+    public List<Integer> soLuongBan5spBanChay(Integer month, Integer year) {
+        List<Integer> integers = productRepository.soLuongBan5spBanChay(month, year);
+        return integers;
     }
 
 

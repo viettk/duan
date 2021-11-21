@@ -32,9 +32,15 @@ public interface CartDetailRepository extends JpaRepository<CartDetailEntity, In
     @Query("select sum(cd.number) from CartDetailEntity cd where cd.cart.id = :cartId")
     Integer checkNumberOfCartDetail(@Param("cartId") Integer cartId);
 
+    @Query("select count(cd.number) from CartDetailEntity cd where cd.cart.id = :cartId")
+    Integer coutofCart(@Param("cartId") Integer cartId);
+
     void deleteAllByCart_Id(Integer cartId);
 
     @Query("select sum(cd.product.weight) from CartDetailEntity  cd where cd.cart.id = :cartId")
     Float tinhTongCanNangCart(@Param("cartId") Integer cartId);
+
+    @Query("select count(cd.id) from CartDetailEntity  cd where cd.cart.id = :cartid")
+    Integer totalItemsCart(@Param("cartid") Integer cartid );
 
 }

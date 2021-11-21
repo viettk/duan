@@ -60,4 +60,13 @@ public class CartDetailRest {
         return service.getAllWeight(cartId);
     }
 
+    @GetMapping("/totalItem")
+    public Integer getTotalItem(Integer id){
+        return service.getTotalItems(id);
+    }
+
+    @GetMapping("/soluongtronggio")
+    public Integer getSoluongtronggio(Integer idcustomer){
+        return service.soluongtronggio(idcustomer);
+    };
 }

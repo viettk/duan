@@ -19,10 +19,6 @@ public interface DiscountRepository extends JpaRepository<DiscountEntity, Intege
     long countAllByName(String name);
 
     @Query("from DiscountEntity d where (:#{#param.name} is null or d.name like %:#{#param.name}%)" +
-            "and (:#{#param.number} is null or d.number >= :#{#param.number})" +
             "and (:#{#param.valueDiscount} is null or d.valueDiscount >= :#{#param.valueDiscount})")
-//    +
-//            "and (:#{#param.open_day} is null or d.open_day = :#{#param.open_day})" +
-//            "and (:#{#param.end_day} is null or d.end_day like :#{#param.end_day})")
     Page<DiscountEntity> find(@Param("param")DiscountParam param, Pageable pageable);
 }

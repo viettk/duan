@@ -14,8 +14,14 @@ import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.mapper.BillMapper;
 import com.demo.duan.service.billdetail.BillDetailService;
+import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
+import com.demo.duan.service.billdetail.mapper.BillDetailMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,9 +31,7 @@ import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -52,6 +56,8 @@ public class BillServiceImpl implements BillService{
     private final AdressRepository adressRepository;
 
     private final BillDetailRepository billDetailRepository;
+
+    private final BillDetailMapper billDetailMapper;
 
     @Override
     @Transactional
@@ -164,6 +170,60 @@ public class BillServiceImpl implements BillService{
         repository.save(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<BillDto>> getCustomerId(String email, Optional<Integer> page, Optional<Integer> limit) {
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), Sort.by(Sort.Direction.DESC, "id"));
+        Page<BillDto> dtos = repository.getBillCustomer(email, pageable).map(mapper::entityToDto);
+        return ResponseEntity.ok().body(dtos);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<BillDetailDto>> getBillDetailCustomer(Integer billId) {
+        List<BillDetailEntity> entities = billDetailRepository.getListByCustomer(billId);
+        List<BillDetailDto> dtos = billDetailMapper.EntitiesToDtos(entities);
+        return ResponseEntity.ok().body(dtos);
+    }
+
+    @Override
+    @Transactional
+    public Integer getDonHuy(Integer month, Integer year) {
+        return repository.donhuy(month, year);
+    }
+
+    @Override
+    @Transactional
+    public Integer getDonTra(Integer month, Integer year) {
+        return repository.dontra(month, year);
+    }
+
+    @Override
+    @Transactional
+    public Integer getDonTc(Integer month, Integer year) {
+        return repository.dontc(month, year);
+    }
+
+    @Override
+    public Object sanPhambanchy(Integer month, Integer year) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public List<BigDecimal> thongkedoanhthu(Integer year) {
+        List<BigDecimal> lst = new ArrayList<>();
+        for(int i =0; i<= 12 ;i++){
+            BigDecimal num = repository.thongkedoanhthu(i, year);
+            if(num == null){
+                num = BigDecimal.ZERO;
+            }
+            lst.add(num);
+        }
+        return lst;
+    }
+
 
     @Scheduled(cron="0 0 0 1 * ?")
     public void reloadId(int num){

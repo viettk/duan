@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,7 +20,7 @@ public class ProductCustomerRest {
     private final ProductService service;
 
     @GetMapping("/new-arrival")
-    public ResponseEntity<Page<ProductDto>> searchNewArrival(){
+    public ResponseEntity<List<ProductDto>> searchNewArrival(){
         return service.searchNewArrival();
     }
 
@@ -76,5 +77,10 @@ public class ProductCustomerRest {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getOne(@PathVariable Integer id){
         return service.getOne(id);
+    }
+
+    @GetMapping("/top5sp")
+    public ResponseEntity<List<ProductDto>> getTop5sp(){
+        return service.Thongketop5spbanchay();
     }
 }

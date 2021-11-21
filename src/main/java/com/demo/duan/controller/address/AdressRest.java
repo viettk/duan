@@ -42,4 +42,9 @@ public class AdressRest {
     public ResponseEntity<AdressDto> delete(@PathVariable Integer id){
         return service.delete(id);
     }
+
+    @GetMapping("/mac-dinh")
+    public ResponseEntity<AdressDto> get(Integer customerId){
+        return service.getMacdinh(customerId);
+    }
 }

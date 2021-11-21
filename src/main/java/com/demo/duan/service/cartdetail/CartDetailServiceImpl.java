@@ -1,11 +1,11 @@
 package com.demo.duan.service.cartdetail;
 
-import com.demo.duan.entity.CartDetailEntity;
-import com.demo.duan.entity.CartEntity;
-import com.demo.duan.entity.ProductEntity;
+import com.demo.duan.entity.*;
 import com.demo.duan.repository.cart.CartRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.repository.product.ProductRepository;
+import com.demo.duan.service.billdetail.dto.BillDetailDto;
+import com.demo.duan.service.billdetail.input.BillDetailInput;
 import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.input.CartDetailInput;
 import com.demo.duan.service.cartdetail.input.CartDetalInputDelete;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -94,10 +95,7 @@ public class CartDetailServiceImpl implements CartDetailService{
             Integer checkNumberOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
             if(checkNumberOfCartDetail == null){
                 checkNumberOfCartDetail =0;
-            } else if(checkNumberOfCartDetail > 15){
-                throw new RuntimeException("Giỏ hàng không được quá 15 sản phẩm");
             }
-
 
             /* input -> entity */
             CartDetailEntity entity = mapper.inputToEntity(input);
@@ -118,12 +116,6 @@ public class CartDetailServiceImpl implements CartDetailService{
     @Override
     @Transactional
     public ResponseEntity<CartDetailDto> updateNumberUp(CartDetailInput input) {
-
-        int checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
-        if(checkNumOfCartDetail >=15){
-            throw new RuntimeException("Số lượng trong giỏ hàng không vượt quá 15 sản phẩm");
-        }
-
 
         CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
         Integer newNumber = entity.getNumber() + 1;
@@ -179,11 +171,11 @@ public class CartDetailServiceImpl implements CartDetailService{
             throw new RuntimeException("Sản phẩm trong kho không đủ");
         }
 
-        /* Kiểm tra số lượng trong giỏ phải < 15 */
-        int checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
-        if(checkNumOfCartDetail >=15){
-            throw new RuntimeException("Số lượng trong giỏ hàng không vượt quá 15 sản phẩm");
-        }
+//        /* Kiểm tra số lượng trong giỏ phải < 15 */
+//        int checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
+//        if(checkNumOfCartDetail >=15){
+//            throw new RuntimeException("Số lượng trong giỏ hàng không vượt quá 15 sản phẩm");
+//        }
 
         /* Nếu số lượng <=0 thì xóa sản phẩm khỏi giỏ hàng */
         if(input.getNumber() <= 0){
@@ -244,5 +236,48 @@ public class CartDetailServiceImpl implements CartDetailService{
     public Float getAllWeight(Integer cartId) {
         Float sumWeight = repository.tinhTongCanNangCart(cartId);
         return sumWeight;
+    }
+
+    @Override
+    public Integer getTotalItems(Integer cartid) {
+        Integer count = repository.totalItemsCart(cartid);
+        return count;
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<CartDetailDto>> createByCustomerNotLogin(Integer id, List<LocalStorageCartDetail> inputs) {
+        for(LocalStorageCartDetail x : inputs){
+            CartDetailInput input = new CartDetailInput();
+            input.setNumber(x.getNumber());
+            CartEntity billEntity = cartRepository.getById(id);
+
+            CartDetailEntity entity = mapper.inputToEntity(input);
+
+            ProductEntity productEntity = new ProductEntity();
+            productEntity.setId(x.getProduct_id());
+            entity.setProduct(productEntity);
+
+            entity.setCart(billEntity);
+            entity.setTotal(x.getTotal());
+            entity.setNumber(x.getNumber());
+            repository.save(entity);
+
+            BigDecimal totalOfBill =  totalOfCart(billEntity.getId());
+            billEntity.setTotal(totalOfBill);
+            cartRepository.save(billEntity);
+        }
+        List<CartDetailEntity> lst = new ArrayList<>();
+        List<CartDetailDto> lstDto = mapper.EntitiesToDtos(lst);
+        return ResponseEntity.ok().body(lstDto);
+    }
+
+    @Override
+    @Transactional
+    public Integer soluongtronggio(Integer idCutsomer) {
+        CartEntity entity = cartRepository.findByCustomer_Id(idCutsomer)
+                .orElseThrow(() -> new RuntimeException("Bạn chưa đăng ký tài khoản") );
+        Integer count  = repository.coutofCart(entity.getId());
+        return count;
     }
 }

@@ -1,5 +1,6 @@
 package com.demo.duan.service.cartdetail;
 
+import com.demo.duan.entity.LocalStorageCartDetail;
 import com.demo.duan.entity.ProductEntity;
 import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.input.CartDetailInput;
@@ -42,4 +43,10 @@ public interface CartDetailService {
     /* lấy thông tin cân nặng của sản phẩm trong giỏ hàng */
     public Float getAllWeight(Integer cartId);
 
+    /* lấy tổng số lượng sp trong đơn hàng */
+    public Integer getTotalItems(Integer cartid);
+
+    public ResponseEntity<List<CartDetailDto>> createByCustomerNotLogin(Integer id , List<LocalStorageCartDetail> input);
+
+    public Integer soluongtronggio(Integer idCusomer);
 }
