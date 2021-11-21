@@ -31,4 +31,9 @@ public interface BillRepository extends JpaRepository<BillEntity, Integer> {
     @Query ( value="SELECT sum(hd.total) FROM Bill hd WHERE MONTH(hd.create_date) = :month and year(hd.create_date) = :year" , nativeQuery = true)
     BigDecimal thongkedoanhthu(@Param("month")Integer month, Integer year);
 
+    @Query("select b from BillEntity b where b.status_pay = :pay and b.status_order = :order")
+    Page<BillEntity>findByStatus(@Param("pay") String pay, @Param("order") String order, Pageable pageable);
+
+    Page<BillEntity>findByEmail(String email, Pageable pageable);
+
 }

@@ -59,4 +59,6 @@ public interface ProductService {
     ResponseEntity<List<ProductDto>> Thongketop5spbanchayTheoTime(Integer month, Integer year);
 
     List<Integer> soLuongBan5spBanChay(Integer month, Integer year);
+
+    ResponseEntity<ProductDto> returnNumber(Integer id, Integer number);
 }

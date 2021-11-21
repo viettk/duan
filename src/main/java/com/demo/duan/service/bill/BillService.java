@@ -31,5 +31,19 @@ public interface BillService {
 
     public List<BigDecimal> thongkedoanhthu(Integer year);
 
+    //bill admin
 
+    ResponseEntity<Page<BillDto>>getAll(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+
+    ResponseEntity<BillDto>getOne(Integer id);
+
+    ResponseEntity<BillDto>update(BillInput input, Integer id);
+
+    ResponseEntity<Page<BillDto>>getByEmail(String name, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+
+    ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input);
+
+    ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input);
+
+    ResponseEntity<Page<BillDto>>getByStatus(String pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
 }
