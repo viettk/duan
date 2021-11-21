@@ -16,9 +16,8 @@ public interface StaffRepository extends JpaRepository<StaffEntity, Integer> {
     Optional<StaffEntity>findByEmail(String email);
 
     //tìm kiếm theo tên, email.
-    @Query("from StaffEntity s where (:#{#staff.name} is null or s.name like %:#{#staff.name}%)" +
-            "and (:#{#staff.email} is null or s.email like %:#{#staff.email}%)"
-    )
+    @Query("select s from ProductEntity s where (:#{#staff.name} is null or s.name like :#{#staff.name})" +
+            "and (:#{#staff.email} is null or s.price = :#{#staff.email})")
     Page<StaffEntity>searchByParam(@Param("staff")StaffParam staff, Pageable pageable);
 
     Optional<StaffEntity>findByPhone(String phone);
