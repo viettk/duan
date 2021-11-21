@@ -11,6 +11,9 @@ import java.util.Optional;
 
 public interface BillDetailService {
     public ResponseEntity<List<BillDetailDto>> createByCustomer(BillDetailInput input, Integer cartId);
+    public  ResponseEntity<BillDetailDto> update(BillDetailInput input , Integer id);
+    public  void deleteById(Integer id);
+
 
     ResponseEntity<List<BillDetailDto>>getByBill(Integer idBill, Optional<String> field, String known);
 

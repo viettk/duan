@@ -10,12 +10,17 @@ import com.demo.duan.service.customer.input.CustomerInput;
 import com.demo.duan.service.customer.param.CustomerMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -92,6 +97,28 @@ public class CustomerServiceImpl implements CustomerService{
     public ResponseEntity<CustomerDto> getEmail(String email) {
         CustomerEntity entity = repository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Email không tồn tại"));
+        return ResponseEntity.ok().body(mapper.entityToDto(entity));
+    }
+
+
+
+    @Override
+    public ResponseEntity<Page<CustomerDto>> getAll(Pageable pageable, Optional<Integer> limit, Optional<Integer> page) {
+         pageable = PageRequest.of(page.orElse(0), limit.orElse(5), Sort.by(Sort.Direction.DESC, "id"));
+        Page<CustomerDto> entity = repository.getAll(pageable).map(mapper :: entityToDto);
+        return ResponseEntity.ok().body(entity);
+    }
+
+    @Override
+    public ResponseEntity<CustomerDto> updateStatus(Integer id) {
+        CustomerEntity entity = repository.getById(id);
+        Boolean status = entity.isStatus();
+        if(status == true){
+            entity.setStatus(false);
+        }else {
+            entity.setStatus(true);
+        }
+        repository.save(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 }
