@@ -7,21 +7,27 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/bill/billDetail")
-@CrossOrigin(origins = "*")
 @AllArgsConstructor
-public class BilldetailRest {
+@RequestMapping("/bill-detail")
+public class BillDetailRest {
     private final BillDetailService service;
-    @PutMapping("/{id}")
-    public ResponseEntity<BillDetailDto> update(@PathVariable Integer id , @Valid @RequestBody BillDetailInput input){
-        return  service.update(input, id);
+
+    @GetMapping("/get/{idbill}")
+    public ResponseEntity<List<BillDetailDto>> getByBillId(
+            @PathVariable("idbill") Integer idBill,
+            @RequestParam(value = "_field", required = false) Optional<String> field,
+            @RequestParam(value = "_known", required = false) String known
+    ){
+        return this.service.getByBill(idBill,field,known);
     }
-    @DeleteMapping("/{id}")
-    private void delete(@PathVariable Integer id){
-        service.deleteById(id);
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<BillDetailDto>updateBillDetail(@PathVariable("id") Integer id, @RequestBody BillDetailInput input){
+        return this.service.updateBillDetail(id, input);
     }
 }
