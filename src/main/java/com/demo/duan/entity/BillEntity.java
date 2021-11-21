@@ -44,7 +44,7 @@ public class BillEntity implements Serializable {
     private BigDecimal total;
 
     @Column(name="status_pay")
-    private boolean status_pay;
+    private String status_pay;
 
     @Column(name="address")
     private String address;
@@ -76,7 +76,7 @@ public class BillEntity implements Serializable {
     @ManyToOne @JoinColumn(name = "staff_id")
     private StaffEntity staff;
 
-    @OneToOne @JoinColumn(name = "discount_id")
+    @ManyToOne @JoinColumn(name = "discount_id")
     private DiscountEntity discount;
 
     @OneToMany(mappedBy = "bill")

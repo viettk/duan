@@ -25,7 +25,7 @@ public class BillInput {
     @Positive(message = "SĐT phải là chữ số")
     private String phone;
 
-    private boolean status_pay;
+    private String status_pay;
 
     @NotNull(message = "Không được bỏ trống!")
     private String address;
@@ -43,6 +43,8 @@ public class BillInput {
     private String themb;
 
     private String themc;
+
+    private String id_code;
 
 //    private Integer staff;
 }

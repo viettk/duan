@@ -9,6 +9,9 @@ import java.util.Date;
 @Getter
 @Setter
 public class BillDto {
+
+    private Integer id;
+
     private String email;
 
     private Date create_date;
@@ -21,7 +24,7 @@ public class BillDto {
 
     private BigDecimal total;
 
-    private boolean status_pay;
+    private String status_pay;
 
     private String address;
 
@@ -38,4 +41,6 @@ public class BillDto {
     private String themb;
 
     private String themc;
+
+    private String id_code;
 }
