@@ -112,21 +112,27 @@ public class BillServiceImpl implements BillService{
 	        case "Xác nhận":
 	            status = "Đã xác nhận";
 	            break;
-	        case "Hủy":
-	            status = "Đã hủy";
-	            break;
 	        case "Chuẩn bị hàng":
 	            status = "Đang chuẩn bị hàng";
 	            break;
 	        case "Giao hàng":
 	            status = "Đang giao hàng";
 	            break;
-	        case "Hủy nhận hàng":
-	            status = "Hủy nhận hàng";
+	        case "Hoàn thành":
+	            status = "Hoàn thành";
 	            break;
-	        case "Đã nhận hàng":
-	            status = "Giao hàng thành công";
-	            break;
+            case "Thất bại":
+                status = "Thất bại";
+                break;
+            case "Đã hủy":
+                status = "Đã hủy";
+                break;
+            case "Hoàn trả":
+                status = "Đang hoàn trả";
+                break;
+            case "Đã hoàn trả":
+                status = "Đã hoàn trả";
+                break;
 	        default:
 	            throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
 	    }
@@ -136,21 +142,30 @@ public class BillServiceImpl implements BillService{
 		return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
 	}
 	@Override
-	public ResponseEntity<BillDto> updateStatusPay(Integer id) {
+	public ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input) {
 		BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
-		Date date = new Date();
-		if (entity.isStatus_pay()) {
-			entity.setStatus_pay(false);
-		}else {
-			entity.setStatus_pay(true);
-		}
+        String status = "";
+        Date date = new Date();
+        switch (input.getStatus_order()){
+            case "Đã thanh toán":
+                status = "Đã thanh toán";
+                break;
+            case "Đã thanh toán một phần":
+                status = "Đã thanh toán một phần";
+                break;
+            case "Đã hủy":
+                status = "Đã hủy";
+                break;
+            default:
+                throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
+        }
 		entity.setUpdate_date(date);
 		this.repository.save(entity);
 		return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
 	}
 
     @Override
-    public ResponseEntity<Page<BillDto>> getByStatus(boolean pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
+    public ResponseEntity<Page<BillDto>> getByStatus(String pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
         Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
         Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
         Page<BillDto> result = this.repository.findByStatus(pay, order, pageable).map(mapper :: entityToDto);

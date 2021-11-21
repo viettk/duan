@@ -24,7 +24,7 @@ public class BillDto {
 
     private BigDecimal total;
 
-    private boolean status_pay;
+    private String status_pay;
 
     private String address;
 

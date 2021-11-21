@@ -31,7 +31,7 @@ public class BillRest {
     }
     @GetMapping("/by-status")
     public ResponseEntity<Page<BillDto>>getByStatus(
-            @RequestParam("pay") boolean pay,
+            @RequestParam("pay") String pay,
             @RequestParam("order") String order,
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page,
@@ -69,8 +69,9 @@ public class BillRest {
     }
     @PostMapping("/status-pay/{id}")
     public ResponseEntity<BillDto>updateStatusPay(
-    			@PathVariable("id") Integer id
+    			@PathVariable("id") Integer id,
+                @RequestBody BillInput input
     		){
-    	return this.service.updateStatusPay(id);
+    	return this.service.updateStatusPay(id, input);
     }
 }

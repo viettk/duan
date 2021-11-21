@@ -1,12 +1,10 @@
 package com.demo.duan.service.bill;
 
-import com.demo.duan.entity.BillEntity;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface BillService {
@@ -22,8 +20,8 @@ public interface BillService {
     
     ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input);
     
-    ResponseEntity<BillDto> updateStatusPay(Integer id);
+    ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input);
 
-    ResponseEntity<Page<BillDto>>getByStatus(boolean pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+    ResponseEntity<Page<BillDto>>getByStatus(String pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
 
 }

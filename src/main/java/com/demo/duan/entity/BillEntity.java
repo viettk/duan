@@ -44,7 +44,7 @@ public class BillEntity implements Serializable {
     private BigDecimal total;
 
     @Column(name="status_pay")
-    private boolean status_pay;
+    private String status_pay;
 
     @Column(name="address")
     private String address;

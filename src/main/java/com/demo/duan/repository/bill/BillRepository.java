@@ -13,5 +13,5 @@ public interface BillRepository extends JpaRepository<BillEntity, Integer> {
     Page<BillEntity>findByEmail(String email, Pageable pageable);
 
     @Query("select b from BillEntity b where b.status_pay = :pay and b.status_order = :order")
-    Page<BillEntity>findByStatus(@Param("pay") boolean pay, @Param("order") String order, Pageable pageable);
+    Page<BillEntity>findByStatus(@Param("pay") String pay, @Param("order") String order, Pageable pageable);
 }
