@@ -31,4 +31,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("from CategoryEntity c where c.parent_name = :parentName ")
     List<CategoryEntity> getAllCategoryByparent(String parentName);
+
+    @Query("select distinct c from CategoryEntity c join ProductEntity  p on c.id = p.category.id  where (:#{#param.name} is null or c.name like %:#{#param.name}%) ")
+    List<CategoryEntity> getAllCategoryByName(@Param("param")CategoryParam param);
 }

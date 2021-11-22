@@ -22,6 +22,10 @@ public class ProductDto {
 
     private BigDecimal price;
 
+    private BigDecimal price_extra;
+
+    private Integer value_extra;
+
     private Date createDate;
 
     private Integer number;

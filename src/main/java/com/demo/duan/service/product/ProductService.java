@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,4 +62,14 @@ public interface ProductService {
     List<Integer> soLuongBan5spBanChay(Integer month, Integer year);
 
     ResponseEntity<ProductDto> returnNumber(Integer id, Integer number);
+
+
+    //Giảm giá
+    public void valueDiscount(int value);
+
+    public void khoiPhucGia();
+
+    public void GiamGiaTheoDanhMuc(Integer categoryId, int value);
+
+    public void GiamGiaTungSp(Integer id, int value);
 }

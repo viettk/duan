@@ -20,4 +20,5 @@ public interface DiscountService {
     public Integer apdung(String discountName);
 
     public ResponseEntity<DiscountDto> get(Integer id);
+
 }

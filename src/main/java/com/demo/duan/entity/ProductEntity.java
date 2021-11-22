@@ -40,6 +40,12 @@ public class ProductEntity implements Serializable {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "price_extra")
+    private BigDecimal price_extra;
+
+    @Column(name = "value_extra")
+    private Integer value_extra;
+
     @Column(name = "describe")
     private String describe;
 

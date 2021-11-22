@@ -34,6 +34,13 @@ public class CategoryRest {
         return service.getAll();
     }
 
+    @GetMapping("/all/search")
+    public ResponseEntity<List<CategoryDto>> getAllSearch(
+            CategoryParam param
+    ){
+        return service.getAllSearch(param);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> get(@PathVariable Integer id){
         return service.get(id);

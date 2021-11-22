@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,6 +46,7 @@ public class ProductServiceImpl implements ProductService{
     private final UpLoadService upLoadService;
 
     private final PhotoRepository photoRepository;
+
 
     @Override
     @Transactional
@@ -360,6 +363,50 @@ public class ProductServiceImpl implements ProductService{
         entity.setNumber(a + number);
         this.productRepository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
+    }
+
+    @Override
+    @Transactional
+    public void valueDiscount(int value) {
+        BigDecimal hunderd = new BigDecimal(100);
+        List<ProductEntity> lst = productRepository.findAll();
+        for(ProductEntity x: lst){
+            x.setPrice(x.getPrice_extra());
+            x.setValue_extra(value);
+            x.setPrice( x.getPrice().subtract(x.getPrice().multiply(BigDecimal.valueOf(value)).divide(hunderd)) );
+        }
+    }
+
+    @Override
+    @Transactional
+    public void khoiPhucGia() {
+        List<ProductEntity> lst = productRepository.findAll();
+        for(ProductEntity x: lst){
+            x.setPrice(x.getPrice_extra());
+            x.setValue_extra(0);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void GiamGiaTheoDanhMuc(Integer categoryId, int value) {
+        BigDecimal hunderd = new BigDecimal(100);
+        List<ProductEntity> lst = productRepository.findAllByCategory_Id(categoryId);
+        for(ProductEntity x: lst){
+            x.setPrice(x.getPrice_extra());
+            x.setPrice( x.getPrice().subtract(x.getPrice().multiply(BigDecimal.valueOf(value)).divide(hunderd)) );
+            x.setValue_extra(value);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void GiamGiaTungSp(Integer id, int value) {
+        BigDecimal hunderd = new BigDecimal(100);
+        ProductEntity entity = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Mã Sản phẩm không tồn tại"));
+        entity.setPrice(entity.getPrice_extra());
+        entity.setPrice(entity.getPrice().subtract(entity.getPrice().multiply(BigDecimal.valueOf(value)).divide(hunderd)));
+        productRepository.save(entity);
     }
 
 

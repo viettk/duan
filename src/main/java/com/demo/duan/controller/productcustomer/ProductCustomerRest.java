@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,5 +91,30 @@ public class ProductCustomerRest {
             @RequestParam("number") Integer number
     ){
         return this.service.returnNumber(id, number);
+    }
+
+    @PostMapping("/giamgia")
+    public void giamGia(int value ){
+        service.valueDiscount(value);
+    }
+
+    @PutMapping("/giamgia")
+    public void khoiphuc(){
+        service.khoiPhucGia();
+    }
+
+    @PostMapping("/giamgiabydm")
+    public void giamGiaByDm(Integer categoryId , int value ){
+        service.GiamGiaTheoDanhMuc(categoryId, value);
+    }
+
+    @PostMapping("/giamgia/{id}")
+    public void giamGiaIdSp(@PathVariable Integer id, int value){
+        service.GiamGiaTungSp(id, value);
+    }
+
+    @GetMapping("/product")
+    public ResponseEntity<List<ProductDto>> find(String name){
+        return service.findAll(name);
     }
 }
