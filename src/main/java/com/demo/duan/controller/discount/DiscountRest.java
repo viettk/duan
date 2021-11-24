@@ -25,9 +25,13 @@ public class DiscountRest {
     private final DiscountRepository repository;
 
     @GetMapping
-    public ResponseEntity<Page<DiscountDto>> find(DiscountParam param, Optional<Integer> limit,
-                                                  Optional<Integer> page){
-        return service.find(param, limit, page);
+    public ResponseEntity<Page<DiscountDto>> find(
+            DiscountParam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) Optional<String> known,
+            @RequestParam("_limit") Optional<Integer> limit,
+            @RequestParam("_page") Optional<Integer> page){
+        return service.find(param, field, known, limit, page);
     }
 
     @GetMapping("/{id}")

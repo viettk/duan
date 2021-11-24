@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +33,17 @@ public class ProductRest {
     private final ProductRepository productRepository;
     private final ProductMapper mapper;
     @GetMapping
-    public ResponseEntity<Page<ProductDto>> fillProduct(ProductParam param, Pageable page){
-        return productService.searchProduct(param, page);
-    }
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductEntity>> getProductAll(){
-        return ResponseEntity.ok(productRepository.findAll());
+    public ResponseEntity<Page<ProductDto>> fillProduct(
+            ProductParam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) Optional<String> known,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page
+    ) {
+        return productService.searchProduct(param, field, known, limit, page);
+    }@GetMapping("/all")
+        public ResponseEntity<List<ProductEntity>> getProductAll(){
+            return ResponseEntity.ok(productRepository.findAll());
     }
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable("id") Integer id){
@@ -45,23 +51,31 @@ public class ProductRest {
         return ResponseEntity.ok(mapper.entityToDto(product));
     }
     @PostMapping("/create")
-    public ResponseEntity<ProductDto> createProduct(@PathParam("photo1") Optional<MultipartFile> photo1, @PathParam("photo2") Optional<MultipartFile> photo2, @PathParam("photo3") Optional<MultipartFile> photo3, @PathParam("photo4") Optional<MultipartFile> photo4, @PathParam("product") String product) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        ProductCreateInput productCreateInput = mapper.readValue(product, ProductCreateInput.class);
-        return productService.createProduct("/src/main/resources/images",productCreateInput,photo1,photo2,photo3,photo4);
+    public ResponseEntity<Integer> createProduct(@Valid @RequestBody ProductCreateInput input)  {
+        return productService.createProduct(input);
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductUpdateInput input){
+        return productService.updateProduct(input);
+    }
+
+    @PostMapping("/insert/image/{id}")
+    public ResponseEntity<ProductDto> insertImage(@PathVariable("id") Integer id,@PathParam("photo1") Optional<MultipartFile> photo1, @PathParam("photo2") Optional<MultipartFile> photo2, @PathParam("photo3") Optional<MultipartFile> photo3, @PathParam("photo4") Optional<MultipartFile> photo4) {
+        return productService.insertImage(id,"du-an-front-end/public/images",photo1,photo2,photo3,photo4);
+    }
+
+    @PutMapping("/update/image/{id}")
+    public ResponseEntity<ProductDto> updateImage(@PathVariable("id") Integer id,@PathParam("photo1") Optional<MultipartFile> photo1, @PathParam("photo2") Optional<MultipartFile> photo2, @PathParam("photo3") Optional<MultipartFile> photo3, @PathParam("photo4") Optional<MultipartFile> photo4) {
+        return productService.updateImage(id,"du-an-front-end/public/images",photo1,photo2,photo3,photo4);
+    }
+
     @DeleteMapping("/delete/{ids}")
     public ResponseEntity<List<ProductDto>> hideProduct(@PathVariable("ids") Integer[] ids) {
-       return productService.hideProduct(ids);
+        return productService.hideProduct(ids);
     }
     @PutMapping("/present/{ids}")
     public ResponseEntity<List<ProductDto>> presentProduct(@PathVariable("ids") Integer[] ids) {
         return productService.presentProduct(ids);
-    }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ProductDto> upddateProduct(@PathVariable("id") Integer id,@PathParam("photo1") Optional<MultipartFile> photo1, @PathParam("photo2") Optional<MultipartFile> photo2, @PathParam("photo3") Optional<MultipartFile> photo3, @PathParam("photo4") Optional<MultipartFile> photo4, @PathParam("product") String product) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        ProductUpdateInput productUpdateInput = mapper.readValue(product, ProductUpdateInput.class);
-        return productService.updateProduct("/src/main/resources/images",id,productUpdateInput,photo1,photo2,photo3,photo4);
     }
 }

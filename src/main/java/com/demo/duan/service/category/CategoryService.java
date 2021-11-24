@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface CategoryService {
 
-    public ResponseEntity<Page<CategoryDto>> find(CategoryParam param, Optional<Integer> limit, Optional<Integer> page );
+    public ResponseEntity<Page<CategoryDto>> find(CategoryParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page );
 
     public ResponseEntity<CategoryDto> create(CategoryInput input);
 

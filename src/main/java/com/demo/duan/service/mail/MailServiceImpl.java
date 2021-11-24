@@ -15,7 +15,6 @@ import java.util.List;
 public class MailServiceImpl implements MailService{
     @Autowired
     JavaMailSender javaMailSender;
-    List<MimeMessage> queue = new ArrayList<>();
     @Override
     public void send(MailEntity mail) throws MessagingException {
         // Tạo message
@@ -37,15 +36,6 @@ public class MailServiceImpl implements MailService{
         }
         // Gửi message đến SMTP server
         javaMailSender.send(message);
-    }
-
-    @Scheduled(fixedDelay = 1000)
-    public void run() {
-        while(!queue.isEmpty()) {
-            System.out.println("send mail");
-            MimeMessage message = queue.remove(0);
-            javaMailSender.send(message);
-        }
     }
 
     public String renderHtml(String token){

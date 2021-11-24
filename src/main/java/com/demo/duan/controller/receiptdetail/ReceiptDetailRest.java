@@ -32,9 +32,11 @@ public class ReceiptDetailRest {
     public ResponseEntity<Page<ReceiptDetailDto>> getAll(
             @PathVariable Integer receiptId,
             ReceiptDetailparam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) Optional<String> known,
             @RequestParam(name = "_page", required = false) Optional<Integer> page,
             @RequestParam(name = "_limit", required = false) Optional<Integer> limit                                                         ){
-        return this.service.searchByAdmin(receiptId, param, limit, page);
+        return this.service.searchByAdmin(receiptId, param, known, field, limit, page);
     }
     @PostMapping("/add")
     public ResponseEntity<ReceiptDetailDto> create(@Valid @RequestBody ReceiptDetailInput input){

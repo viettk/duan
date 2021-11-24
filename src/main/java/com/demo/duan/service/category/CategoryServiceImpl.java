@@ -6,6 +6,7 @@ import com.demo.duan.service.category.dto.CategoryDto;
 import com.demo.duan.service.category.input.CategoryInput;
 import com.demo.duan.service.category.mapper.CategoryMapper;
 import com.demo.duan.service.category.param.CategoryParam;
+import com.demo.duan.service.product.dto.ProductDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,11 +32,21 @@ public class CategoryServiceImpl implements CategoryService{
     @Transactional
     public ResponseEntity<Page<CategoryDto>> find(
             CategoryParam param,
+            Optional<String> field, Optional<String> known,
             Optional<Integer> limit,
             Optional<Integer> page ) {
-        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), Sort.by(Sort.Direction.DESC, "id"));
-        Page<CategoryDto> entity = repository.find(param, pageable).map(mapper::entityToDto);
-        return ResponseEntity.ok().body(entity);
+        if(known.get().equals("up")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<CategoryDto> dto = this. repository.find(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        } else{
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<CategoryDto> dto = repository.find(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+
     }
 
     @Override

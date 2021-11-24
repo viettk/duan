@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 
 public interface DiscountService {
-    public ResponseEntity<Page<DiscountDto>> find(DiscountParam param, Optional<Integer> limit,
+    public ResponseEntity<Page<DiscountDto>> find(DiscountParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit,
                                                   Optional<Integer> page);
 
     public ResponseEntity<DiscountDto> create(DiscountInput input);

@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 
 public interface ReceiptDetailService {
-    ResponseEntity<Page<ReceiptDetailDto>> searchByAdmin(Integer receiptId, ReceiptDetailparam param, Optional<Integer> limit, Optional<Integer> page );
+    ResponseEntity<Page<ReceiptDetailDto>> searchByAdmin(Integer receiptId, ReceiptDetailparam param, Optional<String> known, Optional<String> field, Optional<Integer> limit, Optional<Integer> page );
     ResponseEntity<ReceiptDetailDto> findByIdRecript (Integer id);
     ResponseEntity<ReceiptDetailDto> create (ReceiptDetailInput input);
     ResponseEntity<ReceiptDetailDto> update (Integer id, ReceiptDetailInput input);

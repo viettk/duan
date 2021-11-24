@@ -24,9 +24,11 @@ public class CategoryRest {
     @GetMapping
     public ResponseEntity<Page<CategoryDto>> find(
             CategoryParam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) Optional<String> known,
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page){
-        return service.find(param, limit, page);
+        return service.find(param, field, known, limit, page);
     };
 
     @GetMapping("/all")

@@ -37,10 +37,18 @@ public class ReceiptDetailServiceImpl implements ReceiptDetailService {
 
     @Override
     @Transactional
-    public ResponseEntity<Page<ReceiptDetailDto>> searchByAdmin(Integer receiptid, ReceiptDetailparam param , Optional<Integer> limit, Optional<Integer> page) {
-        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), Sort.by(Sort.Direction.DESC, "id"));
-        Page<ReceiptDetailDto> entity = receiptDetailRepository.searchByAdmin(receiptid, param ,pageable).map(mapper::entityToDto);
-        return ResponseEntity.ok().body(entity);
+    public ResponseEntity<Page<ReceiptDetailDto>> searchByAdmin(Integer receiptid, ReceiptDetailparam param, Optional<String> known, Optional<String> field, Optional<Integer> limit, Optional<Integer> page) {
+        if(known.get().equals("up")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<ReceiptDetailDto> dto = receiptDetailRepository.searchByAdmin(receiptid, param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        } else{
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<ReceiptDetailDto> dto = receiptDetailRepository.searchByAdmin(receiptid, param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
     }
 
     @Override

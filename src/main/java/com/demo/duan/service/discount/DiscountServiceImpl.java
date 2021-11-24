@@ -29,11 +29,20 @@ public class DiscountServiceImpl implements DiscountService{
     @Override
     @Transactional
     public ResponseEntity<Page<DiscountDto>> find(DiscountParam param,
+                                                  Optional<String> field, Optional<String> known,
                                                   Optional<Integer> limit,
                                                   Optional<Integer> page ) {
-        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), Sort.by(Sort.Direction.DESC, "id"));
-        Page<DiscountDto> entity = repository.find(param, pageable).map(mapper::entityToDto);
-        return ResponseEntity.ok().body(entity);
+        if(known.get().equals("up")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<DiscountDto> dto = this. repository.find(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        } else{
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<DiscountDto> dto = repository.find(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
     }
 
     @Override

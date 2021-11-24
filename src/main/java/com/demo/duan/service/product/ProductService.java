@@ -36,16 +36,25 @@ public interface ProductService {
 
     ResponseEntity<Page<ProductDto>> searchByCategoryName(Integer categoryId ,ProductParam param, Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page);
 
+    ResponseEntity<Page<ProductDto>> searchByCategoryParentName(String parentName , Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page);
+
     ResponseEntity<ProductDto> getOne(Integer id);
 
     ResponseEntity<ProductDto> getOneAdmin(Integer id);
 
     //dũng
-    ResponseEntity<ProductDto> createProduct(String folder, ProductCreateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
+    ResponseEntity<Integer> createProduct(ProductCreateInput input);
 
-    ResponseEntity<ProductDto> updateProduct(String folder, Integer id, ProductUpdateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
+    ResponseEntity<ProductDto> insertImage(Integer id,String folder, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
 
-    ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param , Pageable page);
+    ResponseEntity<ProductDto> updateImage(Integer id,String folder, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4);
+
+    ResponseEntity<ProductDto> updateProduct(ProductUpdateInput input);
+
+    ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page);
+
+//------------------------------------------------------------------------------------------
+//    ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param , Pageable page);
 
     ResponseEntity<List<ProductDto>> hideProduct(Integer[] ids);
 

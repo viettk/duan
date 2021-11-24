@@ -214,6 +214,27 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public ResponseEntity<Page<ProductDto>> searchByCategoryParentName(String parentName, Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page) {
+        if(known.equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<ProductDto> dto = this.productRepository.searchByCategoryParentName(parentName, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else if(!known.equals("up") || known.equals("")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<ProductDto> dto = this.productRepository.searchByCategoryParentName(parentName, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Pageable pageable = PageRequest.of(0, 15);
+            Page<ProductDto> dto = this.productRepository.searchByCategoryParentName(parentName, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+    }
+
+    @Override
     @Transactional
     public ResponseEntity<ProductDto> getOne(Integer id) {
         /* Kiểm tra id của sản phẩm có tồn tại hay ko */
@@ -230,90 +251,136 @@ public class ProductServiceImpl implements ProductService{
     }
 
     //    -------------------- Dũng  quản lý sản phẩm -------------------------------
-
     @Override
     @Transactional
-    public ResponseEntity<ProductDto> createProduct(String folder, ProductCreateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4) {
+    public ResponseEntity<Integer> createProduct(ProductCreateInput input) {
         ProductEntity product = mapper.inputToEntity(input);
         CategoryEntity category = categoryRepository.getById(input.getCategoryID());
         product.setCategory(category);
-        System.out.println("1");
-        //thêm ảnh vào sản phẩm
-        if(!photo1.isEmpty()) {
-            File filePhoto = upLoadService.savePhoto(photo1.get(), folder);
-            product.setPhoto(filePhoto.getName());
-            System.out.println("2");
-        }
+        product.setValue_extra(0);
+        product.setPrice(product.getPrice_extra().multiply(BigDecimal.valueOf(100-product.getValue_extra())).divide(BigDecimal.valueOf(100)));
         //thêm sản phẩm
         ProductEntity productSave = productRepository.save(product);
-        System.out.println("3");
-        if(!photo2.isEmpty()) {
-            File filePhoto = upLoadService.savePhoto(photo2.get(), folder);
-            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),productSave));
-        }
-        if(!photo3.isEmpty()) {
-            File filePhoto = upLoadService.savePhoto(photo3.get(), folder);
-            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),productSave));
-        }
-        if(!photo4.isEmpty()) {
-            File filePhoto = upLoadService.savePhoto(photo4.get(), folder);
-            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),productSave));
-        }
-        ProductEntity productFinal = productRepository.getById(product.getId());
-        System.out.println("4");
-        return ResponseEntity.ok(mapper.entityToDto(productFinal));
+        return ResponseEntity.ok(productSave.getId());
     }
 
     @Override
     @Transactional
-    public ResponseEntity<ProductDto> updateProduct(String folder, Integer id, ProductUpdateInput input, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4) {
+    public ResponseEntity<ProductDto> insertImage(Integer id,String folder, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4) {
         ProductEntity product = productRepository.getById(id);
-        updateMapper.inputToEntity(input,product);
-        CategoryEntity category = categoryRepository.getById(input.getCategoryID());
-        product.setCategory(category);
-        //thêm ảnh vào sản phẩm
         if(!photo1.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo1.get(), folder);
             product.setPhoto(filePhoto.getName());
         }
-        //thêm sản phẩm
-        productRepository.save(product);
         if(!photo2.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo2.get(), folder);
-            photoRepository.save(new PhotoEntity(input.getIdPhoto2(),filePhoto.getName(),product));
+            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),product));
         }
         if(!photo3.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo3.get(), folder);
-            photoRepository.save(new PhotoEntity(input.getIdPhoto3(),filePhoto.getName(),product));
+            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),product));
         }
         if(!photo4.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo4.get(), folder);
-            photoRepository.save(new PhotoEntity(input.getIdPhoto4(),filePhoto.getName(),product));
+            photoRepository.save(new PhotoEntity(null,filePhoto.getName(),product));
         }
-        ProductEntity productFinal = productRepository.getById(product.getId());
-        return ResponseEntity.ok(mapper.entityToDto(productFinal));
+        return ResponseEntity.ok(mapper.entityToDto(productRepository.save(product)));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ProductDto> updateProduct(ProductUpdateInput input) {
+        ProductEntity product = productRepository.getById(input.getId());
+        updateMapper.inputToEntity(input,product);
+        if(product.getValue_extra()==null){
+            product.setValue_extra(0);
+        }
+        product.setPrice(product.getPrice_extra().multiply(BigDecimal.valueOf(100-product.getValue_extra())).divide(BigDecimal.valueOf(100)));
+        CategoryEntity category = categoryRepository.getById(input.getCategoryID());
+        product.setCategory(category);
+        productRepository.save(product);
+        return ResponseEntity.ok(mapper.entityToDto(product));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ProductDto> updateImage(Integer id,String folder, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4) {
+        ProductEntity product = productRepository.getById(id);
+        List<PhotoEntity> photos = photoRepository.findAllByProduct_Id(id);
+        Integer length = photos.size();
+        if(!photo1.isEmpty()) {
+            File filePhoto = upLoadService.savePhoto(photo1.get(), folder);
+            product.setPhoto(filePhoto.getName());
+        }
+        PhotoEntity photo = null;
+        if(!photo2.isEmpty()) {
+            File filePhoto = upLoadService.savePhoto(photo2.get(), folder);
+            if(length >0) {
+                photo = photos.get(0);
+                photo.setName(filePhoto.getName());
+            }else{
+                photo = new PhotoEntity(null, filePhoto.getName(), product);
+            }
+            photoRepository.save(photo);
+        }
+        if(!photo3.isEmpty()) {
+            File filePhoto = upLoadService.savePhoto(photo3.get(), folder);
+            if(length >1) {
+                photo = photos.get(1);
+                photo.setName(filePhoto.getName());
+            }else{
+                photo = new PhotoEntity(null, filePhoto.getName(), product);
+            }
+            photoRepository.save(photo);
+        }
+        if(!photo4.isEmpty()) {
+            File filePhoto = upLoadService.savePhoto(photo4.get(), folder);
+            if(length >2) {
+                photo = photos.get(2);
+                photo.setName(filePhoto.getName());
+            }else{
+                photo = new PhotoEntity(null, filePhoto.getName(), product);
+            }
+            photoRepository.save(photo);
+        }
+        return ResponseEntity.ok(mapper.entityToDto(productRepository.save(product)));
     }
 
     // Tìm kiếm sản phẩm
     @Override
     @Transactional
-    public ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param, Pageable page) {
-        Page<ProductDto> lisProductDto = productRepository.searchProduct(param,page).map(mapper::entityToDto);
-        return ResponseEntity.ok(lisProductDto);
+    public ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page) {
+        if(known.get().equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<ProductDto> dto = this.productRepository.searchByAdmin(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<ProductDto> dto = this.productRepository.searchByAdmin(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
     }
     // ẩn sản phẩm
     @Override
     @Transactional
     public ResponseEntity<List<ProductDto>> hideProduct(Integer[] ids) {
-        List<ProductEntity> listProduct = productRepository.findByIdInAndStatusIsFalse(ids);
+        List<ProductEntity> listProduct = productRepository.findByIdIn(ids);
         listProduct.forEach(p->{
-            p.setStatus(true);
+            if(p.isStatus()==false){
+                p.setStatus(true);
+            }else {
+                p.setStatus(false);
+            }
             productRepository.save(p);
         });
         List<ProductDto> listProductDtos = listProduct.stream().map(mapper::entityToDto).collect(Collectors.toList());
         return ResponseEntity.ok(listProductDtos);
     }
 
+//    -------------------------------------------------------------------------------------------
     @Override
     @Transactional
     public ResponseEntity<List<ProductDto>> presentProduct(Integer[] ids) {

@@ -12,9 +12,13 @@ import java.util.Date;
 public class ProductParam {
     private String categoryName;
 
+    private Integer categoryId;
+
     private String name;
 
     private BigDecimal price;
+
+    private Boolean status;
 
     private Date crate_date;
 }

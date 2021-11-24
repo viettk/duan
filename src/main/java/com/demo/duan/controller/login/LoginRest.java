@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/login")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class LoginRest {
     @Autowired
     AuthenticationManager authenticationManager;

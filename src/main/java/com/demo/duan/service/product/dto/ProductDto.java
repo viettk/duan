@@ -2,6 +2,7 @@ package com.demo.duan.service.product.dto;
 
 import com.demo.duan.entity.PhotoEntity;
 import com.demo.duan.service.category.dto.CategoryDto;
+import com.demo.duan.service.photo.dto.PhotoDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,10 +23,6 @@ public class ProductDto {
 
     private BigDecimal price;
 
-    private BigDecimal price_extra;
-
-    private Integer value_extra;
-
     private Date createDate;
 
     private Integer number;
@@ -34,12 +31,19 @@ public class ProductDto {
 
     private String photo;
 
+    private BigDecimal price_extra;
 
-//    private List<PhotoEntity> photos ;
+    private Integer value_extra ;
 
+    private List<PhotoDTO> photos;
+
+
+
+    //    private List<PhotoEntity> photos ;
     private String sku;
 
     /* Đặc điểm nổi bật */
+
     private String trait;
 
     private Date releaseDate;

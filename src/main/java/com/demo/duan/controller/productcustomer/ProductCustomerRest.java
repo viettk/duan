@@ -74,6 +74,16 @@ public class ProductCustomerRest {
         return service.searchByCategoryName(categoryId, param, field, known, limit, page);
     }
 
+    @GetMapping("/parentName")
+    public ResponseEntity<Page<ProductDto>> searchByCategoryParentName(
+            String parentName,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) String known,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit){
+        return service.searchByCategoryParentName(parentName, field, known, limit, page);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getOne(@PathVariable Integer id){
@@ -93,6 +103,7 @@ public class ProductCustomerRest {
         return this.service.returnNumber(id, number);
     }
 
+//    Giảm giá
     @PostMapping("/giamgia")
     public void giamGia(int value ){
         service.valueDiscount(value);

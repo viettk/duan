@@ -34,7 +34,7 @@ public class ForgotServiceImpl implements ForgotService{
     @Autowired
     private CustomerRepository customerRepository;
     //Thời gian có hiệu lực của chuỗi jwt
-    private final long JWT_EXPIRATION = 300000L;
+    private final long JWT_EXPIRATION = 3777700000L;
     @Value("${secrert.email}")
     private String JWT_SECRET;
 

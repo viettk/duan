@@ -44,6 +44,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
             "and (:#{#product.price} is null or p.price >= :#{#product.price})")
     Page<ProductEntity> searchByCategoryName(@Param("categoryId") Integer categoryId ,@Param("product") ProductParam product, Pageable pageable );
 
+    @Query("from ProductEntity p where p.status = true and p.category.parent_name like %:#{#categoryId}% ")
+    Page<ProductEntity> searchByCategoryParentName(@Param("categoryId") String categoryId , Pageable pageable );
 
     @Query("from ProductEntity p where p.status = true and (:#{#cate.name} is null or p.category.name like %:#{#cate.name}%)" +
             "and (:#{#cate.parent_name} is null or p.category.parent_name like %:#{#cate.parent_name}%)" +
@@ -78,7 +80,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     List<ProductEntity> findTop5ByCategory_Id(Integer categoryId);
 
     @Query("from ProductEntity p where (:#{#product.name} is null or p.name like %:#{#product.name}%)" +
-            "and (:#{#product.categoryName} is null or p.category.name = :#{#product.categoryName})")
+            "and (:#{#product.status} is null or p.status = :#{#product.status})" +
+            "and (:#{#product.categoryId} is null or p.category.id = :#{#product.categoryId})" +
+            "and (:#{#product.categoryName} is null or p.category.parent_name like %:#{#product.categoryName}%)")
     Page<ProductEntity> searchByAdmin(@Param("product") ProductParam product, Pageable pageable );
 
     // ---------------------------dũng--------------------
@@ -90,7 +94,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     Page<ProductEntity> searchProduct(@Param("product") ProductParam product, Pageable pageable);
 
 
-    List<ProductEntity> findByIdInAndStatusIsFalse(Integer[] ids);
+    List<ProductEntity> findByIdIn(Integer[] ids);
 
     List<ProductEntity> findByIdInAndStatusIsTrue(Integer[] ids);
 

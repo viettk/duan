@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Setter
@@ -17,19 +18,16 @@ public class ProductCreateInput {
     @NotBlank(message = "Không được để trống tên sản phẩm")
     private String name;
 
-    @NotNull(message = "Không được để trống trạng thái")
     private boolean status;
 
-    @NotNull(message = "Không được để trống số lượng sản phẩm")
-    private Integer number;
+    @NotNull(message = "Không được để trống giá bán")
+    @Positive(message = "Giá sản phẩm phải lớn hơn 0 ")
+    private BigDecimal price_extra;
 
-    @Positive(message = "Giá sản phẩm phải > 0 ")
-    private BigDecimal price;
-
-    @NotNull(message = "Không được để trống miêu tả sản phẩm")
+    @NotBlank(message = "Không được để trống miêu tả sản phẩm")
     private String describe;
 
-    private Date createDate;
+    private LocalDate createDate = LocalDate.now();
 
 //    @NotEmpty(message = "Không được để trống ảnh chính sản phẩm")
 
@@ -37,16 +35,21 @@ public class ProductCreateInput {
 
     private String trait;
 
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
+    @Positive(message = "Giá niêm yết phải lớn hơn 0")
     private Integer price_release;
 
+    @Positive(message = "cân nặng phải lớn hơn 0 ")
     private Float weight;
 
+    @Positive(message = "chiều cao phải lớn hơn 0 ")
     private Float height;
 
+    @Positive(message = "Chiều rộng phải lớn hơn 0 ")
     private Float width;
 
+    @Positive(message = "Chiều dài phải lớn hơn 0 ")
     private Float length;
 
 }
