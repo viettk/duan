@@ -4,6 +4,7 @@ import com.demo.duan.entity.*;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
+import com.demo.duan.repository.product.ProductRepository;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
@@ -35,6 +36,8 @@ public class BillDetailServiceImpl implements BillDetailService{
 
     private final BillRepository billRepository;
 
+    private final ProductRepository productRepository;
+
     @Override
     @Transactional
     public ResponseEntity<List<BillDetailDto>> createByCustomer(BillDetailInput input, Integer cartId) {
@@ -49,6 +52,9 @@ public class BillDetailServiceImpl implements BillDetailService{
             entity.setProduct(x.getProduct());
             entity.setBill(billEntity);
             repository.save(entity);
+
+            ProductEntity productEntity = productRepository.getById(x.getProduct().getId());
+            productEntity.setNumber(productEntity.getNumber() - x.getNumber() );
         }
 //        repository.saveAll(lst);
         List<BillDetailEntity> lst = new ArrayList<>();
@@ -60,6 +66,8 @@ public class BillDetailServiceImpl implements BillDetailService{
     @Transactional
     public ResponseEntity<List<BillDetailDto>> createByCustomerNotLogin(Integer id, List<LocalStorageBillDetail> inputs) {
         for(LocalStorageBillDetail x : inputs){
+            ProductEntity productEntity = productRepository.getById(x.getProduct_id());
+
             BillDetailInput input = new BillDetailInput();
             input.setNumber(x.getNumber());
             input.setPrice(x.getPrice());
@@ -67,9 +75,8 @@ public class BillDetailServiceImpl implements BillDetailService{
 
             BillDetailEntity entity = mapper.inputToEntity(input);
 
-            ProductEntity productEntity = new ProductEntity();
-            productEntity.setId(x.getProduct_id());
             entity.setProduct(productEntity);
+            productEntity.setNumber(productEntity.getNumber() - x.getNumber());
 
             entity.setBill(billEntity);
             entity.setTotal(x.getTotal());

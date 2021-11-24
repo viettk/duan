@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/thong-ke")
+@RequestMapping("/api/thong-ke")
 @AllArgsConstructor
 public class ThongKeRest {
     private final BillService service;

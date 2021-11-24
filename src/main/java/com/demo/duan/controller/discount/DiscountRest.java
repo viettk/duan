@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/admin/discount")
+@RequestMapping("/api/discount")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class DiscountRest {

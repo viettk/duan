@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/receiptDetail")
+@RequestMapping("/receiptDetail")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class ReceiptDetailRest {

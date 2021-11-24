@@ -16,7 +16,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
-@RequestMapping("/danh-muc")
+@RequestMapping("/api/danh-muc")
 public class CategoryRest {
 
     private final CategoryService service;
