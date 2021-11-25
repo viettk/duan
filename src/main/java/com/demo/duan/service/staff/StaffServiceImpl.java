@@ -42,12 +42,10 @@ public class StaffServiceImpl implements StaffService{
     @Transactional
     public ResponseEntity<StaffDto> createStaff(StaffInput input) throws RuntimeException{
         if (!repository.findByEmail(input.getEmail()).isEmpty()){
-            System.out.println("Đã tồn tại email này");
-            return ResponseEntity.badRequest().build();
+            new RuntimeException("Email này đã tồn tại!");
         }
         if (!repository.findByPhone(input.getPhone()).isEmpty()){
-            System.out.println("Đã tồn tại số điện thoại này");
-            return ResponseEntity.badRequest().build();
+            new RuntimeException("Đã tồn tại số điện thoại này!");
         }
         StaffEntity entity = this.mapper.inputToEntity(input);
         this.mapper.inputToEntity(input);
@@ -58,19 +56,24 @@ public class StaffServiceImpl implements StaffService{
     @Override
     @Transactional
     public ResponseEntity<StaffDto> updateStaff(Integer id, StaffInput input) throws RuntimeException {
-        StaffEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có nhân viên này"));
-        String password = entity.getPassword();
-        System.out.println(password);
-        this.mapper.inputToEntity(input, entity);
-        entity.setPassword(password);
-        this.repository.save(entity);
+        StaffEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không tồn tại nhân viên này!"));
+        if(input.getPassword().equals("")) {
+        	String password = entity.getPassword();
+        	entity.setPassword(password);
+        	this.mapper.inputToEntity(input, entity);
+            this.repository.save(entity);
+        }
+        else {
+        	this.mapper.inputToEntity(input, entity);
+            this.repository.save(entity);
+		}
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
 
     @Override
     @Transactional
     public ResponseEntity<StaffDto> disableStaff(Integer id) {
-        StaffEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có nhân viên này"));
+        StaffEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không tồn tại nhân viên này!"));
         if(entity.isStatus() == true){
             entity.setStatus(false);
         }
