@@ -136,6 +136,7 @@ public class BillServiceImpl implements BillService{
 	        default:
 	            throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
 	    }
+		entity.setStatus_pay(input.getStatus_pay());
 		entity.setStatus_order(status);
 		entity.setUpdate_date(date);
 		this.repository.save(entity);
@@ -150,16 +151,17 @@ public class BillServiceImpl implements BillService{
             case "Đã thanh toán":
                 status = "Đã thanh toán";
                 break;
-            case "Đã thanh toán một phần":
-                status = "Đã thanh toán một phần";
+            case "Đã hoàn trả":
+                status = "Đã hoàn trả";
                 break;
-            case "Đã hủy":
-                status = "Đã hủy";
+            case "Chưa thanh toán":
+                status = "Chưa thanh toán";
                 break;
             default:
                 throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
         }
 		entity.setUpdate_date(date);
+		entity.setStatus_pay(status);
 		this.repository.save(entity);
 		return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
 	}

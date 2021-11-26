@@ -1,6 +1,5 @@
 package com.demo.duan.controller.bill;
 
-import com.demo.duan.entity.BillEntity;
 import com.demo.duan.service.bill.BillService;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin("*")
