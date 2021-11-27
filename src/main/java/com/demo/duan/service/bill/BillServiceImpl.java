@@ -120,6 +120,8 @@ public class BillServiceImpl implements BillService{
 	@Override
 	public ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input) throws RuntimeException{
 		BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
+		
+		
 		String status = "";
 		
 		Date date = new Date();
