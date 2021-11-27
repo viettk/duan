@@ -29,8 +29,8 @@ public class BillRest {
     }
     @GetMapping("/by-status")
     public ResponseEntity<Page<BillDto>>getByStatus(
-            @RequestParam("pay") String pay,
-            @RequestParam("order") String order,
+            @RequestParam(value = "pay", required = false) String pay,
+            @RequestParam(value = "order", required = false) String order,
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page,
             @RequestParam(value = "_field", required = false) Optional<String> field,
@@ -43,6 +43,17 @@ public class BillRest {
         return this.service.getOne(id);
     }
 
+    @GetMapping("/email-pay/{email}")
+    public ResponseEntity<Page<BillDto>>getByEmail(
+            @PathVariable("email") String email,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam("_limit") Optional<Integer> limit,
+            @RequestParam("_page") Optional<Integer> page,
+            @RequestParam(value = "_field", required = false) Optional<String> field,
+            @RequestParam(value = "_known", required = false) String known
+    ){
+        return this.service.getByEmailPay(email, status,limit,page,field,known);
+    }
     @GetMapping("/email/{email}")
     public ResponseEntity<Page<BillDto>>getByEmail(
             @PathVariable("email") String email,

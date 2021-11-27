@@ -14,7 +14,9 @@ public interface BillService {
 
     ResponseEntity<BillDto>getOne(Integer id);
 
-    ResponseEntity<Page<BillDto>>getByEmail(String name, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+    ResponseEntity<Page<BillDto>>getByEmail(String email, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+
+    ResponseEntity<Page<BillDto>>getByEmailPay(String email, String status, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
 
     ResponseEntity<BillDto>update(BillInput input, Integer id);
     

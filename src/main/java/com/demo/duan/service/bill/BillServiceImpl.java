@@ -93,6 +93,21 @@ public class BillServiceImpl implements BillService{
     }
 
     @Override
+    public ResponseEntity<Page<BillDto>> getByEmailPay(String email, String status, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
+        if (known.equals("up")){
+            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            Page<BillDto> result = this.repository.findByEmailAndOrder(email, status, pageable).map(mapper :: entityToDto);
+            return ResponseEntity.ok().body(result);
+        }else {
+            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            Page<BillDto> result = this.repository.findByEmailAndOrder(email, status, pageable).map(mapper :: entityToDto);
+            return ResponseEntity.ok().body(result);
+        }
+    }
+
+    @Override
     public ResponseEntity<BillDto> update(BillInput input, Integer id) throws RuntimeException{
         BillEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn này"));
         this.mapper.inputToEntity(input, entity);
@@ -136,7 +151,13 @@ public class BillServiceImpl implements BillService{
 	        default:
 	            throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
 	    }
-		entity.setStatus_pay(input.getStatus_pay());
+		String status_pay = "";
+		if(input.getStatus_pay().equals("")) {
+			status_pay = entity.getStatus_pay();
+		}else {
+			status_pay = input.getStatus_pay();
+		}
+		entity.setStatus_pay(status_pay);
 		entity.setStatus_order(status);
 		entity.setUpdate_date(date);
 		this.repository.save(entity);
