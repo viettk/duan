@@ -81,9 +81,6 @@ public class BillDetailServiceImpl implements BillDetailService{
             entity.setBill(billEntity);
             entity.setTotal(x.getTotal());
             repository.save(entity);
-
-            BigDecimal totalOfBill =  totalOfBill(billEntity.getId());
-            billEntity.setTotal(totalOfBill);
             billRepository.save(billEntity);
         }
         List<BillDetailEntity> lst = new ArrayList<>();

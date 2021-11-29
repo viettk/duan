@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -29,10 +30,10 @@ public class BillEntity implements Serializable {
     private String email;
 
     @Column(name="create_date")
-    private Date create_date;
+    private LocalDate create_date;
 
     @Column(name="update_date")
-    private Date update_date;
+    private LocalDate update_date;
 
     @Column(name="name")
     private String name;

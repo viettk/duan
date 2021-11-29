@@ -9,8 +9,11 @@ import com.demo.duan.service.customer.dto.CustomerDto;
 import com.demo.duan.service.customer.input.CustomerInput;
 import com.demo.duan.service.customer.param.CustomerMapper;
 import com.demo.duan.service.customer.paramcustomer.Customerparam;
+import com.demo.duan.service.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,14 +30,18 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService{
-
-    private final CustomerRepository repository;
-
-    private final CustomerMapper mapper;
-
-    private final CartRepository cartRepository;
+    @Autowired
+    private  CustomerRepository repository;
+    @Autowired
+    private  CustomerMapper mapper;
+    @Autowired
+    private  CartRepository cartRepository;
+    @Autowired
+    private  JwtTokenProvider jwtTokenProvider;
+    private final long JWT_EXPIRATION = 604800000L;
+    @Value("${secrert.login}")
+    private String JWT_SECRET;
 
     @Override
     @Transactional
@@ -80,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService{
 
         /* Lưu giỏ hàng vào DB */
         cartRepository.save(cartEntity);
-
+        entity.setToken(jwtTokenProvider.generateToken(entity.getEmail(), JWT_EXPIRATION,JWT_SECRET));
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 

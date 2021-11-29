@@ -5,6 +5,7 @@ import com.demo.duan.entity.CustomerEntity;
 import com.demo.duan.entity.StaffEntity;
 import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.staff.StaffRepository;
+import com.demo.duan.service.customer.param.CustomerMapper;
 import com.demo.duan.service.jwt.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,9 +35,12 @@ public class LoginRest {
     @Autowired
     private JwtTokenProvider tokenProvider;
     //Thời gian có hiệu lực của chuỗi jwt
-    private final long JWT_EXPIRATION = 604800000L;
+    private final long JWT_EXPIRATION = 600000000L;
     @Value("${secrert.login}")
     private String JWT_SECRET;
+
+    @Autowired
+    private CustomerMapper mapper;
 
     @PostMapping
     public ResponseEntity<Object> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -66,7 +70,7 @@ public class LoginRest {
             }else {
                 CustomerEntity customer = customerRepository.findByEmail(loginRequest.getEmail()).get();
                 customer.setToken(jwt);
-                return ResponseEntity.ok(customer);
+                return ResponseEntity.ok(mapper.entityToDto(customer));
             }
         }catch (Exception e){
             throw new RuntimeException("Tài khoản hoặc mật khẩu không chính xác");

@@ -38,20 +38,20 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     @Override
     @Transactional
-    public ResponseEntity<List<CartDetailDto>> find(CartDetailParam param) {
-        List<CartDetailEntity> lst = repository.find(param);
+    public ResponseEntity<List<CartDetailDto>> find(Integer customerId) {
+        List<CartDetailEntity> lst = repository.find(customerId);
         List<CartDetailDto> lstDto =mapper.EntitiesToDtos(lst);
         return ResponseEntity.ok().body(lstDto);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<CartDetailDto> addToCartDetail(CartDetailInput input) {
+    public ResponseEntity<CartDetailDto> addToCartDetail(Integer customerId, CartDetailInput input) {
 
         /* Lấy thông tin sản phẩm */
         ProductEntity product = productRepository.getById(input.getProductId());
         /* Lấy thông tin Giỏ hàng */
-        CartEntity cartEntity = cartRepository.getById(input.getCartId());
+        CartEntity cartEntity = cartRepository.getByCustomer_Id(customerId);
 
         /* Lấy giá sản phẩm */
         BigDecimal price = product.getPrice();
@@ -63,15 +63,15 @@ public class CartDetailServiceImpl implements CartDetailService{
         }
 
         /* Kiểm tra sản phẩm đã có sẵn trong Giỏ hàng chưa */
-        Integer count = repository.countAllByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
+        Integer count = repository.countAllByCart_IdAndProduct_Id(cartEntity.getId(), input.getProductId());
 
         /* Nếu có r thì cập nhật số lượng và tổng tiền */
         if(count > 0){
             /* Lấy thông tin giỏ hàng chi tiết */
-            CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
+            CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(cartEntity.getId(), input.getProductId());
             /* Tăng số lượng trong giỏ hàng chi tiết */
             int number = input.getNumber() ;
-            Integer checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
+            Integer checkNumOfCartDetail = repository.checkNumberOfCartDetail(cartEntity.getId());
             if(number+checkNumOfCartDetail >= 15){
                 throw new RuntimeException("Giỏ hàng không được quá 15 sản phẩm");
             }
@@ -92,7 +92,7 @@ public class CartDetailServiceImpl implements CartDetailService{
         /* Thêm sản phẩm mới vào giỏ */
         else{
             /* Kiểm tra số lượng sp trong giỏ hàng phải <=15 */
-            Integer checkNumberOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
+            Integer checkNumberOfCartDetail = repository.checkNumberOfCartDetail(cartEntity.getId());
             if(checkNumberOfCartDetail == null){
                 checkNumberOfCartDetail =0;
             }
@@ -115,9 +115,9 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     @Override
     @Transactional
-    public ResponseEntity<CartDetailDto> updateNumberUp(CartDetailInput input) {
-
-        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
+    public ResponseEntity<CartDetailDto> updateNumberUp(Integer customerId, CartDetailInput input) {
+        CartEntity cartEntity = cartRepository.getByCustomer_Id(customerId);
+        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(cartEntity.getId(), input.getProductId());
         Integer newNumber = entity.getNumber() + 1;
 
         /* Kiểm tra sản phẩm có đủ ko */
@@ -136,16 +136,16 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     @Override
     @Transactional
-    public ResponseEntity<CartDetailDto> updateNumberDown(CartDetailInput input) {
-        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
+    public ResponseEntity<CartDetailDto> updateNumberDown(Integer customerId, CartDetailInput input) {
+        CartEntity cartEntity = cartRepository.getByCustomer_Id(customerId);
+        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(cartEntity.getId(), input.getProductId());
         Integer newNumber = entity.getNumber() - 1;
 
         /* Nếu sản phẩm <=0 thì xóa khỏi giỏ hàng */
         if(newNumber <= 0){
             CartDetalInputDelete newInput = new CartDetalInputDelete();
-            newInput.setCartId(input.getCartId());
             newInput.setProductId(input.getProductId());
-            delete(newInput);
+            delete(cartEntity.getId(),newInput);
             return ResponseEntity.ok().body(mapper.entityToDto(entity));
         }
 
@@ -161,7 +161,7 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     @Override
     @Transactional
-    public ResponseEntity<CartDetailDto> updateNumber(CartDetailInput input) {
+    public ResponseEntity<CartDetailDto> updateNumber(Integer customerId, CartDetailInput input) {
 
         /* Lấy thông tin sản phẩm */
         ProductEntity product = productRepository.getById(input.getProductId());
@@ -183,25 +183,25 @@ public class CartDetailServiceImpl implements CartDetailService{
         }
 
         /* Lấy thông tin Giỏ hàng */
-        CartEntity cartEntity = cartRepository.getById(input.getCartId());
+        CartEntity cartEntity = cartRepository.getByCustomer_Id(customerId);
 
-        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
+        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(cartEntity.getId(), input.getProductId());
         BigDecimal price = product.getPrice();
         mapper.inputToEntity(input, entity);
         entity.setTotal(price.multiply(BigDecimal.valueOf(input.getNumber())));
         repository.save(entity);
 
-        totalOfCart(input.getCartId());
+        totalOfCart(cartEntity.getId());
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
     @Override
     @Transactional
-    public ResponseEntity<CartDetailDto> delete(CartDetalInputDelete input) {
-        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(input.getCartId(), input.getProductId());
+    public ResponseEntity<CartDetailDto> delete(Integer customerId, CartDetalInputDelete input) {
+        CartEntity cartEntity = cartRepository.getByCustomer_Id(customerId);
+        CartDetailEntity entity = repository.findByCart_IdAndProduct_Id(cartEntity.getId(), input.getProductId());
         repository.delete(entity);
-        CartEntity cartEntity = cartRepository.getById(input.getCartId());
-        cartEntity.setTotal(totalOfCart(input.getCartId()));
+        cartEntity.setTotal(totalOfCart(cartEntity.getId()));
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 

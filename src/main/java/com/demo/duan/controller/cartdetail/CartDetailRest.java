@@ -20,9 +20,9 @@ import java.util.List;
 public class CartDetailRest {
     private final CartDetailService service;
 
-    @GetMapping
-    public ResponseEntity<List<CartDetailDto>> find(CartDetailParam param){
-        return service.find(param);
+    @GetMapping("/list/{customerId}")
+    public ResponseEntity<List<CartDetailDto>> find(@PathVariable Integer customerId){
+        return service.find(customerId);
     }
 
     @GetMapping("/{id}")
@@ -30,29 +30,29 @@ public class CartDetailRest {
         return service.getOne(id);
     }
 
-    @PostMapping
-    public ResponseEntity<CartDetailDto> addToCart(@Valid @RequestBody CartDetailInput input){
-        return service.addToCartDetail(input);
+    @PostMapping("/{customerId}")
+    public ResponseEntity<CartDetailDto> addToCart(@PathVariable Integer customerId, @Valid @RequestBody CartDetailInput input){
+        return service.addToCartDetail(customerId, input);
     }
 
-    @PutMapping
-    public ResponseEntity<CartDetailDto> updateNumber(@Valid @RequestBody CartDetailInput input){
-        return service.updateNumber(input);
+    @PutMapping("/{customerId}")
+    public ResponseEntity<CartDetailDto> updateNumber(@PathVariable Integer customerId, @Valid @RequestBody CartDetailInput input){
+        return service.updateNumber(customerId, input);
     }
 
-    @PutMapping("/up")
-    public ResponseEntity<CartDetailDto> updateNumberUp(@Valid @RequestBody CartDetailInput input){
-        return service.updateNumberUp(input);
+    @PutMapping("/up/{customerId}")
+    public ResponseEntity<CartDetailDto> updateNumberUp(@PathVariable Integer customerId, @Valid @RequestBody CartDetailInput input){
+        return service.updateNumberUp(customerId, input);
     }
 
-    @PutMapping("/down")
-    public ResponseEntity<CartDetailDto> updateNumberDown(@Valid @RequestBody CartDetailInput input){
-        return service.updateNumberDown(input);
+    @PutMapping("/down/{customerId}")
+    public ResponseEntity<CartDetailDto> updateNumberDown(@PathVariable Integer customerId, @Valid @RequestBody CartDetailInput input){
+        return service.updateNumberDown(customerId, input);
     }
 
-    @DeleteMapping("")
-    public ResponseEntity<CartDetailDto> delete(@Valid @RequestBody CartDetalInputDelete input){
-        return service.delete(input);
+    @DeleteMapping("delete/{customerId}")
+    public ResponseEntity<CartDetailDto> delete(@PathVariable Integer customerId, @Valid @RequestBody CartDetalInputDelete input){
+        return service.delete(customerId,input);
     }
 
     @GetMapping("/get-weight")

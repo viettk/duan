@@ -43,7 +43,6 @@ public class AdressServiceImpl implements AdressService {
     @Transactional
     public ResponseEntity<AdressDto> create(AdressInput input) {
 
-        System.out.println(input.getCustomerInput());
         /* KHông cần thiết - Kiểm tra tài khoản đã có hay chưa */
         CustomerEntity customerEntity =customerRepository.findById(input.getCustomerInput())
                 .orElseThrow(()-> new RuntimeException("Bạn chưa có tài khoản"));
@@ -66,10 +65,6 @@ public class AdressServiceImpl implements AdressService {
        if(count>0){
            throw new RuntimeException("Địa chỉ đã tồn tại");
        }
-
-       /* Lưu địa chỉ vào db */
-        AdressEntity entity = mapper.inputToEntity(input);
-        entity.setCustomer(customerEntity);
         /* Kiểm tra nếu tạo địa chỉ mới ở chế độ mặc đinh thì set các địa chỉ khách về ko mặc định */
         if(input.getStatus().booleanValue()==false){
             List<AdressEntity> lst = repository.findAllByCustomer_Id(input.getCustomerInput());
@@ -77,6 +72,10 @@ public class AdressServiceImpl implements AdressService {
                 x.setStatus(true);
             }
         }
+
+        /* Lưu địa chỉ vào db */
+        AdressEntity entity = mapper.inputToEntity(input);
+        entity.setCustomer(customerEntity);
         repository.save(entity);
 
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
@@ -96,16 +95,21 @@ public class AdressServiceImpl implements AdressService {
         }
 
         /* Kiểm tra nếu tạo địa chỉ mới ở chế độ mặc đinh thì set các địa chỉ khách về ko mặc định */
-        if(input.getStatus().booleanValue()==false){
+
+        if(input.getStatus().booleanValue() == false){
+            System.out.println(input.getCustomerInput() + "ok");
             List<AdressEntity> lst = repository.findAllByCustomer_Id(input.getCustomerInput());
+            System.out.println(input.getCustomerInput());
             for(AdressEntity x : lst){
                 x.setStatus(true);
                 repository.save(x);
             }
+
         }
 
         AdressEntity entity = repository.getById(id);
         mapper.inputToEntity(input, entity);
+
         repository.save(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }

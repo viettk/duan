@@ -24,8 +24,7 @@ public class MailServiceImpl implements MailService{
         helper.setFrom(mail.getFrom());
         helper.setTo(mail.getTo());
         helper.setSubject(mail.getSubject());
-        helper.setText(mail.getBody(), true);
-        message.setContent(renderHtml(mail.getToken()), "text/html");
+        helper.setText(renderHtml(mail.getToken()), true);
         helper.setReplyTo(mail.getFrom());
         String[] attachments = mail.getAttachments();
         if(attachments != null && attachments.length > 0) {
@@ -41,7 +40,7 @@ public class MailServiceImpl implements MailService{
     public String renderHtml(String token){
         return "<div style=\"margin:0 30%; text-align: center; display: block; font-family:Roboto;\">\n" +
                 "        <h1 style=\"margin-bottom: 20px; text-align: left;\">Đặt lại mật khẩu tài khoản BanDai</h1>\n" +
-                "        <p style=\"text-align: left;\">Bạn chỉ cần click vào nút <b>xác nhận</b> dưới đây để đặt lại mật khẩu: <b>(Nó chỉ có tác dụng trong 3 phút)</b></p>\n" +
+                "        <p style=\"text-align: left;\">Vui lòng click <b>xác nhận</b>: <b>(Có hiệu lực trong 180 giây)</b></p>\n" +
                 "        <a href=\""+token+"\" style=\"margin: 24px 0;line-height: 48px;padding: 11px 30px; background: linear-gradient(\n" +
                 "        180deg,#FF6666 0%,#f0b90b 100%); border-radius: 4px;font-weight: bold;color: #1e2026; text-decoration: none;\">Xác nhận</a>\n" +
                 "        <hr><p style=\"text-align: left;\">Bạn đang gặp sự cố? Nếu bạn không thể đặt lại mật khẩu hoặc bạn chưa thử đăng nhập, vui lòng liên hệ với bộ phận hỗ trợ .</p>\n" +

@@ -16,6 +16,8 @@ public interface DiscountRepository extends JpaRepository<DiscountEntity, Intege
     @Query("from DiscountEntity d where d.name=:name and d.number > 0")
     Optional<DiscountEntity> searchDiscountByCustomer(@Param("name") String name);
 
+    DiscountEntity getByName(String name);
+
     long countAllByName(String name);
 
     @Query("from DiscountEntity d where (:#{#param.name} is null or d.name like %:#{#param.name}%)" +

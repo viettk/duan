@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -53,7 +53,7 @@ public class ProductEntity implements Serializable {
     private String photo;
 
     @Column(name = "create_date")
-    private Date createDate;
+    private LocalDate createDate;
 
     @OneToMany(mappedBy = "product")
     private List<PhotoEntity> photos ;
@@ -68,7 +68,7 @@ public class ProductEntity implements Serializable {
     private String trait;
 
     @Column(name = "release_date")
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     @Column(name = "price_release")
     private Integer price_release;

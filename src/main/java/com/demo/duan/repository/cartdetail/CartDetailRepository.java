@@ -14,8 +14,8 @@ import java.util.Optional;
 @Repository
 public interface CartDetailRepository extends JpaRepository<CartDetailEntity, Integer> {
 
-    @Query("from CartDetailEntity cd where cd.cart.id =:#{#cartDetail.cartId}")
-    List<CartDetailEntity> find(@Param("cartDetail") CartDetailParam cartDetail);
+    @Query("from CartDetailEntity cd where cd.cart.customer.id = :customerId")
+    List<CartDetailEntity> find(@Param("customerId") Integer customerId);
 
     @Query("from CartDetailEntity cd where cd.cart.id = :cartId")
     List<CartDetailEntity> findListByCartId(@Param("cartId") Integer cartId);

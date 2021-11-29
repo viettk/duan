@@ -62,7 +62,7 @@ public class BillServiceImpl implements BillService{
     @Override
     @Transactional
     public ResponseEntity<BillDto> createByCustomer(Integer cartId ,BillInput input) {
-        Date date = new Date();
+        LocalDate date = LocalDate.now();
         DiscountEntity discount = new DiscountEntity();
 
         /* lưu hóa đơn vào máy */
@@ -71,12 +71,11 @@ public class BillServiceImpl implements BillService{
         entity.setStatus_order("Chờ xác nhận");
         entity.setCreate_date(date);
         entity.setUpdate_date(date);
-        entity.setTotal(BigDecimal.ZERO);
+        entity.setTotal(input.getTotal());
 
         /* Kiểm tra mã giảm giá có khả dụng hay ko */
         if(!input.getDiscountName().equals("")){
-            discount = discountRepository.searchDiscountByCustomer(input.getDiscountName())
-                    .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
+            discount = discountRepository.getByName(input.getDiscountName());
             entity.setDiscount(discount);
             /* Trừ mã giảm giá */
             discount.setNumber(discount.getNumber() - 1);
@@ -92,9 +91,9 @@ public class BillServiceImpl implements BillService{
         billDetailService.createByCustomer(billDetailInput, cartId);
 
         /* Set lại thành tiền cho hóa đơn */
-        BigDecimal totalOfBill =  billDetailService.totalOfBill(entity.getId());
-        entity.setTotal(totalOfBill);
-        repository.save(entity);
+//        BigDecimal totalOfBill =  billDetailService.totalOfBill(entity.getId());
+//        entity.setTotal(totalOfBill);
+//        repository.save(entity);
 
         /* Xóa giỏ hàng */
         cartDetailRepository.deleteAllByCart_Id(cartId);
@@ -129,7 +128,8 @@ public class BillServiceImpl implements BillService{
     @Override
     @Transactional
     public ResponseEntity<BillDto> createByCustomerNotLogin(BillInput input) {
-        Date date = new Date();
+        System.out.println(input.getTotal());
+        LocalDate date = LocalDate.now();
         DiscountEntity discount = new DiscountEntity();
 
         /* lưu hóa đơn vào máy */
@@ -138,18 +138,19 @@ public class BillServiceImpl implements BillService{
         entity.setStatus_order("Chờ xác nhận");
         entity.setCreate_date(date);
         entity.setUpdate_date(date);
-        entity.setTotal(BigDecimal.ZERO);
 
         /* Kiểm tra mã giảm giá có khả dụng hay ko */
         if(!input.getDiscountName().equals("")){
             discount = discountRepository.searchDiscountByCustomer(input.getDiscountName())
                     .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
+            System.out.println(discount.getId());
             entity.setDiscount(discount);
             /* Trừ mã giảm giá */
             discount.setNumber(discount.getNumber() - 1);
         }
 
         entity.setId_code(createCodeId(entity.getId()));
+        entity.setTotal(input.getTotal());
         repository.save(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
@@ -284,7 +285,7 @@ public class BillServiceImpl implements BillService{
     public ResponseEntity<BillDto> update(BillInput input, Integer id) throws RuntimeException{
         BillEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn này"));
         this.mapper.inputToEntity(input, entity);
-        Date date = new Date();
+        LocalDate date = LocalDate.now();
         entity.setUpdate_date(date);
         this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
@@ -295,7 +296,7 @@ public class BillServiceImpl implements BillService{
         BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
         String status = "";
 
-        Date date = new Date();
+        LocalDate date = LocalDate.now();
         switch (input.getStatus_order()){
             case "Xác nhận":
                 status = "Đã xác nhận";
@@ -324,6 +325,13 @@ public class BillServiceImpl implements BillService{
             default:
                 throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
         }
+        String status_pay = "";
+        if(input.getStatus_pay().equals("")) {
+            status_pay = entity.getStatus_pay();
+        }else {
+            status_pay = input.getStatus_pay();
+        }
+        entity.setStatus_pay(status_pay);
         entity.setStatus_order(status);
         entity.setUpdate_date(date);
         this.repository.save(entity);
@@ -333,7 +341,7 @@ public class BillServiceImpl implements BillService{
     public ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input) {
         BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
         String status = "";
-        Date date = new Date();
+        LocalDate date = LocalDate.now();
         switch (input.getStatus_pay()){
             case "Đã thanh toán":
                 status = "Đã thanh toán";
