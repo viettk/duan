@@ -35,7 +35,6 @@ public class BillRest {
             @RequestParam(value = "_known", required = false) String known
     ){
         BillParam param = new BillParam(order, pay, start, end);
-        System.out.println(param.getStatus_order());
         if (known.isEmpty()){
             Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
             Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
