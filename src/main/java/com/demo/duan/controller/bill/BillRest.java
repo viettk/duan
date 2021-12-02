@@ -75,7 +75,7 @@ public class BillRest {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<BillDto>updateBill(@PathVariable("id") Integer id, BillInput input){
         return this.service.update(input, id);
     }
