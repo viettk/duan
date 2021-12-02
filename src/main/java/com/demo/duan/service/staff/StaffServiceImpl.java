@@ -16,35 +16,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
 @Service
 @AllArgsConstructor
-public class StaffServiceImpl implements StaffService{
+public class StaffServiceImpl implements StaffService {
     private final StaffRepository repository;
     private final StaffMapper mapper;
 
     @Override
     @Transactional
-    public ResponseEntity<Page<StaffDto>> getStaff(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
-        if (known.equals("up")){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<StaffDto> result = this.repository.findAll(pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<StaffDto> result = this.repository.findAll(pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }
+    public ResponseEntity<Page<StaffDto>> getStaff(Pageable pageable) {
+        Page<StaffDto> result = this.repository.findAll(pageable).map(mapper::entityToDto);
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<StaffDto> createStaff(StaffInput input) throws RuntimeException{
-        if (!repository.findByEmail(input.getEmail()).isEmpty()){
+    public ResponseEntity<StaffDto> createStaff(StaffInput input) throws RuntimeException {
+        if (!repository.findByEmail(input.getEmail()).isEmpty()) {
             new RuntimeException("Email này đã tồn tại!");
         }
-        if (!repository.findByPhone(input.getPhone()).isEmpty()){
+        if (!repository.findByPhone(input.getPhone()).isEmpty()) {
             new RuntimeException("Đã tồn tại số điện thoại này!");
         }
         StaffEntity entity = this.mapper.inputToEntity(input);
@@ -57,16 +49,9 @@ public class StaffServiceImpl implements StaffService{
     @Transactional
     public ResponseEntity<StaffDto> updateStaff(Integer id, StaffInput input) throws RuntimeException {
         StaffEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không tồn tại nhân viên này!"));
-        if(input.getPassword().equals("")) {
-        	String password = entity.getPassword();
-        	entity.setPassword(password);
-        	this.mapper.inputToEntity(input, entity);
-            this.repository.save(entity);
-        }
-        else {
-        	this.mapper.inputToEntity(input, entity);
-            this.repository.save(entity);
-		}
+        this.mapper.inputToEntity(input, entity);
+        entity.setPassword(entity.getPassword());
+        this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
 
@@ -74,10 +59,9 @@ public class StaffServiceImpl implements StaffService{
     @Transactional
     public ResponseEntity<StaffDto> disableStaff(Integer id) {
         StaffEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không tồn tại nhân viên này!"));
-        if(entity.isStatus() == true){
+        if (entity.isStatus() == true) {
             entity.setStatus(false);
-        }
-        else {
+        } else {
             entity.setStatus(true);
         }
         this.repository.save(entity);
@@ -86,24 +70,23 @@ public class StaffServiceImpl implements StaffService{
 
     @Override
     @Transactional
-    public ResponseEntity<Page<StaffDto>> searchByParam(StaffParam param, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
-        if (known.equals("up")){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<StaffDto> result = this.repository.searchByParam(param, pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<StaffDto> result = this.repository.searchByParam(param, pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }
+    public ResponseEntity<Page<StaffDto>> searchByParam(StaffParam param, Pageable pageable) {
+        Page<StaffDto> result = this.repository.filterByParam(param, pageable).map(mapper::entityToDto);
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<StaffDto> getByUsername(String username) throws RuntimeException{
+    public ResponseEntity<StaffDto> getByUsername(String username) throws RuntimeException {
         StaffEntity entity = this.repository.findByEmail(username).orElseThrow(() -> new RuntimeException("Không tồn tại nhân viên này"));
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
+    }
+
+    @Override
+    public ResponseEntity<StaffDto> resetPassord(String email, StaffInput input) throws RuntimeException {
+        StaffEntity entity = repository.findByEmail(email).orElseThrow(() -> new RuntimeException("not found staff in the database!"));
+        entity.setPassword(input.getPassword());
+        repository.save(entity);
+        return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 }

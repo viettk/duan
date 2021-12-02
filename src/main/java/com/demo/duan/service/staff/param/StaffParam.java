@@ -11,4 +11,8 @@ public class StaffParam {
 
     private String name;
 
+    private Boolean status;
+
+    private Integer role;
+
 }

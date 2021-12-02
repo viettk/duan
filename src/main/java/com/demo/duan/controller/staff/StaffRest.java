@@ -6,6 +6,9 @@ import com.demo.duan.service.staff.input.StaffInput;
 import com.demo.duan.service.staff.param.StaffParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,35 +22,46 @@ public class StaffRest {
 
     private final StaffService service;
 
-    @GetMapping
-    public ResponseEntity<Page<StaffDto>>getAll(
-            @RequestParam("_limit") Optional<Integer> limit,
-            @RequestParam("_page") Optional<Integer> page,
-            @RequestParam(value = "_field", required = false) Optional<String> field,
-            @RequestParam(value = "_known", required = false) String known
-    ){
-        return this.service.getStaff(limit,page,field,known);
-    }
-
     @GetMapping("/email")
     public ResponseEntity<StaffDto>getByEmail(@RequestParam("email") String email){
         return this.service.getByUsername(email);
     }
 
-    @GetMapping("/search")
+    @GetMapping
     public ResponseEntity<Page<StaffDto>>search(
-            @RequestBody StaffParam param,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "status", required = false) Boolean status,
+            @RequestParam(value = "role", required = false) Integer role,
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page,
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-        return this.service.searchByParam(param, limit, page, field, known);
+        StaffParam param = new StaffParam();
+        param.setEmail(email);
+        param.setName(name);
+        param.setStatus(status);
+        param.setRole(role);
+        if (known.isEmpty()){
+            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.searchByParam(param, pageable);
+        }else {
+            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.searchByParam(param, pageable);
+        }
     }
 
     @PostMapping
     public Object createStaff(@RequestBody StaffInput staffInput){
         return this.service.createStaff(staffInput);
+    }
+
+    @PutMapping("/reset-password/{email}")
+    public Object createStaff(@PathVariable("email") String email, @RequestBody StaffInput staffInput){
+        return this.service.resetPassord(email, staffInput);
     }
 
     @PutMapping("/{id}")

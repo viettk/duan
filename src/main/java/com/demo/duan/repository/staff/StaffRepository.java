@@ -13,13 +13,15 @@ import java.util.Optional;
 
 @Repository
 public interface StaffRepository extends JpaRepository<StaffEntity, Integer> {
+
     Optional<StaffEntity>findByEmail(String email);
 
     //tìm kiếm theo tên, email.
-    @Query("select s from StaffEntity s " +
-            "where (:#{#staff.name} is null or s.name like :#{#staff.name})" +
-            "and (:#{#staff.price} is null or s.email = :#{#staff.price})")
-    Page<StaffEntity>searchByParam(@Param("staff")StaffParam staff, Pageable pageable);
+    @Query("select s from StaffEntity s where :#{#staff.email} is null or s.email like :#{#staff.email} " +
+            "and :#{#staff.name} is null or s.name like :#{#staff.email} " +
+            "and :#{#staff.status} is null or s.status=:#{#staff.status} " +
+            "and :#{#staff.role} is null or s.role=:#{#staff.role}")
+    Page<StaffEntity>filterByParam(@Param("staff")StaffParam staff, Pageable pageable);
 
     Optional<StaffEntity>findByPhone(String phone);
 
