@@ -1,7 +1,9 @@
 package com.demo.duan.service.billdetail;
 
 import com.demo.duan.entity.BillDetailEntity;
+import com.demo.duan.entity.BillEntity;
 import com.demo.duan.entity.CartDetailEntity;
+import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,8 @@ public class BillDetailServiceImpl implements BillDetailService{
     private final CartDetailRepository cartDetailRepository;
 
     private final CartDetailMapper cartDetailMapper;
+
+    private final BillRepository billRepository;
 
     @Override
     public ResponseEntity<List<BillDetailDto>> createByCustomer(BillDetailInput input, Integer cartId) {
@@ -63,8 +68,16 @@ public class BillDetailServiceImpl implements BillDetailService{
     @Override
     public ResponseEntity<BillDetailDto> updateBillDetail(Integer id, BillDetailInput input) throws RuntimeException{
         BillDetailEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn chi tiết này"));
+        int returnNumber = entity.getNumber() - input.getNumber();
+        BigDecimal returnPrice = entity.getPrice().multiply( new BigDecimal(returnNumber));
+        BigDecimal totalNew = entity.getPrice().multiply(new BigDecimal(input.getNumber()));
         this.mapper.inputToEntity(input, entity);
+        entity.setTotal(totalNew);
         this.repository.save(entity);
+        //
+        BillEntity billEntity = billRepository.findById(entity.getBill().getId()).orElseThrow( () -> new RuntimeException("Không thấy Hóa đơn này"));
+        BigDecimal totalBill= billEntity.getTotal().subtract(entity.getPrice().multiply(returnPrice));
+        billEntity.setTotal(totalBill);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
 

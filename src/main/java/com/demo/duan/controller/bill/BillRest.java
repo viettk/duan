@@ -3,11 +3,16 @@ package com.demo.duan.controller.bill;
 import com.demo.duan.service.bill.BillService;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
+import com.demo.duan.service.bill.param.BillParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.Optional;
 
 @CrossOrigin("*")
@@ -19,50 +24,56 @@ public class BillRest {
     private final BillService service;
 
     @GetMapping
-    public ResponseEntity<Page<BillDto>>getAll(
-            @RequestParam("_limit") Optional<Integer> limit,
-            @RequestParam("_page") Optional<Integer> page,
-            @RequestParam(value = "_field", required = false) Optional<String> field,
-            @RequestParam(value = "_known", required = false) String known
-    ){
-        return this.service.getAll(limit,page,field,known);
-    }
-    @GetMapping("/by-status")
-    public ResponseEntity<Page<BillDto>>getByStatus(
-            @RequestParam(value = "pay", required = false) String pay,
+    public ResponseEntity<Page<BillDto>>findAll(
             @RequestParam(value = "order", required = false) String order,
-            @RequestParam("_limit") Optional<Integer> limit,
-            @RequestParam("_page") Optional<Integer> page,
+            @RequestParam(value = "pay", required = false) String pay,
+            @RequestParam(value = "start", required = false) Date start,
+            @RequestParam(value = "end", required = false) Date end,
+            @RequestParam(value = "_limit", required = false) Optional<Integer> limit,
+            @RequestParam(value = "_page", required = false) Optional<Integer> page,
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-        return this.service.getByStatus(pay, order, limit, page, field, known);
+        BillParam param = new BillParam(order, pay, start, end);
+        System.out.println(param.getStatus_order());
+        if (known.isEmpty()){
+            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.filterBill(param, pageable);
+        }else {
+            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.filterBill(param, pageable);
+        }
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<BillDto>getOne(@PathVariable("id") Integer id){
         return this.service.getOne(id);
     }
 
-    @GetMapping("/email-pay/{email}")
-    public ResponseEntity<Page<BillDto>>getByEmail(
-            @PathVariable("email") String email,
-            @RequestParam(name = "status", required = false) String status,
-            @RequestParam("_limit") Optional<Integer> limit,
-            @RequestParam("_page") Optional<Integer> page,
-            @RequestParam(value = "_field", required = false) Optional<String> field,
-            @RequestParam(value = "_known", required = false) String known
-    ){
-        return this.service.getByEmailPay(email, status,limit,page,field,known);
-    }
     @GetMapping("/email/{email}")
     public ResponseEntity<Page<BillDto>>getByEmail(
             @PathVariable("email") String email,
-            @RequestParam("_limit") Optional<Integer> limit,
-            @RequestParam("_page") Optional<Integer> page,
+            @RequestParam(value = "order", required = false) String order,
+            @RequestParam(value = "pay", required = false) String pay,
+            @RequestParam(value = "start", required = false) Optional<Date> start,
+            @RequestParam(value = "end", required = false) Optional<Date> end,
+            @RequestParam(value = "_limit", required = false) Optional<Integer> limit,
+            @RequestParam(value = "_page", required = false) Optional<Integer> page,
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-        return this.service.getByEmail(email,limit,page,field,known);
+        BillParam param = new BillParam(order, pay, start.orElse(null), end.orElse(null));
+        if (known.isEmpty()){
+            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.getByEmail(email, param, pageable);
+        }else {
+            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.getByEmail(email, param, pageable);
+        }
     }
 
     @PutMapping("/{id}")
@@ -76,11 +87,12 @@ public class BillRest {
     		){
     	return this.service.updateStatusOder(id, input);
     }
-    @PostMapping("/status-pay/{id}")
+
+    @PutMapping("/status-pay/{id}")
     public ResponseEntity<BillDto>updateStatusPay(
-    			@PathVariable("id") Integer id,
-                @RequestBody BillInput input
-    		){
-    	return this.service.updateStatusPay(id, input);
+            @PathVariable("id") Integer id,
+            @RequestBody BillInput input
+    ){
+        return this.service.updateStatusPay(id, input);
     }
 }

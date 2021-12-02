@@ -1,6 +1,8 @@
 package com.demo.duan.repository.bill;
 
 import com.demo.duan.entity.BillEntity;
+import com.demo.duan.service.bill.input.BillInput;
+import com.demo.duan.service.bill.param.BillParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,14 +10,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BillRepository extends JpaRepository<BillEntity, Integer> {
-    @Query("select b from BillEntity b where b.email = :email and b.status_order is null or b.status_order =:status")
-    Page<BillEntity>findByEmailAndOrder(@Param("email") String email, @Param("status") String status, Pageable pageable);
 
-    @Query("select b from BillEntity b where b.status_pay is null or b.status_pay = :pay and b.status_order = :order")
-    Page<BillEntity>findByStatus(@Param("pay") String pay, @Param("order") String order, Pageable pageable);
+    @Query("select b from BillEntity b where :#{#bill.status_order} is null or b.status_order=:#{#bill.status_order} " +
+            "and (:#{#bill.status_pay} is null or b.status_pay=:#{#bill.status_pay})" +
+            "and :#{#bill.date_start} is null and :#{#bill.date_end} is null or b.create_date between :#{#bill.date_start} and :#{#bill.date_end}")
+    Page<BillEntity> filterBill(@Param("bill") BillParam param, Pageable pageable);
 
-    Page<BillEntity>findByEmail(String email, Pageable pageable);
+    @Query("select b from BillEntity b where b.email=:email " +
+            "and (:#{#bill.status_order} is null or b.status_order=:#{#bill.status_order})" +
+            "and (:#{#bill.status_pay} is null or b.status_pay=:#{#bill.status_pay}) " +
+            "and (:#{#bill.date_start} is null and :#{#bill.date_end} is null) " +
+            "or(b.create_date between :#{#bill.date_start} and :#{#bill.date_end}) ")
+    Page<BillEntity> findByEmail(@Param("email") String email, @Param("bill") BillParam param, Pageable pageable);
 
 }

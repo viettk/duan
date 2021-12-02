@@ -22,4 +22,5 @@ public interface ProductService {
     ResponseEntity<ProductDto> getOne(Integer id);
 
     ResponseEntity<ProductDto> returnNumber(Integer id, Integer number);
+
 }
