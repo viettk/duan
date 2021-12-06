@@ -80,7 +80,9 @@ public class FavoriteServiceImpl implements FavoriteService{
     @Override
     @Transactional
     public ResponseEntity<FavoriteDto> delete(FavoriteInput input) {
-        FavoriteEntity entity = repository.findByCustomer_IdAndAndProduct_Id(input.getCustomerId(), input.getProductId());
+        System.out.println(input.getProductId());
+        FavoriteEntity entity = repository.finfFavo(input.getCustomerId(), input.getProductId());
+
         repository.delete(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
@@ -89,5 +91,17 @@ public class FavoriteServiceImpl implements FavoriteService{
     public int getProduct(Integer productId) {
         int count = repository.countAllByProduct_Id(productId);
         return count;
+    }
+
+    @Override
+    @Transactional
+    public boolean getOne(Integer id, Integer product_id) {
+        int entity = repository.count(id, product_id);
+        if(entity > 0){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

@@ -81,4 +81,8 @@ public interface ProductService {
     public void GiamGiaTheoDanhMuc(Integer categoryId, int value);
 
     public void GiamGiaTungSp(Integer id, int value);
+
+
+    //get all product
+    public ResponseEntity<Page<ProductDto>> getAllproduct(String param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page);
 }

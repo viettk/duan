@@ -6,7 +6,6 @@ import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.billdetail.BillDetailService;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
-import com.demo.duan.service.billdetail.input.BillDetailInput;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

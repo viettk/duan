@@ -4,7 +4,11 @@ import com.demo.duan.entity.CustomerEntity;
 import com.demo.duan.entity.StaffEntity;
 import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.staff.StaffRepository;
+import com.demo.duan.service.customer.dto.CustomerDto;
+import com.demo.duan.service.customer.param.CustomerMapper;
 import com.demo.duan.service.jwt.JwtTokenProvider;
+import com.demo.duan.service.staff.dto.StaffDto;
+import com.demo.duan.service.staff.mapper.StaffMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,6 +23,10 @@ import java.util.Optional;
 @RequestMapping("api/reload")
 @CrossOrigin(origins = "*")
 public class ReloadRest {
+    @Autowired
+    private CustomerMapper customerMapper;
+    @Autowired
+    private StaffMapper staffMapper;
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -38,11 +46,19 @@ public class ReloadRest {
             Optional<StaffEntity> staff = staffRepository.findByEmail(email);
             if(staff.isPresent()){
                 staff.get().setToken(bearerToken);
-                return ResponseEntity.ok(staff);
+                StaffDto staffDto = staffMapper.entityToDto(staff.get());
+                if(staff.get().getRole()==1){
+                    staffDto.setRole("ADMIN");
+                }else {
+                    staffDto.setRole("STAFF");
+                }
+                return ResponseEntity.ok(staffDto);
             }else {
                 CustomerEntity customer = customerRepository.findByEmail(email).get();
                 customer.setToken(bearerToken);
-                return ResponseEntity.ok(customer);
+                CustomerDto customerDto = customerMapper.entityToDto(customer);
+                customerDto.setRole("USER");
+                return ResponseEntity.ok(customerDto);
             }
         }else{
             return new ResponseEntity<Object>("Vui Lòng đăng nhập", HttpStatus.BAD_REQUEST);

@@ -476,5 +476,21 @@ public class ProductServiceImpl implements ProductService{
         productRepository.save(entity);
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<Page<ProductDto>> getAllproduct(String param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page) {
+        if(known.get().equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<ProductDto> dto = this.productRepository.searchAll(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Page<ProductDto> dto = this.productRepository.searchAll(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+    }
 
 }

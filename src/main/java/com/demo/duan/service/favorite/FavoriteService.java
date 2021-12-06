@@ -16,4 +16,6 @@ public interface FavoriteService {
     public ResponseEntity<FavoriteDto> delete(FavoriteInput input);
 
     public int getProduct(Integer productId);
+
+    public boolean getOne(Integer id, Integer product_id);
 }

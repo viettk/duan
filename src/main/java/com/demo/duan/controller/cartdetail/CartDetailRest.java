@@ -21,8 +21,8 @@ public class CartDetailRest {
     private final CartDetailService service;
 
     @GetMapping("/list/{customerId}")
-    public ResponseEntity<List<CartDetailDto>> find(@PathVariable Integer customerId){
-        return service.find(customerId);
+    public ResponseEntity<List<CartDetailDto>> find(@PathVariable Integer customerId, String email){
+        return service.find(customerId, email);
     }
 
     @GetMapping("/{id}")
@@ -31,42 +31,42 @@ public class CartDetailRest {
     }
 
     @PostMapping("/{customerId}")
-    public ResponseEntity<CartDetailDto> addToCart(@PathVariable Integer customerId, @Valid @RequestBody CartDetailInput input){
-        return service.addToCartDetail(customerId, input);
+    public ResponseEntity<CartDetailDto> addToCart(@PathVariable Integer customerId, String email,@Valid @RequestBody CartDetailInput input){
+        return service.addToCartDetail(customerId, email,input);
     }
 
     @PutMapping("/{customerId}")
-    public ResponseEntity<CartDetailDto> updateNumber(@PathVariable Integer customerId, @Valid @RequestBody CartDetailInput input){
-        return service.updateNumber(customerId, input);
+    public ResponseEntity<CartDetailDto> updateNumber(@PathVariable Integer customerId,String email, @Valid @RequestBody CartDetailInput input){
+        return service.updateNumber(customerId, email ,input);
     }
 
     @PutMapping("/up/{customerId}")
-    public ResponseEntity<CartDetailDto> updateNumberUp(@PathVariable Integer customerId, @Valid @RequestBody CartDetailInput input){
-        return service.updateNumberUp(customerId, input);
+    public ResponseEntity<CartDetailDto> updateNumberUp(@PathVariable Integer customerId, String email,@Valid @RequestBody CartDetailInput input){
+        return service.updateNumberUp(customerId,email ,input);
     }
 
     @PutMapping("/down/{customerId}")
-    public ResponseEntity<CartDetailDto> updateNumberDown(@PathVariable Integer customerId, @Valid @RequestBody CartDetailInput input){
-        return service.updateNumberDown(customerId, input);
+    public ResponseEntity<CartDetailDto> updateNumberDown(@PathVariable Integer customerId,String email ,@Valid @RequestBody CartDetailInput input){
+        return service.updateNumberDown(customerId, email ,input);
     }
 
     @DeleteMapping("delete/{customerId}")
-    public ResponseEntity<CartDetailDto> delete(@PathVariable Integer customerId, @Valid @RequestBody CartDetalInputDelete input){
-        return service.delete(customerId,input);
+    public ResponseEntity<CartDetailDto> delete(@PathVariable Integer customerId,String email ,@Valid @RequestBody CartDetalInputDelete input){
+        return service.delete(customerId, email ,input);
     }
 
     @GetMapping("/get-weight")
-    public Float getWeight(Integer cartId){
-        return service.getAllWeight(cartId);
+    public Float getWeight(Integer cartId, String email){
+        return service.getAllWeight(cartId, email);
     }
 
     @GetMapping("/totalItem")
-    public Integer getTotalItem(Integer id){
-        return service.getTotalItems(id);
+    public Integer getTotalItem(Integer id, String email){
+        return service.getTotalItems(id, email);
     }
 
     @GetMapping("/soluongtronggio")
-    public Integer getSoluongtronggio(Integer idcustomer){
-        return service.soluongtronggio(idcustomer);
+    public Integer getSoluongtronggio(Integer idcustomer, String email){
+        return service.soluongtronggio(idcustomer, email);
     };
 }

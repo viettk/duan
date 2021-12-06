@@ -7,15 +7,15 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface AdressService {
-    public ResponseEntity<List<AdressDto>> find(Integer customer_id);
+    public ResponseEntity<List<AdressDto>> find(Integer customer_id, String email);
 
-    public ResponseEntity<AdressDto> getOne(Integer customer_id);
+    public ResponseEntity<AdressDto> getOne(Integer id, String email);
 
-    public ResponseEntity<AdressDto> create(AdressInput input);
+    public ResponseEntity<AdressDto> create(AdressInput input, String email);
 
-    public ResponseEntity<AdressDto> update(Integer id , AdressInput input);
+    public ResponseEntity<AdressDto> update(Integer id, String email , AdressInput input);
 
-    public ResponseEntity<AdressDto> delete(Integer id);
+    public ResponseEntity<AdressDto> delete(Integer id, String email);
 
-    public ResponseEntity<AdressDto> getMacdinh(Integer customerId);
+    public ResponseEntity<AdressDto> getMacdinh(Integer customerId, String email);
 }

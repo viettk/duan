@@ -16,6 +16,8 @@ public class CustomerDto {
 
     private String token;
 
+    private String role;
+
     private boolean status;
 
     private Date last_login;

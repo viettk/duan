@@ -5,6 +5,7 @@ import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.repository.product.ProductRepository;
+import com.demo.duan.service.bill.BillService;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
@@ -83,6 +84,7 @@ public class BillDetailServiceImpl implements BillDetailService{
             repository.save(entity);
             billRepository.save(billEntity);
         }
+
         List<BillDetailEntity> lst = new ArrayList<>();
         List<BillDetailDto> lstDto = mapper.EntitiesToDtos(lst);
         return ResponseEntity.ok().body(lstDto);

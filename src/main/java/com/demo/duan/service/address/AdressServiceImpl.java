@@ -26,22 +26,22 @@ public class AdressServiceImpl implements AdressService {
 
     @Override
     @Transactional
-    public ResponseEntity<List<AdressDto>> find(Integer customer_id) {
-        List<AdressEntity> lst = repository.findAllByCustomer_Id(customer_id);
+    public ResponseEntity<List<AdressDto>> find(Integer customer_id, String email) {
+        List<AdressEntity> lst = repository.findAllList(customer_id, email);
         List<AdressDto> dto = mapper.EntitiesToDtos(lst);
         return ResponseEntity.ok().body(dto);
     }
 
     @Override
-    public ResponseEntity<AdressDto> getOne(Integer customer_id) {
-        AdressEntity entity = repository.getById(customer_id);
+    public ResponseEntity<AdressDto> getOne(Integer id, String email) {
+        AdressEntity entity = repository.getOne(id, email);
         AdressDto dto = mapper.entityToDto(entity);
         return ResponseEntity.ok().body(dto);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<AdressDto> create(AdressInput input) {
+    public ResponseEntity<AdressDto> create(AdressInput input, String email) {
 
         /* KHông cần thiết - Kiểm tra tài khoản đã có hay chưa */
         CustomerEntity customerEntity =customerRepository.findById(input.getCustomerInput())
@@ -52,8 +52,9 @@ public class AdressServiceImpl implements AdressService {
         }
 
         /* Nếu số lượng địa chỉ > 5 thì ko đc thêm địa chỉ nữa */
-        long num = repository.countAllByCustomer_Id(input.getCustomerInput());
+        long num = repository.countAllByCustomer_IdAndCustomer_Email(input.getCustomerInput(), email);
         if(num > 3){
+            System.out.println(num);
             throw new RuntimeException("Chỉ có tối đa 3 địa chỉ");
         }
 
@@ -67,7 +68,7 @@ public class AdressServiceImpl implements AdressService {
        }
         /* Kiểm tra nếu tạo địa chỉ mới ở chế độ mặc đinh thì set các địa chỉ khách về ko mặc định */
         if(input.getStatus().booleanValue()==false){
-            List<AdressEntity> lst = repository.findAllByCustomer_Id(input.getCustomerInput());
+            List<AdressEntity> lst = repository.findAllList(input.getCustomerInput(), email);
             for(AdressEntity x : lst){
                 x.setStatus(true);
             }
@@ -83,7 +84,7 @@ public class AdressServiceImpl implements AdressService {
 
     @Override
     @Transactional
-    public ResponseEntity<AdressDto> update(Integer id, AdressInput input) {
+    public ResponseEntity<AdressDto> update(Integer id, String email ,AdressInput input) {
 
         /* Kiểm tra địa chỉ có bị trùng với địa chỉ khác hay ko */
         long count = repository.countAllByAddressAndCityAndDistrictAndCustomer_Id(
@@ -98,7 +99,7 @@ public class AdressServiceImpl implements AdressService {
 
         if(input.getStatus().booleanValue() == false){
             System.out.println(input.getCustomerInput() + "ok");
-            List<AdressEntity> lst = repository.findAllByCustomer_Id(input.getCustomerInput());
+            List<AdressEntity> lst = repository.findAllList(input.getCustomerInput(), email);
             System.out.println(input.getCustomerInput());
             for(AdressEntity x : lst){
                 x.setStatus(true);
@@ -116,15 +117,15 @@ public class AdressServiceImpl implements AdressService {
 
     @Override
     @Transactional
-    public ResponseEntity<AdressDto> delete(Integer id) {
+    public ResponseEntity<AdressDto> delete(Integer id, String email) {
         AdressEntity entity = repository.getById(id);
         repository.delete(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
     @Override
-    public ResponseEntity<AdressDto> getMacdinh(Integer customerId) {
-        AdressEntity entity = repository.findStatus(customerId);
+    public ResponseEntity<AdressDto> getMacdinh(Integer customerId, String email) {
+        AdressEntity entity = repository.findStatus(customerId, email);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 }

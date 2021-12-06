@@ -29,7 +29,7 @@ public class CheckCartServiceImpl implements CheckCartService{
 
         }
         if(num >=15){
-            throw new RuntimeException("Bạn không thể mua quá 15 sản phẩm trong 1 đơn hàngs");
+            throw new RuntimeException("Bạn không thể mua quá 15 sản phẩm trong 1 đơn hàng");
         }
         return ResponseEntity.ok().body(inputs);
     }

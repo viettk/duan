@@ -88,7 +88,9 @@ public class CustomerServiceImpl implements CustomerService{
         /* Lưu giỏ hàng vào DB */
         cartRepository.save(cartEntity);
         entity.setToken(jwtTokenProvider.generateToken(entity.getEmail(), JWT_EXPIRATION,JWT_SECRET));
-        return ResponseEntity.ok().body(mapper.entityToDto(entity));
+        CustomerDto customerDto = mapper.entityToDto(entity);
+        customerDto.setRole("USER");
+        return ResponseEntity.ok().body(customerDto);
     }
 
 

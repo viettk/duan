@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -62,70 +63,90 @@ public class ReceiptDetailServiceImpl implements ReceiptDetailService {
     @Override
     @Transactional
     public ResponseEntity<ReceiptDetailDto> create(ReceiptDetailInput input) {
+
         ReceiptEntity receipt = receiptRepository.findById(input.getReceiptId()).get();
         ProductEntity product = productRepository.getById(input.getProductId());
 
-        int count = receiptDetailRepository.countAllByReceipt_IdAndProduct_Id(input.getReceiptId(), input.getProductId());
-        if(count > 0){
-//            throw new RuntimeException("Sản phẩm đã có trong phiếu nhập");
-            ReceiptDetailEntity entity = receiptDetailRepository.findByReceipt_IdAndProduct_Id(input.getReceiptId(), input.getProductId());
-            update(entity.getId(), input);
-            totalOfCart(input.getReceiptId());
-            return ResponseEntity.ok().body(mapper.entityToDto(entity));
-        }
 
-        // tính tống tiền số lượng * đơn giá
-        else {
-            BigDecimal total = input.getPrice().multiply(BigDecimal.valueOf(input.getNumber()));
+        LocalDate day_date = LocalDate.now();
+        if(day_date.isBefore(receipt.getCreate_date().plusDays(2))){
+            int count = receiptDetailRepository.countAllByReceipt_IdAndProduct_Id(input.getReceiptId(), input.getProductId());
+            if(count > 0){
+                ReceiptDetailEntity entity = receiptDetailRepository.findByReceipt_IdAndProduct_Id(input.getReceiptId(), input.getProductId());
+                update(entity.getId(), input);
+                totalOfCart(input.getReceiptId());
+                return ResponseEntity.ok().body(mapper.entityToDto(entity));
+            }
 
-            ReceiptDetailEntity receiptDetailEntity = mapper.inputToEntity(input);
-            receiptDetailEntity.setReceipt(receipt);
-            receiptDetailEntity.setProduct(product);
-            receiptDetailEntity.setTotal(total);
-            receiptDetailRepository.save(receiptDetailEntity);
+            // tính tống tiền số lượng * đơn giá
+            else {
+                BigDecimal total = input.getPrice().multiply(BigDecimal.valueOf(input.getNumber()));
 
-            // cập nhập số lượng vào trong kho
-            Integer saveNumber = input.getNumber() + product.getNumber();
-            product.setNumber(saveNumber);
-            productRepository.save(product);
-            totalOfCart(input.getReceiptId());
-            return ResponseEntity.ok().body(mapper.entityToDto(receiptDetailEntity));
+                ReceiptDetailEntity receiptDetailEntity = mapper.inputToEntity(input);
+                receiptDetailEntity.setReceipt(receipt);
+                receiptDetailEntity.setProduct(product);
+                receiptDetailEntity.setTotal(total);
+                receiptDetailRepository.save(receiptDetailEntity);
+
+                // cập nhập số lượng vào trong kho
+                Integer saveNumber = input.getNumber() + product.getNumber();
+                product.setNumber(saveNumber);
+                productRepository.save(product);
+                totalOfCart(input.getReceiptId());
+                return ResponseEntity.ok().body(mapper.entityToDto(receiptDetailEntity));
+            }
+        } else {
+            throw new RuntimeException("Đã quá hạn để cập nhật");
         }
     }
 
     @Override
     @Transactional
     public ResponseEntity<ReceiptDetailDto> update(Integer id, ReceiptDetailInput input) {
-        ReceiptDetailEntity receiptDetailEntity = receiptDetailRepository.getById(id);
-        ProductEntity product = productRepository.getById(input.getProductId());
-        // kiểm tra số lượng trong phiếu nhập chi tiết có khác với số lượng nhập trong ô input hay ko
-        if (receiptDetailEntity.getNumber() != input.getNumber()){
-            Integer saveNumber = product.getNumber() - receiptDetailEntity.getNumber()+ input.getNumber();
-            product.setNumber(saveNumber);
-            productRepository.save(product);
-            totalOfCart(input.getReceiptId());
-        }
-        if (receiptDetailEntity.getProduct() != product){
-            create(input);
-            totalOfCart(input.getReceiptId());
+
+        ReceiptEntity receipt = receiptRepository.getById(input.getReceiptId());
+
+        LocalDate day_date = LocalDate.now();
+        if(day_date.isBefore(receipt.getCreate_date().plusDays(2))){
+            ReceiptDetailEntity receiptDetailEntity = receiptDetailRepository.getById(id);
+            ProductEntity product = productRepository.getById(input.getProductId());
+            // kiểm tra số lượng trong phiếu nhập chi tiết có khác với số lượng nhập trong ô input hay ko
+            if (receiptDetailEntity.getNumber() != input.getNumber()){
+                Integer saveNumber = product.getNumber() - receiptDetailEntity.getNumber()+ input.getNumber();
+                product.setNumber(saveNumber);
+                productRepository.save(product);
+                totalOfCart(input.getReceiptId());
+            }
+            if (receiptDetailEntity.getProduct() != product){
+                create(input);
+                totalOfCart(input.getReceiptId());
+            }else {
+                receiptDetailEntity.setNumber(input.getNumber());
+                receiptDetailEntity.setPrice(input.getPrice());
+                BigDecimal total = input.getPrice().multiply(BigDecimal.valueOf(input.getNumber()));
+                receiptDetailEntity.setTotal(total);
+                receiptDetailRepository.save(receiptDetailEntity);
+                totalOfCart(input.getReceiptId());
+            }
+            return ResponseEntity.ok().body(mapper.entityToDto(receiptDetailEntity));
         }else {
-            receiptDetailEntity.setNumber(input.getNumber());
-            receiptDetailEntity.setPrice(input.getPrice());
-            BigDecimal total = input.getPrice().multiply(BigDecimal.valueOf(input.getNumber()));
-            receiptDetailEntity.setTotal(total);
-            receiptDetailRepository.save(receiptDetailEntity);
-            totalOfCart(input.getReceiptId());
+            throw new RuntimeException("Đã quá thời gian!");
         }
-        return ResponseEntity.ok().body(mapper.entityToDto(receiptDetailEntity));
     }
 
     @Override
     @Transactional
     public ResponseEntity<ReceiptDetailDto> deleteById(Integer id, Integer receiptId) {
-        ReceiptDetailEntity entity = receiptDetailRepository.getById(id);
-        receiptDetailRepository.delete(entity);
-        totalOfCart(receiptId);
-        return ResponseEntity.ok().body(mapper.entityToDto(entity));
+        ReceiptEntity receipt = receiptRepository.getById(receiptId);
+        LocalDate day_date = LocalDate.now();
+        if(day_date.isBefore(receipt.getCreate_date().plusDays(2))){
+            ReceiptDetailEntity entity = receiptDetailRepository.getById(id);
+            receiptDetailRepository.delete(entity);
+            totalOfCart(receiptId);
+            return ResponseEntity.ok().body(mapper.entityToDto(entity));
+        } else{
+            throw new RuntimeException("Đã quá thời gian cập nhật hóa đơn!");
+        }
     }
 
     @Override

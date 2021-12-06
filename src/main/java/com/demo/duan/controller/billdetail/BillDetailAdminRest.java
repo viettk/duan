@@ -30,6 +30,7 @@ public class BillDetailAdminRest {
     public ResponseEntity<BillDetailDto>getById(@PathVariable("id") Integer id){
         return this.service.getById(id);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<BillDetailDto>updateBillDetail(@PathVariable("id") Integer id, @RequestBody BillDetailInput input){
         return this.service.updateBillDetail(id, input);
