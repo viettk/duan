@@ -30,11 +30,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService{
     @Autowired
     private  CustomerRepository repository;
-    @Autowired
-    private  CustomerMapper mapper;
+
+    private final CustomerMapper mapper;
+
     @Autowired
     private  CartRepository cartRepository;
     @Autowired
