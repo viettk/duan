@@ -36,12 +36,18 @@ public class CartDetailRest {
     }
 
     @PutMapping("/{customerId}")
-    public ResponseEntity<CartDetailDto> updateNumber(@PathVariable Integer customerId,String email, @Valid @RequestBody CartDetailInput input){
+    public ResponseEntity<CartDetailDto> updateNumber(
+            @PathVariable Integer customerId,
+            String email,
+            @Valid @RequestBody CartDetailInput input){
         return service.updateNumber(customerId, email ,input);
     }
 
     @PutMapping("/up/{customerId}")
-    public ResponseEntity<CartDetailDto> updateNumberUp(@PathVariable Integer customerId, String email,@Valid @RequestBody CartDetailInput input){
+    public ResponseEntity<CartDetailDto> updateNumberUp(
+            @PathVariable Integer customerId,
+            String email,
+            @Valid @RequestBody CartDetailInput input){
         return service.updateNumberUp(customerId,email ,input);
     }
 

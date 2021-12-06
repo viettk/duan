@@ -17,10 +17,10 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
     @Query(nativeQuery = true,
-            value = "select top 20 p.* " +
+            value = "select p.* " +
                     "FROM Product  p " +
                     "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price,  p.price_extra, p.value_extra,p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
-                    "ORDER BY p.id desc ")
+                    "ORDER BY p.id desc limit 20 ")
     List<ProductEntity> searchNewArrival();
 
 
