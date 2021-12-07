@@ -14,9 +14,9 @@
     <packaging>war</packaging>
     <name>duan</name>
     <description>duan</description>
-    <properties>
-        <java.version>11</java.version>
-    </properties>
+<!--    <properties>-->
+<!--        <java.version>11</java.version>-->
+<!--    </properties>-->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
