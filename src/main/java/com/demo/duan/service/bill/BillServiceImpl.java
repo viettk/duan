@@ -9,7 +9,6 @@ import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.discount.DiscountRepository;
 import com.demo.duan.service.address.AdressService;
-import com.demo.duan.service.address.input.AdressInput;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.mapper.BillMapper;
@@ -17,6 +16,13 @@ import com.demo.duan.service.billdetail.BillDetailService;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
 import com.demo.duan.service.billdetail.mapper.BillDetailMapper;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,11 +33,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -100,35 +109,14 @@ public class BillServiceImpl implements BillService{
         CartEntity cartEntity = cartRepository.getById(cartId);
         cartEntity.setTotal(BigDecimal.ZERO);
 
-        /* Nếu là lần đầu tiên khách đặt hàng thì sẽ lưu giá địa chỉ của khách  */
-//        long count = repository.countAllByEmail(input.getEmail());
-//
-//        long num = adressRepository.countAllByEmail(input.getEmail());
-//
-//        if(count == 1 && num == 0){
-//            CustomerEntity customerEntity = customerRepository.getByEmail(input.getEmail());
-//            AdressInput adressInput = new AdressInput();
-//            adressInput.setName(input.getName());
-//            adressInput.setPhone(input.getPhone());
-//            adressInput.setAddress(input.getAddress());
-//            adressInput.setCity(input.getCity());
-//            adressInput.setDistrict(input.getDistrict());
-//
-//            adressInput.setStatus(true);
-//
-//            CustomerEntity customer = customerRepository.getByEmail(input.getEmail());
-//            adressInput.setCustomerInput(customer.getId());
-//            dressService.create(adressInput);
-//            return ResponseEntity.ok().body(mapper.entityToDto(entity));
-//        } else{
-            return ResponseEntity.ok().body(mapper.entityToDto(entity));
+        return ResponseEntity.ok().body(mapper.entityToDto(entity));
 
     }
 
     @Override
     @Transactional
     public ResponseEntity<BillDto> createByCustomerNotLogin(BillInput input) {
-        System.out.println(input.getTotal());
+
         LocalDate date = LocalDate.now();
         DiscountEntity discount = new DiscountEntity();
 
@@ -143,15 +131,15 @@ public class BillServiceImpl implements BillService{
         if(!input.getDiscountName().equals("")){
             discount = discountRepository.searchDiscountByCustomer(input.getDiscountName())
                     .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
-            System.out.println(discount.getId());
             entity.setDiscount(discount);
             /* Trừ mã giảm giá */
             discount.setNumber(discount.getNumber() - 1);
         }
-
         entity.setId_code(createCodeId(entity.getId()));
         entity.setTotal(input.getTotal());
         repository.save(entity);
+
+        CreateBillPdf(entity.getId(), input.getName(), input.getEmail(), input.getPhone(), entity.getCreate_date(), entity.getTotal(), entity.getStatus_pay() );
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
@@ -161,7 +149,7 @@ public class BillServiceImpl implements BillService{
         BillEntity entity = repository.getById(id);
 
         /* Nếu hóa đơn ở các trạng thái đang giao, giao thành công , Đã hủy thì ko cập nhật lại đc Hóa đơn */
-        if(entity.getStatus_order().equals("Đang giao hàng") || entity.getStatus_order().equals("Giap thành công")
+        if(entity.getStatus_order().equals("Đang giao hàng") || entity.getStatus_order().equals("Giao thành công")
         || entity.getStatus_order().equals("Đã Hủy")){
             throw new RuntimeException("Bạn không thể cập nhật Hóa đơn");
         }
@@ -239,7 +227,7 @@ public class BillServiceImpl implements BillService{
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         for(num = 1; num < id_count; num++){
-            id_code ="HD" + localDate.getMonthValue()+"-"+localDate.getYear()+"-"+num;
+            id_code ="HD" +localDate.getYear() +"-" + localDate.getMonthValue()+ "-"+num;
         }
         return id_code;
     }
@@ -366,5 +354,76 @@ public class BillServiceImpl implements BillService{
         Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
         Page<BillDto> result = this.repository.findByStatus(pay, order, pageable).map(mapper :: entityToDto);
         return ResponseEntity.ok().body(result);
+    }
+
+    @Override
+    @Transactional
+    public void CreateBillPdf(Integer billId ,String name, String email, String phone, LocalDate date, BigDecimal totalBillMoney, String statusPay) {
+        try {
+            //Create Document instance.
+            Document document = new Document();
+
+            //Create OutputStream instance.
+            OutputStream outputStream =
+                    new FileOutputStream(new File("D:\\TestParagraphFile.pdf"));
+
+            //Create PDFWriter instance.
+            PdfWriter.getInstance(document, outputStream);
+
+            //Open the document.
+            document.open();
+
+            //Create Paragraph objects
+            Paragraph paragraph1 = new Paragraph("Hoa don mua hang");
+            paragraph1.setAlignment(Paragraph.ALIGN_CENTER);
+            Paragraph paragraph2 = new Paragraph("Thong tin khach hang");
+            Paragraph infor      = new Paragraph("Ho ten: "+ name + "\nEmail: "+ email
+                    + "\nSDT: " + phone );
+            Paragraph dateBuy = new Paragraph("Ngay mua: " + date );
+            Paragraph inlin_block = new Paragraph("\nThông tin Hóa đơn \n");
+
+            //Add content to the document using Paragraph objects.
+            document.add(paragraph1);
+            document.add(paragraph2);
+            document.add(infor);
+            document.add(inlin_block);
+
+            List<BillDetailEntity> lstBillDetailEntities = billDetailRepository.getListByCustomer(billId);
+
+            //add table
+            PdfPTable table = new PdfPTable(5);
+            Stream.of("Ma SKU", "Ten San pham", "Gia", "So luong", "Tong tien").forEach(
+                    columnTitle -> {
+                        PdfPCell header = new PdfPCell();
+                        header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                        header.setBorderWidth(2);
+                        header.setPhrase(new Phrase(columnTitle));
+                        table.addCell(header);
+                    });
+
+            for (BillDetailEntity b : lstBillDetailEntities) {
+                System.out.println("okok");
+                table.addCell(String.valueOf(b.getId()));
+                table.addCell(b.getProduct().getSku());
+                table.addCell(b.getProduct().getName());
+                table.addCell(String.valueOf(b.getPrice()));
+                table.addCell(String.valueOf(b.getNumber()));
+                table.addCell(String.valueOf(b.getTotal()));
+            }
+
+            Paragraph total = new Paragraph(String.valueOf(totalBillMoney));
+
+            Paragraph status = new Paragraph(statusPay);
+
+            //Close document and outputStream.
+            document.add(table);
+            document.add(total);
+            document.add(status);
+            document.close();
+            outputStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

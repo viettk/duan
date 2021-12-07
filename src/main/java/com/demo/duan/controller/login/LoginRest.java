@@ -5,8 +5,11 @@ import com.demo.duan.entity.CustomerEntity;
 import com.demo.duan.entity.StaffEntity;
 import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.repository.staff.StaffRepository;
+import com.demo.duan.service.customer.dto.CustomerDto;
 import com.demo.duan.service.customer.param.CustomerMapper;
 import com.demo.duan.service.jwt.*;
+import com.demo.duan.service.staff.dto.StaffDto;
+import com.demo.duan.service.staff.mapper.StaffMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,10 @@ import java.util.Optional;
 @RequestMapping("api/login")
 @CrossOrigin(origins = "*")
 public class LoginRest {
+    @Autowired
+    private CustomerMapper customerMapper;
+    @Autowired
+    private StaffMapper staffMapper;
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
@@ -66,11 +73,19 @@ public class LoginRest {
             Optional<StaffEntity> staff = staffRepository.findByEmail(loginRequest.getEmail());
             if(staff.isPresent()){
                 staff.get().setToken(jwt);
-                return ResponseEntity.ok(staff);
+                StaffDto staffDto = staffMapper.entityToDto(staff.get());
+                if(staff.get().getRole()==1){
+                    staffDto.setRole("ADMIN");
+                }else {
+                    staffDto.setRole("STAFF");
+                }
+                return ResponseEntity.ok(staffDto);
             }else {
                 CustomerEntity customer = customerRepository.findByEmail(loginRequest.getEmail()).get();
                 customer.setToken(jwt);
-                return ResponseEntity.ok(mapper.entityToDto(customer));
+                CustomerDto customerDto = customerMapper.entityToDto(customer);
+                customerDto.setRole("USER");
+                return ResponseEntity.ok(customerDto);
             }
         }catch (Exception e){
             throw new RuntimeException("Tài khoản hoặc mật khẩu không chính xác");

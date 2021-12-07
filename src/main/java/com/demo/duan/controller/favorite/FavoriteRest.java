@@ -31,15 +31,18 @@ public class FavoriteRest {
         return service.find(customerId ,param, field, known);
     }
 
+    @GetMapping("/san-pham-yeu-thich")
+    public boolean getOne( Integer id, Integer product_id){
+        return service.getOne(id , product_id);
+    }
+
     @PostMapping
     public ResponseEntity<FavoriteDto> create(@Valid @RequestBody FavoriteInput input){
         return service.create(input);
     }
 
-    @DeleteMapping
-    public ResponseEntity<FavoriteDto> update(
-            @Valid @RequestBody FavoriteInput input
-    ){
-        return service.delete(input);
-    }
+    @PostMapping("/y")
+    public ResponseEntity<FavoriteDto> update(@Valid @RequestBody FavoriteInput input) {
+        System.out.println(input.getProductId());
+        return service.delete(input);}
 }
