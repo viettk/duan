@@ -86,7 +86,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     Page<ProductEntity> searchByAdmin(@Param("product") ProductParam product, Pageable pageable );
 
 
-    @Query("from ProductEntity p where p.status = true and p.name LIKE CONCAT('%',:product,'%')")
+    @Query("from ProductEntity p where p.status = true and p.name is null or p.name LIKE CONCAT('%',:product,'%')")
     Page<ProductEntity> searchAll(@Param("product") String product, Pageable pageable );
 
     // ---------------------------dũng--------------------

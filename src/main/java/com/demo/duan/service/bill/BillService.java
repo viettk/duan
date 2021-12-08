@@ -2,8 +2,10 @@ package com.demo.duan.service.bill;
 
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
+import com.demo.duan.service.bill.param.BillParam;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
@@ -34,19 +36,17 @@ public interface BillService {
 
     //bill admin
 
-    ResponseEntity<Page<BillDto>>getAll(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
-
     ResponseEntity<BillDto>getOne(Integer id);
 
-    ResponseEntity<BillDto>update(BillInput input, Integer id);
+    ResponseEntity<Page<BillDto>>getByEmail(String email, BillParam param, Pageable pageable);
 
-    ResponseEntity<Page<BillDto>>getByEmail(String name, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+    ResponseEntity<BillDto>update(BillInput input, Integer id);
 
     ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input);
 
     ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input);
 
-    ResponseEntity<Page<BillDto>>getByStatus(String pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+    ResponseEntity<Page<BillDto>> filterBill(BillParam param, Pageable pageable);
 
     public void CreateBillPdf(Integer billId , String name, String email, String phone, LocalDate date, BigDecimal totalBillMoney, String statusPay);
 }

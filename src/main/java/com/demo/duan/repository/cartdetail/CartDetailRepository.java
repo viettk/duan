@@ -1,6 +1,7 @@
 package com.demo.duan.repository.cartdetail;
 
 import com.demo.duan.entity.CartDetailEntity;
+import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.param.CartDetailParam;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -16,4 +16,7 @@ public interface CartRepository extends JpaRepository<CartEntity, Integer> {
 
     @Query("from CartEntity cd where cd.customer.id = :id and cd.customer.email = :email")
     CartEntity getByCustomer_Id(Integer id, String email);
+
+    @Query("from CartEntity cd where cd.customer.email = :email")
+    CartEntity timCart(String email);
 }

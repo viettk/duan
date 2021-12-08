@@ -12,6 +12,7 @@ import com.demo.duan.service.address.AdressService;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.mapper.BillMapper;
+import com.demo.duan.service.bill.param.BillParam;
 import com.demo.duan.service.billdetail.BillDetailService;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
@@ -233,20 +234,7 @@ public class BillServiceImpl implements BillService{
     }
 
     /* bill admin*/
-    @Override
-    public ResponseEntity<Page<BillDto>> getAll(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
-        if (known.equals("up")){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<BillDto> result = this.repository.findAll(pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<BillDto> result = this.repository.findAll(pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }
-    }
+
 
     @Override
     public ResponseEntity<BillDto> getOne(Integer id) {
@@ -255,19 +243,11 @@ public class BillServiceImpl implements BillService{
     }
 
     @Override
-    public ResponseEntity<Page<BillDto>> getByEmail(String email, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
-        if (known.equals("up")){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<BillDto> result = this.repository.findByEmail(email, pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<BillDto> result = this.repository.findByEmail(email, pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }
+    public ResponseEntity<Page<BillDto>> getByEmail(String email, BillParam param, Pageable pageable) {
+        Page<BillDto> result = this.repository.findByEmail(email, param, pageable).map(mapper :: entityToDto);
+        return ResponseEntity.ok().body(result);
     }
+
 
     @Override
     public ResponseEntity<BillDto> update(BillInput input, Integer id) throws RuntimeException{
@@ -349,12 +329,11 @@ public class BillServiceImpl implements BillService{
     }
 
     @Override
-    public ResponseEntity<Page<BillDto>> getByStatus(String pay, String order, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
-        Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-        Page<BillDto> result = this.repository.findByStatus(pay, order, pageable).map(mapper :: entityToDto);
+    public ResponseEntity<Page<BillDto>> filterBill(BillParam param, Pageable pageable) {
+        Page<BillDto> result = repository.filterBill(param, pageable).map( mapper :: entityToDto);
         return ResponseEntity.ok().body(result);
     }
+
 
     @Override
     @Transactional

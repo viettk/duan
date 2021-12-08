@@ -78,18 +78,9 @@ public class StaffServiceImpl implements StaffService{
 
     @Override
     @Transactional
-    public ResponseEntity<Page<StaffDto>> searchByParam(StaffParam param, Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known) {
-        if (known.equals("up")){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<StaffDto> result = this.repository.searchByParam(param, pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            Page<StaffDto> result = this.repository.searchByParam(param, pageable).map(mapper :: entityToDto);
-            return ResponseEntity.ok().body(result);
-        }
+    public ResponseEntity<Page<StaffDto>> searchByParam(StaffParam param, Pageable pageable) {
+        Page<StaffDto> result = this.repository.filterByParam(param, pageable).map(mapper::entityToDto);
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
@@ -97,5 +88,13 @@ public class StaffServiceImpl implements StaffService{
     public ResponseEntity<StaffDto> getByUsername(String username) throws RuntimeException{
         StaffEntity entity = this.repository.findByEmail(username).orElseThrow(() -> new RuntimeException("Không tồn tại nhân viên này"));
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
+    }
+
+    @Override
+    public ResponseEntity<StaffDto> resetPassord(String email, StaffInput input) throws RuntimeException {
+        StaffEntity entity = repository.findByEmail(email).orElseThrow(() -> new RuntimeException("not found staff in the database!"));
+        entity.setPassword(input.getPassword());
+        repository.save(entity);
+        return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 }

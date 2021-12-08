@@ -168,7 +168,7 @@ public class CartDetailServiceImpl implements CartDetailService{
 
         /* Kiểm tra có đủ sản phẩm trong kho để thêm vào giỏ hàng hay ko */
         if(product.getNumber() < input.getNumber()){
-            throw new RuntimeException("Sản phẩm trong kho không đủ");
+            throw new RuntimeException("Sản phẩm"+ product.getName() +"trong kho không đủ");
         }
 
 //        /* Kiểm tra số lượng trong giỏ phải < 15 */
@@ -283,5 +283,23 @@ public class CartDetailServiceImpl implements CartDetailService{
             count = 0;
         }
         return count;
+    }
+
+    @Override
+    @Transactional
+    public void check(String email) {
+        CartEntity cartEntity = cartRepository.timCart(email);
+        List<CartDetailEntity> lst = repository.findListByCartId(cartEntity.getId());
+        for(CartDetailEntity x : lst){
+            ProductEntity productEntity = productRepository.getById(x.getProduct().getId());
+            if(productEntity.getNumber() < x.getNumber() ){
+                throw new RuntimeException("Sản phẩm " + productEntity.getName() + " không đủ để mua");
+            }
+        }
+        int count = repository.totalItemsCart(cartEntity.getId());
+        if(count > 15){
+            throw new RuntimeException("Bạn chỉ có thể mua tối đa 15 sản phẩm");
+        }
+
     }
 }

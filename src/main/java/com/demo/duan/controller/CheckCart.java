@@ -1,6 +1,8 @@
 package com.demo.duan.controller;
 
 import com.demo.duan.entity.LocalStorageBillDetail;
+import com.demo.duan.service.cartdetail.CartDetailService;
+import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.checkcartlocal.CheckCartService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,15 @@ public class CheckCart {
 
     private final CheckCartService service;
 
+    private final CartDetailService cartDetailService;
+
     @PostMapping("/checkcart")
     public ResponseEntity<List<LocalStorageBillDetail>> checkCart(@Valid @RequestBody List<LocalStorageBillDetail> inputs){
         return service.checkCart(inputs);
     }
+
+    @GetMapping("/check")
+    public void check(String email){
+        cartDetailService.check(email);
+    };
 }
