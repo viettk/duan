@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -49,4 +50,25 @@ public class BillCustomerRest {
     public ResponseEntity<BillDto> updateByCustomer(@PathVariable Integer id, @Valid @RequestBody BillInput input){
         return service.updateByCustomer(id, input);
     }
+
+    @GetMapping("/dathangthanhcong/{id}")
+    public ResponseEntity<BillDto> getHoadonDatThanhCong(@PathVariable Integer id){
+        return service.getOne(id);
+    }
+
+    @GetMapping("/tongcannag/{id}")
+    public Float getAllWeight(@PathVariable Integer id){
+        return billDetailService.getAllWeight(id);
+    }
+
+    @GetMapping("/tongtienhang/{id}")
+    public BigDecimal getTotalBillDetail(@PathVariable Integer id){
+        return billDetailService.getTotalBillDetail(id);
+    }
+
+    @PutMapping("/changeStatus_pay/{id}")
+    public ResponseEntity<BillDto> changeStatus_pay(@PathVariable Integer id, String status_pay){
+        return service.changeStatus_pay(id, status_pay);
+    }
+
 }

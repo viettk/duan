@@ -6,6 +6,7 @@ import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
 import com.demo.duan.repository.product.ProductRepository;
 import com.demo.duan.service.bill.BillService;
+import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
@@ -127,4 +128,27 @@ public class BillDetailServiceImpl implements BillDetailService{
         System.out.println(entity.getId());
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<BillDetailDto>> getAllAfterOrder(Integer billId) {
+        List<BillDetailEntity> entities = repository.getListByCustomer(billId);
+        List<BillDetailDto> billDetailDtos = mapper.EntitiesToDtos(entities);
+        return ResponseEntity.ok().body(billDetailDtos);
+    }
+
+    @Override
+    @Transactional
+    public Float getAllWeight(Integer billId) {
+        Float sumWeight = repository.tinhTongCanNangCart(billId);
+        return sumWeight;
+    }
+
+    @Override
+    @Transactional
+    public BigDecimal getTotalBillDetail(Integer billId) {
+        BigDecimal sumPrice = repository.tinhTongPrice(billId);
+        return sumPrice;
+    }
+
 }

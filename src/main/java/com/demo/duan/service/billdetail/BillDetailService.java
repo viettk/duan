@@ -1,6 +1,7 @@
 package com.demo.duan.service.billdetail;
 
 import com.demo.duan.entity.LocalStorageBillDetail;
+import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
@@ -20,4 +21,10 @@ public interface BillDetailService {
     ResponseEntity<BillDetailDto>updateBillDetail(Integer id, BillDetailInput input);
 
     ResponseEntity<BillDetailDto>getById(Integer id);
+
+    ResponseEntity<List<BillDetailDto>> getAllAfterOrder(Integer billId);
+
+    public Float getAllWeight(Integer billId);
+
+    public BigDecimal getTotalBillDetail(Integer billId);
 }

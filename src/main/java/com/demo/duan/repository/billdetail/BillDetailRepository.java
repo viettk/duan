@@ -25,4 +25,10 @@ public interface BillDetailRepository extends JpaRepository<BillDetailEntity, In
     /*bill admin*/
     @Query("select b from BillDetailEntity b where b.bill.id = :id")
     List<BillDetailEntity>findByBill(@Param("id") Integer id, Sort sort);
+
+    @Query("select sum(cd.product.weight) from BillDetailEntity cd where cd.bill.id = :billId")
+    Float tinhTongCanNangCart(@Param("billId") Integer billId);
+
+    @Query("select sum(cd.total) from BillDetailEntity cd where cd.bill.id = :billId")
+    BigDecimal tinhTongPrice(@Param("billId") Integer billId);
 }

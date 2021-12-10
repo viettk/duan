@@ -49,4 +49,6 @@ public interface BillService {
     ResponseEntity<Page<BillDto>> filterBill(BillParam param, Pageable pageable);
 
     public void CreateBillPdf(Integer billId , String name, String email, String phone, LocalDate date, BigDecimal totalBillMoney, String statusPay);
+
+    public ResponseEntity<BillDto> changeStatus_pay(Integer id, String status_pay);
 }

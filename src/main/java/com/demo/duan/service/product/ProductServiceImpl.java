@@ -7,6 +7,7 @@ import com.demo.duan.repository.category.CategoryRepository;
 import com.demo.duan.repository.photo.PhotoRepository;
 import com.demo.duan.repository.product.ProductRepository;
 import com.demo.duan.service.category.param.CategoryParam;
+import com.demo.duan.service.customer.param.CustomerMapper;
 import com.demo.duan.service.product.dto.ProductDto;
 import com.demo.duan.service.product.input.ProductCreateInput;
 import com.demo.duan.service.product.input.ProductUpdateInput;
@@ -15,6 +16,8 @@ import com.demo.duan.service.product.mapper.ProductUpdateMapper;
 import com.demo.duan.service.product.param.ProductParam;
 import com.demo.duan.service.upload.UpLoadService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,8 +49,6 @@ public class ProductServiceImpl implements ProductService{
     private final UpLoadService upLoadService;
 
     private final PhotoRepository photoRepository;
-
-
     @Override
     @Transactional
     public ResponseEntity<Page<ProductDto>> searchByAdmin(ProductParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page) {
@@ -491,6 +492,15 @@ public class ProductServiceImpl implements ProductService{
             Page<ProductDto> dto = this.productRepository.searchAll(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<ProductDto>> relatedProducts(Integer priceProduct) {
+        Pageable pageable = PageRequest.of(0,5) ;
+        List<ProductEntity> entities = productRepository.relatedProducts(priceProduct, pageable);
+        List<ProductDto> productDtos = mapper.EntitiesToDtos(entities);
+        return ResponseEntity.ok().body(productDtos);
     }
 
 }

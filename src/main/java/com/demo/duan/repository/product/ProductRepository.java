@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,8 +73,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
     /* tìm sản phẩm liên quan theo giá */
     @Query("from ProductEntity p where p.status =true and" +
-            " p.category.id = :categoryId order by p.id ASC")
-    List<ProductEntity> relatedProducts(Integer categoryId);
+            " p.price between (:priceProduct - 100000) and (:priceProduct + 100000)")
+    List<ProductEntity> relatedProducts(Integer priceProduct, Pageable pageable);
 
     Optional<ProductEntity> findByIdAndStatusIsTrue(Integer id);
 

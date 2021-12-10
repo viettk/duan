@@ -1,6 +1,8 @@
 package com.demo.duan.controller;
 
 import com.demo.duan.entity.LocalStorageBillDetail;
+import com.demo.duan.service.bill.BillService;
+import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.cartdetail.CartDetailService;
 import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.checkcartlocal.CheckCartService;
@@ -21,6 +23,8 @@ public class CheckCart {
 
     private final CartDetailService cartDetailService;
 
+    private final BillService billService;
+
     @PostMapping("/checkcart")
     public ResponseEntity<List<LocalStorageBillDetail>> checkCart(@Valid @RequestBody List<LocalStorageBillDetail> inputs){
         return service.checkCart(inputs);
@@ -30,4 +34,9 @@ public class CheckCart {
     public void check(String email){
         cartDetailService.check(email);
     };
+
+    @GetMapping("/order/{id}")
+    public ResponseEntity<BillDto> getOne(@PathVariable Integer id){
+        return billService.getOne(id);
+    }
 }

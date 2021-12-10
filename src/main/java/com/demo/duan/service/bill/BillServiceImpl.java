@@ -381,7 +381,6 @@ public class BillServiceImpl implements BillService{
                     });
 
             for (BillDetailEntity b : lstBillDetailEntities) {
-                System.out.println("okok");
                 table.addCell(String.valueOf(b.getId()));
                 table.addCell(b.getProduct().getSku());
                 table.addCell(b.getProduct().getName());
@@ -404,5 +403,15 @@ public class BillServiceImpl implements BillService{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<BillDto> changeStatus_pay(Integer id, String status_pay) {
+        BillEntity billEntity = repository.getById(id);
+        billEntity.setStatus_pay(status_pay);
+        repository.save(billEntity);
+        BillDto billDto = mapper.entityToDto(billEntity);
+        return ResponseEntity.ok().body(billDto);
     }
 }

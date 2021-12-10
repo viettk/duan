@@ -85,4 +85,7 @@ public interface ProductService {
 
     //get all product
     public ResponseEntity<Page<ProductDto>> getAllproduct(String param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page);
+
+    //gợi ý sản phẩm
+    public ResponseEntity<List<ProductDto>> relatedProducts(Integer priceProduct);
 }

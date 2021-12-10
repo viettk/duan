@@ -1,5 +1,6 @@
 package com.demo.duan.service.bill.dto;
 
+import com.demo.duan.service.discount.dto.DiscountDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +31,10 @@ public class BillDto {
     private String city;
 
     private String district;
+
+    private DiscountDto discount;
+
+    private String wards;
 
     private String status_order;
 
