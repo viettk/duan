@@ -22,6 +22,11 @@ public class StaffRest {
 
     private final StaffService service;
 
+    @GetMapping("/email")
+    public ResponseEntity<StaffDto>getByEmail(@RequestParam("email") String email){
+        return this.service.getByUsername(email);
+    }
+
     @GetMapping
     public ResponseEntity<Page<StaffDto>>search(
             @RequestParam(value = "name", required = false) String name,
@@ -45,14 +50,14 @@ public class StaffRest {
         }
     }
 
-    @GetMapping("/email")
-    public ResponseEntity<StaffDto>getByEmail(@RequestParam("email") String email){
-        return this.service.getByUsername(email);
+    @PostMapping
+    public ResponseEntity<StaffDto>create(@RequestBody StaffInput staffInput){
+        return this.service.createStaff(staffInput);
     }
 
-    @PostMapping
-    public Object createStaff(@RequestBody StaffInput staffInput){
-        return this.service.createStaff(staffInput);
+    @PutMapping("/reset-password/{id}")
+    public ResponseEntity<StaffDto>update(@PathVariable("id") Integer id, @RequestBody StaffInput staffInput){
+        return this.service.resetPassord(id, staffInput);
     }
 
     @PutMapping("/{id}")
@@ -63,9 +68,5 @@ public class StaffRest {
     @PutMapping("/disable/{id}")
     public ResponseEntity<StaffDto>disableStaff(@PathVariable("id") Integer id){
         return this.service.disableStaff(id);
-    }
-    @PutMapping("/reset-password/{email}")
-    public Object createStaff(@PathVariable("email") String email, @RequestBody StaffInput staffInput){
-        return this.service.resetPassord(email, staffInput);
     }
 }

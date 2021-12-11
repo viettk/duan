@@ -27,6 +27,6 @@ public class ForgotPasswordRest {
     }
     @PostMapping("/changepassword")
     public ResponseEntity<Object> changePassword(@Valid @RequestBody ForgotPasswordInput input){
-        return forgotService.changePassword(input);
+        return forgotService.resetPassword(input);
     }
 }

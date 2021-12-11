@@ -78,7 +78,12 @@ public class BillServiceImpl implements BillService{
         /* lưu hóa đơn vào máy */
         BillEntity entity = mapper.inputToEntity(input);
         entity = repository.saveAndFlush(entity);
-        entity.setStatus_order("Chờ xác nhận");
+        if(input.getType_pay()){
+            entity.setStatus_order("Đang xử lý");
+        }else {
+            entity.setStatus_order("Chờ xác nhận");
+        }
+
         entity.setCreate_date(date);
         entity.setUpdate_date(date);
         entity.setTotal(input.getTotal());
@@ -89,6 +94,9 @@ public class BillServiceImpl implements BillService{
             entity.setDiscount(discount);
             /* Trừ mã giảm giá */
             discount.setNumber(discount.getNumber() - 1);
+        }
+        if(input.getDescribe().equals("")){
+            entity.setDescribe("khách đặt");
         }
 
         entity.setId_code(createCodeId(entity.getId()));
@@ -124,7 +132,11 @@ public class BillServiceImpl implements BillService{
         /* lưu hóa đơn vào máy */
         BillEntity entity = mapper.inputToEntity(input);
         entity = repository.saveAndFlush(entity);
-        entity.setStatus_order("Chờ xác nhận");
+        if(input.getType_pay()){
+            entity.setStatus_order("Đang xử lý");
+        }else{
+            entity.setStatus_order("Chờ xác nhận");
+        }
         entity.setCreate_date(date);
         entity.setUpdate_date(date);
 
@@ -138,6 +150,10 @@ public class BillServiceImpl implements BillService{
         }
         entity.setId_code(createCodeId(entity.getId()));
         entity.setTotal(input.getTotal());
+
+        if(input.getDescribe().equals("")){
+            entity.setDescribe("khách đặt");
+        }
         repository.save(entity);
 
         CreateBillPdf(entity.getId(), input.getName(), input.getEmail(), input.getPhone(), entity.getCreate_date(), entity.getTotal(), entity.getStatus_pay() );

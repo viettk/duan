@@ -24,6 +24,7 @@ public class CustomerRest {
 
     @PostMapping("/register")
     public ResponseEntity<Object> create(@Valid @RequestBody CustomerInput input){
+        System.out.println(1);
         return service.create(input);
     }
 

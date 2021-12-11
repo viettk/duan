@@ -7,12 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Optional;
 
 public interface StaffService {
-    ResponseEntity<Page<StaffDto>>getStaff(Optional<Integer> limit, Optional<Integer> page, Optional<String> field, String known);
+    ResponseEntity<Page<StaffDto>>getStaff(Pageable pageable);
 
-    Object createStaff(StaffInput input);
+    ResponseEntity<StaffDto> createStaff(StaffInput input);
 
     ResponseEntity<StaffDto>updateStaff(Integer id, StaffInput input);
 
@@ -22,5 +21,5 @@ public interface StaffService {
 
     ResponseEntity<StaffDto>getByUsername(String username);
 
-    ResponseEntity<StaffDto>resetPassord(String email, StaffInput input);
+    ResponseEntity<StaffDto>resetPassord(Integer id, StaffInput input);
 }

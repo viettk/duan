@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/login")
+@RequestMapping("/api/login")
 @CrossOrigin(origins = "*")
 public class LoginRest {
     @Autowired

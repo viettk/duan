@@ -49,5 +49,7 @@ public class BillInput {
 
     private String discountName;
 
+    private Boolean type_pay;
+
 //    private Integer staffId;
 }

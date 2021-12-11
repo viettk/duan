@@ -56,6 +56,12 @@ public class CustomerServiceImpl implements CustomerService{
 //          throw new RuntimeException("Mật khẩu không khớp nhau")
             errors.put("repeatPassword", "Mật khẩu không khớp");
         }
+        if(input.getPassword().length()<6){
+            errors.put("password", "Mật khẩu tối thiểu 6 ký tự");
+        }
+        if(input.getPassword().length()>15){
+            errors.put("password", "Mật khẩu tối đa 15 ký tự");
+        }
 
         /* Xác thực địa chỉ Email(không đầy đủ: chỉ kiểm tra tên miền) */
         boolean valid = EmailValidator.getInstance().isValid(input.getEmail());

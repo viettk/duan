@@ -279,9 +279,6 @@ public class CartDetailServiceImpl implements CartDetailService{
         CartEntity entity = cartRepository.getByCustomer_IdAndEmail(idCutsomer, email)
                 .orElseThrow(() -> new RuntimeException("Bạn chưa đăng ký tài khoản") );
         Integer count  = repository.coutofCart(entity.getId());
-        if(count == null){
-            count = 0;
-        }
         return count;
     }
 
