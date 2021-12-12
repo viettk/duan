@@ -7,17 +7,22 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 
 
@@ -97,12 +102,12 @@ public class VNPayServiceImpl implements VNPayService{
     }
 
     @Override
-    public ResponseEntity<Object> find(HttpServletRequest request) throws IOException {
+    public Map<String ,Object> find(String time, Integer id , String ip) throws IOException {
         //vnp_Command = querydr
-        String vnp_TxnRef = request.getParameter("order_id");
-        String vnp_TransDate = request.getParameter("trans_date");
+        String vnp_TxnRef = id +"";
+        String vnp_TransDate = time;
         String vnp_TmnCode = Config.vnp_TmnCode;
-        String vnp_IpAddr = Config.getIpAddress(request);
+        String vnp_IpAddr = ip;
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", "2.1.0");
@@ -165,7 +170,7 @@ public class VNPayServiceImpl implements VNPayService{
             String[] d = x.split("=");
             billPay.put(d[0],d[1]);
         }
-        return ResponseEntity.ok(billPay);
+        return billPay;
     }
 
     @Override
@@ -246,23 +251,18 @@ public class VNPayServiceImpl implements VNPayService{
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Object> check(HttpServletRequest request) throws IOException {
         Map fields = new HashMap();
         for (Enumeration params = request.getParameterNames(); params.hasMoreElements();) {
             String fieldName = (String) params.nextElement();
-            System.out.println(fieldName);
             String fieldValue = request.getParameter(fieldName);
-            System.out.println(fieldValue);
             if ((fieldValue != null) && (fieldValue.length() > 0))
             {
                 fields.put(fieldName, fieldValue);
             }
         }
-        Boolean status =true;
-        Optional<BillEntity> bill = billRepository.findById(Integer.valueOf(fields.get("vnp_TxnRef")+""));
-        if(bill.isEmpty()){
-            status=false;
-        }
+        String vnp_SecureHash = (String) fields.get("vnp_SecureHash");
         if (fields.containsKey("vnp_SecureHashType"))
         {
             fields.remove("vnp_SecureHashType");
@@ -271,11 +271,36 @@ public class VNPayServiceImpl implements VNPayService{
         {
             fields.remove("vnp_SecureHash");
         }
+        Boolean status =true;
+        Optional<BillEntity> bill = billRepository.findById(Integer.valueOf(fields.get("vnp_TxnRef")+""));
+        // check mã hóa đơn có tồn tại trong db
+        if(bill.isEmpty()){
+            status=false;
+        }
+        //check tổng tiền trong db có bằng nhau không
+        if(bill.get().getTotal().compareTo(BigDecimal.valueOf(Long.valueOf((String) fields.get("vnp_Amount")) / 100))!=0){
+            status=false;
 
-        // Check checksum
-
+        }
+        //Check trạng thái
+        if(!fields.get("vnp_ResponseCode").equals("00")){
+            status=false;
+        }
         String signValue = Config.hashAllFields(fields);
-        Map result = new HashMap();
-        return ResponseEntity.ok(signValue.equals(fields.get("vnp_SecureHash")));
+        //check ma bam
+        if(!signValue.equals(vnp_SecureHash)){
+            status=false;
+        }
+        if(status){
+            String ip = Config.getIpAddress(request);
+            Integer id = bill.get().getId();
+            String time = (String) fields.get("vnp_PayDate");
+            Map<String,Object> order= find(time,id,ip);
+            if(order.get("vnp_ResponseCode").equals("00")){
+                bill.get().setStatus_pay("Đã thanh toán");
+                billRepository.save(bill.get());
+            }
+        }
+        return ResponseEntity.ok(status);
     }
 }

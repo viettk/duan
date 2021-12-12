@@ -15,7 +15,12 @@ public class StaffUserDetails implements UserDetails {
     StaffEntity staff;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_STAFF"));
+        if(staff.getRole()==1){
+            return Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }else{
+            return Collections.singleton(new SimpleGrantedAuthority("ROLE_STAFF"));
+        }
+
     }
 
     @Override

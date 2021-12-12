@@ -292,6 +292,10 @@ public class CartDetailServiceImpl implements CartDetailService{
             if(productEntity.getNumber() < x.getNumber() ){
                 throw new RuntimeException("Sản phẩm " + productEntity.getName() + " không đủ để mua");
             }
+
+            if(productEntity.isStatus() == false){
+                throw new RuntimeException("Sản phẩm " + productEntity.getName() + "hiện không khả dụng" );
+            }
         }
         int count = repository.totalItemsCart(cartEntity.getId());
         if(count > 15){

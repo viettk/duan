@@ -20,10 +20,10 @@ public class PayRest {
     public ResponseEntity<Object> createUrlPay(@RequestBody BillDto dto, HttpServletRequest request) throws IOException {
         return vnPayService.pay(request,dto);
     }
-    @GetMapping("/find")
-    public ResponseEntity<Object> checkOrder(HttpServletRequest request) throws IOException {
-        return vnPayService.find(request);
-    }
+//    @GetMapping("/find")
+//    public ResponseEntity<Object> checkOrder(HttpServletRequest request) throws IOException {
+//        return vnPayService.find();
+//    }
     @GetMapping("/checksum")
     public ResponseEntity<Object> check(HttpServletRequest request) throws IOException {
         return vnPayService.check(request);

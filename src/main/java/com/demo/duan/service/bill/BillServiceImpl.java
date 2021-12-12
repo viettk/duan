@@ -281,14 +281,15 @@ public class BillServiceImpl implements BillService{
         String status = "";
 
         LocalDate date = LocalDate.now();
+
         switch (input.getStatus_order()){
-            case "Xác nhận":
+            case "Đã xác nhận":
                 status = "Đã xác nhận";
                 break;
-            case "Chuẩn bị hàng":
+            case "Đang chuẩn bị hàng":
                 status = "Đang chuẩn bị hàng";
                 break;
-            case "Giao hàng":
+            case "Đang giao hàng":
                 status = "Đang giao hàng";
                 break;
             case "Hoàn thành":
@@ -300,15 +301,16 @@ public class BillServiceImpl implements BillService{
             case "Đã hủy":
                 status = "Đã hủy";
                 break;
-            case "Hoàn trả":
-                status = "Đang hoàn trả";
+            case "Giao hàng thành công":
+                status = "Giao hàng thành công";
                 break;
-            case "Đã hoàn trả":
-                status = "Đã hoàn trả";
+            case "Đơn hoàn trả":
+                status = "Đơn hoàn trả";
                 break;
             default:
                 throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
         }
+
         String status_pay = "";
         if(input.getStatus_pay().equals("")) {
             status_pay = entity.getStatus_pay();
@@ -326,7 +328,7 @@ public class BillServiceImpl implements BillService{
         BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
         String status = "";
         LocalDate date = LocalDate.now();
-        switch (input.getStatus_pay()){
+        switch (input.getStatus_order()){
             case "Đã thanh toán":
                 status = "Đã thanh toán";
                 break;
@@ -335,6 +337,9 @@ public class BillServiceImpl implements BillService{
                 break;
             case "Chưa thanh toán":
                 status = "Chưa thanh toán";
+                break;
+            case "Hủy":
+                status = "Thanh toán online";
                 break;
             default:
                 throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
