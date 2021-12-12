@@ -24,7 +24,7 @@ public class StaffInput {
 
     @NotBlank(message = "Role không được để trống")
     private Integer role;
-
+    @NotBlank(message = "Trạng thái không được để trống")
     private boolean status;
 
     @NotBlank(message = "Số điện thoại không được để trống")

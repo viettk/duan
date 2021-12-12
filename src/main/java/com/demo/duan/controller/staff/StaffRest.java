@@ -38,11 +38,7 @@ public class StaffRest {
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-        StaffParam param = new StaffParam();
-        param.setEmail(email);
-        param.setName(name);
-        param.setStatus(status);
-        param.setRole(role);
+        StaffParam param = new StaffParam(email, name, status, role);
         if (known.isEmpty()){
             Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
             Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
@@ -55,13 +51,13 @@ public class StaffRest {
     }
 
     @PostMapping
-    public Object createStaff(@RequestBody StaffInput staffInput){
+    public ResponseEntity<StaffDto>create(@RequestBody StaffInput staffInput){
         return this.service.createStaff(staffInput);
     }
 
-    @PutMapping("/reset-password/{email}")
-    public Object createStaff(@PathVariable("email") String email, @RequestBody StaffInput staffInput){
-        return this.service.resetPassord(email, staffInput);
+    @PutMapping("/reset-password/{id}")
+    public ResponseEntity<StaffDto>update(@PathVariable("id") Integer id, @RequestBody StaffInput staffInput){
+        return this.service.resetPassord(id, staffInput);
     }
 
     @PutMapping("/{id}")

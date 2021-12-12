@@ -24,4 +24,5 @@ public interface BillService {
     ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input);
 
     ResponseEntity<Page<BillDto>> filterBill(BillParam param, Pageable pageable);
+
 }

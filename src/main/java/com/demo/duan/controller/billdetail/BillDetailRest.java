@@ -13,7 +13,7 @@ import java.util.Optional;
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/bill-detail")
+@RequestMapping("/admin/bill-detail")
 public class BillDetailRest {
     private final BillDetailService service;
 

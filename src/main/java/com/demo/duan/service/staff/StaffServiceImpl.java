@@ -8,14 +8,11 @@ import com.demo.duan.service.staff.mapper.StaffMapper;
 import com.demo.duan.service.staff.param.StaffParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -49,8 +46,9 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     public ResponseEntity<StaffDto> updateStaff(Integer id, StaffInput input) throws RuntimeException {
         StaffEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không tồn tại nhân viên này!"));
+        String pw= entity.getPassword();
         this.mapper.inputToEntity(input, entity);
-        entity.setPassword(entity.getPassword());
+        entity.setPassword(pw);
         this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
@@ -83,8 +81,8 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public ResponseEntity<StaffDto> resetPassord(String email, StaffInput input) throws RuntimeException {
-        StaffEntity entity = repository.findByEmail(email).orElseThrow(() -> new RuntimeException("not found staff in the database!"));
+    public ResponseEntity<StaffDto> resetPassord(Integer id, StaffInput input) throws RuntimeException {
+        StaffEntity entity = repository.findById(id).orElseThrow(() -> new RuntimeException("not found staff in the database!"));
         entity.setPassword(input.getPassword());
         repository.save(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));

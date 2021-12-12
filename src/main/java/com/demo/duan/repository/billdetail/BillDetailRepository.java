@@ -13,4 +13,7 @@ import java.util.List;
 public interface BillDetailRepository extends JpaRepository<BillDetailEntity, Integer> {
     @Query("select b from BillDetailEntity b where b.bill.id = :id")
     List<BillDetailEntity>findByBill(@Param("id") Integer id, Sort sort);
+
+    @Query("select b from BillDetailEntity b where b.bill.id = :id")
+    List<BillDetailEntity>findByBill(@Param("id") Integer id);
 }

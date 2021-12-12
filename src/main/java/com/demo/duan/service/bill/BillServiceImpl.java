@@ -1,8 +1,12 @@
 package com.demo.duan.service.bill;
 
+import com.demo.duan.entity.BillDetailEntity;
 import com.demo.duan.entity.BillEntity;
+import com.demo.duan.entity.ProductEntity;
 import com.demo.duan.repository.bill.BillRepository;
+import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
+import com.demo.duan.repository.product.ProductRepository;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.mapper.BillMapper;
@@ -12,16 +16,12 @@ import com.demo.duan.service.billdetail.input.BillDetailInput;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -33,6 +33,10 @@ public class BillServiceImpl implements BillService{
     private  final BillMapper mapper;
 
     private final BillDetailService billDetailService;
+
+    private final BillDetailRepository billDetailRepository;
+
+    private final ProductRepository productRepository;
 
     private final CartDetailRepository cartDetailRepository;
 
@@ -91,13 +95,13 @@ public class BillServiceImpl implements BillService{
 		
 		Date date = new Date();
 		switch (input.getStatus_order()){
-	        case "Xác nhận":
+	        case "Đã xác nhận":
 	            status = "Đã xác nhận";
 	            break;
-	        case "Chuẩn bị hàng":
+	        case "Đang chuẩn bị hàng":
 	            status = "Đang chuẩn bị hàng";
 	            break;
-	        case "Giao hàng":
+	        case "Đang giao hàng":
 	            status = "Đang giao hàng";
 	            break;
 	        case "Hoàn thành":
@@ -109,11 +113,11 @@ public class BillServiceImpl implements BillService{
             case "Đã hủy":
                 status = "Đã hủy";
                 break;
-            case "Hoàn trả":
-                status = "Đang hoàn trả";
+            case "Giao hàng thành công":
+                status = "Giao hàng thành công";
                 break;
-            case "Đã hoàn trả":
-                status = "Đã hoàn trả";
+            case "Đơn hoàn trả":
+                status = "Đơn hoàn trả";
                 break;
 	        default:
 	            throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
@@ -144,6 +148,9 @@ public class BillServiceImpl implements BillService{
                 break;
             case "Chưa thanh toán":
                 status = "Chưa thanh toán";
+                break;
+            case "Hủy":
+                status = "Hủy";
                 break;
             default:
                 throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");

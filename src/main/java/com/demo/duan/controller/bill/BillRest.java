@@ -18,7 +18,7 @@ import java.util.Optional;
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/bill")
+@RequestMapping("/admin/bill")
 public class BillRest {
 
     private final BillService service;
@@ -94,4 +94,5 @@ public class BillRest {
     ){
         return this.service.updateStatusPay(id, input);
     }
+
 }
