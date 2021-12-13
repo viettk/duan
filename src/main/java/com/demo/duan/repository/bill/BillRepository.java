@@ -20,16 +20,16 @@ public interface BillRepository extends JpaRepository<BillEntity, Integer> {
     @Query("from BillEntity b where b.email = :email ")
     Page<BillEntity> getBillCustomer (@Param("email") String email, Pageable pageable);
 
-    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  MONTH(update_date) = :month and YEAR(update_date)= :year and status_order = N'Đã hủy'" , nativeQuery = true)
+    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE date_part('month', update_date) = :month and date_part('year', update_date)= :year and status_order = N'Đã hủy'" , nativeQuery = true)
     Integer donhuy(@Param("month") Integer month, @Param("year") Integer year);
 
-    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  MONTH(update_date) = :month and YEAR(update_date)= :year and status_order = N'Đã thanh toán'" , nativeQuery = true)
+    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE date_part('month', update_date) = :month and date_part('year', update_date)= :year and status_order = N'Đã thanh toán'" , nativeQuery = true)
     Integer dontc(@Param("month") Integer month, @Param("year") Integer year);
 
-    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  MONTH(update_date) = :month and YEAR(update_date)= :year and status_order = N'Đã hoàn trả'" , nativeQuery = true)
+    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  date_part('month', update_date) = :month and date_part('year', update_date)= :year and status_order = N'Đã hoàn trả'" , nativeQuery = true)
     Integer dontra(@Param("month") Integer month, @Param("year") Integer year);
 
-    @Query ( value="SELECT sum(hd.total) FROM Bill hd WHERE MONTH(hd.create_date) = :month and year(hd.create_date) = :year" , nativeQuery = true)
+    @Query ( value="SELECT sum(hd.total) FROM Bill hd WHERE date_part('month', create_date) = :month and date_part('year', update_date) = :year" , nativeQuery = true)
     BigDecimal thongkedoanhthu(@Param("month")Integer month, Integer year);
 
     @Query("select b from BillEntity b where :#{#bill.status_order} is null or b.status_order=:#{#bill.status_order} " +

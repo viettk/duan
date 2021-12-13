@@ -10,8 +10,8 @@ import java.sql.Date;
 @Setter
 @AllArgsConstructor
 public class BillParam {
-    String status_order;
-    String status_pay;
+    Integer status_order;
+    Integer status_pay;
     Date date_start;
     Date date_end;
 }

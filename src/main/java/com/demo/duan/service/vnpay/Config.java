@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class Config {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "http://localhost:3000/dat-hang-thanh-cong";
+    public static String vnp_Returnurl = "https://nguyenthianhtuyet.herokuapp.com/dat-hang-thanh-cong";
     public static String vnp_TmnCode = "2GZE2C1B"; //Mã website tại VNPAY
     public static String vnp_HashSecret = "GGZVYCFYPWPHSMHZJTOYDJESDUOYKAJE"; //Chuỗi bí mật
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/merchant.html";

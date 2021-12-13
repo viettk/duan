@@ -10,7 +10,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 @RestController
 @RequestMapping("change-password")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class ChangePasswordRest {
     private final ForgotService forgotService;
     @PostMapping

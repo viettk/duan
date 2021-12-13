@@ -306,12 +306,16 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public ResponseEntity<ProductDto> updateImage(Integer id,String folder, Optional<MultipartFile> photo1, Optional<MultipartFile> photo2, Optional<MultipartFile> photo3, Optional<MultipartFile> photo4) {
+        System.out.println("1");
         ProductEntity product = productRepository.getById(id);
+        System.out.println("2");
         List<PhotoEntity> photos = photoRepository.findAllByProduct_Id(id);
         Integer length = photos.size();
+        System.out.println("3");
         if(!photo1.isEmpty()) {
             File filePhoto = upLoadService.savePhoto(photo1.get(), folder);
             product.setPhoto(filePhoto.getName());
+            System.out.println("4");
         }
         PhotoEntity photo = null;
         if(!photo2.isEmpty()) {

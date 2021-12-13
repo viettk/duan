@@ -79,9 +79,9 @@ public class BillServiceImpl implements BillService{
         BillEntity entity = mapper.inputToEntity(input);
         entity = repository.saveAndFlush(entity);
         if(input.getType_pay()){
-            entity.setStatus_order("Đang xử lý");
+            entity.setStatus_order(1);
         }else {
-            entity.setStatus_order("Chờ xác nhận");
+            entity.setStatus_order(1);
         }
 
         entity.setCreate_date(date);
@@ -133,9 +133,9 @@ public class BillServiceImpl implements BillService{
         BillEntity entity = mapper.inputToEntity(input);
         entity = repository.saveAndFlush(entity);
         if(input.getType_pay()){
-            entity.setStatus_order("Đang xử lý");
+            entity.setStatus_order(1);
         }else{
-            entity.setStatus_order("Chờ xác nhận");
+            entity.setStatus_order(1);
         }
         entity.setCreate_date(date);
         entity.setUpdate_date(date);
@@ -156,7 +156,7 @@ public class BillServiceImpl implements BillService{
         }
         repository.save(entity);
 
-        CreateBillPdf(entity.getId(), input.getName(), input.getEmail(), input.getPhone(), entity.getCreate_date(), entity.getTotal(), entity.getStatus_pay() );
+//        CreateBillPdf(entity.getId(), input.getName(), input.getEmail(), input.getPhone(), entity.getCreate_date(), entity.getTotal(), entity.getStatus_pay() );
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 
@@ -277,76 +277,78 @@ public class BillServiceImpl implements BillService{
 
     @Override
     public ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input) throws RuntimeException{
-        BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
-        String status = "";
-
-        LocalDate date = LocalDate.now();
-
-        switch (input.getStatus_order()){
-            case "Đã xác nhận":
-                status = "Đã xác nhận";
-                break;
-            case "Đang chuẩn bị hàng":
-                status = "Đang chuẩn bị hàng";
-                break;
-            case "Đang giao hàng":
-                status = "Đang giao hàng";
-                break;
-            case "Hoàn thành":
-                status = "Hoàn thành";
-                break;
-            case "Thất bại":
-                status = "Thất bại";
-                break;
-            case "Đã hủy":
-                status = "Đã hủy";
-                break;
-            case "Giao hàng thành công":
-                status = "Giao hàng thành công";
-                break;
-            case "Đơn hoàn trả":
-                status = "Đơn hoàn trả";
-                break;
-            default:
-                throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
-        }
-
-        String status_pay = "";
-        if(input.getStatus_pay().equals("")) {
-            status_pay = entity.getStatus_pay();
-        }else {
-            status_pay = input.getStatus_pay();
-        }
-        entity.setStatus_pay(status_pay);
-        entity.setStatus_order(status);
-        entity.setUpdate_date(date);
-        this.repository.save(entity);
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
+//        BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
+//        String status = "";
+//
+//        LocalDate date = LocalDate.now();
+//
+//        switch (input.getStatus_order()){
+//            case 1:
+//                status = 1;
+//                break;
+//            case "Đang chuẩn bị hàng":
+//                status = "Đang chuẩn bị hàng";
+//                break;
+//            case "Đang giao hàng":
+//                status = "Đang giao hàng";
+//                break;
+//            case "Hoàn thành":
+//                status = "Hoàn thành";
+//                break;
+//            case "Thất bại":
+//                status = "Thất bại";
+//                break;
+//            case "Đã hủy":
+//                status = "Đã hủy";
+//                break;
+//            case "Giao hàng thành công":
+//                status = "Giao hàng thành công";
+//                break;
+//            case "Đơn hoàn trả":
+//                status = "Đơn hoàn trả";
+//                break;
+//            default:
+//                throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
+//        }
+//
+//        String status_pay = "";
+//        if(input.getStatus_pay().equals("")) {
+//            status_pay = entity.getStatus_pay();
+//        }else {
+//            status_pay = input.getStatus_pay();
+//        }
+//        entity.setStatus_pay(status_pay);
+//        entity.setStatus_order(status);
+//        entity.setUpdate_date(date);
+//        this.repository.save(entity);
+//        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
+        return null;
     }
     @Override
     public ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input) {
-        BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
-        String status = "";
-        LocalDate date = LocalDate.now();
-        switch (input.getStatus_order()){
-            case "Đã thanh toán":
-                status = "Đã thanh toán";
-                break;
-            case "Đã hoàn trả":
-                status = "Đã hoàn trả";
-                break;
-            case "Chưa thanh toán":
-                status = "Chưa thanh toán";
-                break;
-            case "Hủy":
-                status = "Thanh toán online";
-                break;
-            default:
-                throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
-        }
-        entity.setUpdate_date(date);
-        this.repository.save(entity);
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
+//        BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
+//        String status = "";
+//        LocalDate date = LocalDate.now();
+//        switch (input.getStatus_order()){
+//            case "Đã thanh toán":
+//                status = "Đã thanh toán";
+//                break;
+//            case "Đã hoàn trả":
+//                status = "Đã hoàn trả";
+//                break;
+//            case "Chưa thanh toán":
+//                status = "Chưa thanh toán";
+//                break;
+//            case "Hủy":
+//                status = "Thanh toán online";
+//                break;
+//            default:
+//                throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
+//        }
+//        entity.setUpdate_date(date);
+//        this.repository.save(entity);
+//        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
+        return null;
     }
 
     @Override
@@ -430,7 +432,7 @@ public class BillServiceImpl implements BillService{
     @Transactional
     public ResponseEntity<BillDto> changeStatus_pay(Integer id, String status_pay) {
         BillEntity billEntity = repository.getById(id);
-        billEntity.setStatus_pay(status_pay);
+//        billEntity.setStatus_pay(status_pay);
         repository.save(billEntity);
         BillDto billDto = mapper.entityToDto(billEntity);
         return ResponseEntity.ok().body(billDto);

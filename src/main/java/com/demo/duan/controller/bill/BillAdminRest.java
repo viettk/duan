@@ -33,16 +33,17 @@ public class BillAdminRest {
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-        BillParam param = new BillParam(order, pay, start, end);
-        if (known.isEmpty()){
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            return service.filterBill(param, pageable);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            return service.filterBill(param, pageable);
-        }
+//        BillParam param = new BillParam(order, pay, start, end);
+//        if (known.isEmpty()){
+//            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+//            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+//            return service.filterBill(param, pageable);
+//        }else {
+//            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+//            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+//            return service.filterBill(param, pageable);
+//        }
+        return null;
     }
 
     @GetMapping("/{id}")
@@ -62,16 +63,17 @@ public class BillAdminRest {
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-        BillParam param = new BillParam(order, pay, start.orElse(null), end.orElse(null));
-        if (known.isEmpty()){
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            return service.getByEmail(email, param, pageable);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            return service.getByEmail(email, param, pageable);
-        }
+//        BillParam param = new BillParam(order, pay, start.orElse(null), end.orElse(null));
+//        if (known.isEmpty()){
+//            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+//            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+//            return service.getByEmail(email, param, pageable);
+//        }else {
+//            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+//            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+//            return service.getByEmail(email, param, pageable);
+//        }
+        return null;
     }
 
 

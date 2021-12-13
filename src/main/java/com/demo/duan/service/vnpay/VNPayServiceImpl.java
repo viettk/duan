@@ -297,7 +297,7 @@ public class VNPayServiceImpl implements VNPayService{
             String time = (String) fields.get("vnp_PayDate");
             Map<String,Object> order= find(time,id,ip);
             if(order.get("vnp_ResponseCode").equals("00")){
-                bill.get().setStatus_pay("Đã thanh toán");
+                bill.get().setStatus_pay(1);
                 billRepository.save(bill.get());
             }
         }

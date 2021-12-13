@@ -45,7 +45,7 @@ public class BillEntity implements Serializable {
     private BigDecimal total;
 
     @Column(name="status_pay")
-    private String status_pay;
+    private Integer status_pay;
 
     @Column(name="address")
     private String address;
@@ -57,22 +57,13 @@ public class BillEntity implements Serializable {
     private String district;
 
     @Column(name="status_order")
-    private String status_order;
+    private Integer status_order;
 
     @Column(name="describe")
     private String describe;
 
     @Column(name="wards")
     private String wards;
-
-    @Column(name="thema")
-    private String thema;
-
-    @Column(name="themb")
-    private String themb;
-
-    @Column(name="themc")
-    private String themc;
 
     @Column(name="id_code")
     private String id_code;

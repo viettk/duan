@@ -24,7 +24,7 @@ public class BillDto {
 
     private BigDecimal total;
 
-    private String status_pay;
+    private Integer status_pay;
 
     private String address;
 
@@ -36,7 +36,7 @@ public class BillDto {
 
     private String wards;
 
-    private String status_order;
+    private Integer status_order;
 
     private String describe;
 

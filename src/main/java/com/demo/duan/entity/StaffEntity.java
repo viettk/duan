@@ -45,10 +45,6 @@ public class StaffEntity implements Serializable {
     @Column(name="phone")
     private String phone;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "staff")
-    private List<ReceiptEntity> receipts;
-
    /*Hóa đơn*/
     @JsonIgnore
     @OneToMany(mappedBy = "id")

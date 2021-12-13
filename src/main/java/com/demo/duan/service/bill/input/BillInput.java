@@ -23,7 +23,7 @@ public class BillInput {
     @Positive(message = "SĐT phải là chữ số")
     private String phone;
 
-    private String status_pay;
+    private Integer status_pay;
 
     @NotBlank(message = "Địa chỉ không được bỏ trống!")
     private String address;
@@ -37,15 +37,9 @@ public class BillInput {
 
     private BigDecimal total;
 
-    private String status_order;
+    private Integer status_order;
 
     private String describe;
-
-    private String thema;
-
-    private String themb;
-
-    private String themc;
 
     private String discountName;
 
