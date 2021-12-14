@@ -1,5 +1,6 @@
 package com.demo.duan.controller.productcustomer;
 
+import com.demo.duan.service.category.param.CategoryParam;
 import com.demo.duan.service.product.ProductService;
 import com.demo.duan.service.product.dto.ProductDto;
 import com.demo.duan.service.product.param.ProductParam;
@@ -8,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,7 +21,7 @@ public class ProductCustomerRest {
     private final ProductService service;
 
     @GetMapping("/new-arrival")
-    public ResponseEntity<Page<ProductDto>> searchNewArrival(){
+    public ResponseEntity<List<ProductDto>> searchNewArrival(){
         return service.searchNewArrival();
     }
 
@@ -37,14 +40,93 @@ public class ProductCustomerRest {
         return service.searchBySHF();
     }
 
-    @GetMapping("/category")
-    public ResponseEntity<Page<ProductDto>> searchByCategoryName(ProductParam param, Optional<String> field, String known){
-        return service.searchByCategoryName(param, field, known);
+    @GetMapping("/khac")
+    public ResponseEntity<Page<ProductDto>> searchByKhac(
+            ProductParam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) Optional<String> known,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page
+    ){
+        return service.searchByKhac(param, field, known, limit, page);
     }
+
+    @GetMapping("/cha/{parent}")
+    public ResponseEntity<Page<ProductDto>> getByParentName(
+            CategoryParam cate,
+            ProductParam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) String known,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit
+    ){
+        return service.searchAllByParent(cate, param, field, known, limit, page);
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<Page<ProductDto>> searchByCategoryName(
+            @PathVariable Integer categoryId,
+            ProductParam param,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) String known,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit){
+        return service.searchByCategoryName(categoryId, param, field, known, limit, page);
+    }
+
+    @GetMapping("/parentName")
+    public ResponseEntity<Page<ProductDto>> searchByCategoryParentName(
+            String parentName,
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) String known,
+            @RequestParam(name = "_page", required = false) Optional<Integer> page,
+            @RequestParam(name = "_limit", required = false) Optional<Integer> limit){
+        return service.searchByCategoryParentName(parentName, field, known, limit, page);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getOne(@PathVariable Integer id){
         return service.getOne(id);
+    }
+
+    @GetMapping("/top5sp")
+    public ResponseEntity<List<ProductDto>> getTop5sp(){
+        return service.Thongketop5spbanchay();
+    }
+
+    @GetMapping("/return/{id}")
+    public ResponseEntity<ProductDto>returnProduct(
+            @PathVariable("id") Integer id,
+            @RequestParam("number") Integer number
+    ){
+        return this.service.returnNumber(id, number);
+    }
+
+//    Giảm giá
+    @PostMapping("/giamgia")
+    public void giamGia(int value ){
+        service.valueDiscount(value);
+    }
+
+    @PutMapping("/giamgia")
+    public void khoiphuc(){
+        service.khoiPhucGia();
+    }
+
+    @PostMapping("/giamgiabydm")
+    public void giamGiaByDm(Integer categoryId , int value ){
+        service.GiamGiaTheoDanhMuc(categoryId, value);
+    }
+
+    @PostMapping("/giamgia/{id}")
+    public void giamGiaIdSp(@PathVariable Integer id, int value){
+        service.GiamGiaTungSp(id, value);
+    }
+
+    @GetMapping("/product")
+    public ResponseEntity<List<ProductDto>> find(String name){
+        return service.findAll(name);
     }
 
     @GetMapping("/return/{id}")

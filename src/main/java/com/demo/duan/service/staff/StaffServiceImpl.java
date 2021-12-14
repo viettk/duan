@@ -8,11 +8,36 @@ import com.demo.duan.service.staff.mapper.StaffMapper;
 import com.demo.duan.service.staff.param.StaffParam;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+@Service
+@AllArgsConstructor
+public class StaffServiceImpl implements StaffService{
+    private final StaffRepository repository;
+    private final StaffMapper mapper;
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<StaffDto>> getStaff(Pageable pageable) {
+        Page<StaffDto> result = this.repository.findAll(pageable).map(mapper::entityToDto);
+        return ResponseEntity.ok().body(result);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<StaffDto> createStaff(StaffInput input) throws RuntimeException {
+        if (!repository.findByEmail(input.getEmail()).isEmpty()) {
+            new RuntimeException("Email này đã tồn tại!");
+        }
+        if (!repository.findByPhone(input.getPhone()).isEmpty()) {
+            new RuntimeException("Đã tồn tại số điện thoại này!");
+        }
 @Service
 @AllArgsConstructor
 public class StaffServiceImpl implements StaffService {
@@ -34,7 +59,7 @@ public class StaffServiceImpl implements StaffService {
         if (!email) {
         	System.out.println("emial"+ email);
         	throw new RuntimeException("Email này đã tồn tại!");
-            
+
         }
         else if (!phone) {
         	System.out.println("phone"+phone);
@@ -45,7 +70,7 @@ public class StaffServiceImpl implements StaffService {
         this.mapper.inputToEntity(input);
         this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
-    
+
     }
 
 	@Override

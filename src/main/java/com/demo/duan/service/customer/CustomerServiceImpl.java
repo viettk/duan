@@ -8,43 +8,68 @@ import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.service.customer.dto.CustomerDto;
 import com.demo.duan.service.customer.input.CustomerInput;
 import com.demo.duan.service.customer.param.CustomerMapper;
+import com.demo.duan.service.customer.paramcustomer.Customerparam;
+import com.demo.duan.service.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService{
-
-    private final CustomerRepository repository;
-
-    private final CustomerMapper mapper;
-
-    private final CartRepository cartRepository;
+    @Autowired
+    private  CustomerRepository repository;
+    @Autowired
+    private  CustomerMapper mapper;
+    @Autowired
+    private  CartRepository cartRepository;
+    @Autowired
+    private  JwtTokenProvider jwtTokenProvider;
+    private final long JWT_EXPIRATION = 604800000L;
+    @Value("${secrert.login}")
+    private String JWT_SECRET;
 
     @Override
     @Transactional
-    public ResponseEntity<CustomerDto> create(CustomerInput input) {
+    public ResponseEntity<Object> create(CustomerInput input) {
+        Map<String, String> errors = new HashMap<>();
         /* Kiểm tra email đã tồn tại hay chưa */
-        Integer count = repository.countAllByEmail(input.getEmail());
-        if(count > 0){
-            throw new RuntimeException("Email đã tồn tại");
+        if(repository.findByEmail(input.getEmail()).isPresent()){
+            errors.put("email", "Email đã tồn tại");
         }
-
         /* Kiểm tra nhập lại mật khẩu */
         if(!input.getPassword().equals(input.getRepeatPassword())){
-            throw new RuntimeException("Mật khẩu không khớp nhau");
+//          throw new RuntimeException("Mật khẩu không khớp nhau")
+            errors.put("repeatPassword", "Mật khẩu không khớp");
+        }
+        if(input.getPassword().length()<6){
+            errors.put("password", "Mật khẩu tối thiểu 6 ký tự");
+        }
+        if(input.getPassword().length()>15){
+            errors.put("password", "Mật khẩu tối đa 15 ký tự");
         }
 
         /* Xác thực địa chỉ Email(không đầy đủ: chỉ kiểm tra tên miền) */
         boolean valid = EmailValidator.getInstance().isValid(input.getEmail());
         if(valid == false){
-            throw new RuntimeException("Email không tồn tại");
+            errors.put("email", "Email không đúng định dạng");
+        }
+        if(!errors.isEmpty()){
+            return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
         }
 
         /* Gửi email, nếu ko đc -> email ko tồn tại */
@@ -68,9 +93,10 @@ public class CustomerServiceImpl implements CustomerService{
 
         /* Lưu giỏ hàng vào DB */
         cartRepository.save(cartEntity);
-
+        entity.setToken(jwtTokenProvider.generateToken(entity.getEmail(), JWT_EXPIRATION,JWT_SECRET));
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
+
 
     @Override
     @Transactional
@@ -92,6 +118,28 @@ public class CustomerServiceImpl implements CustomerService{
     public ResponseEntity<CustomerDto> getEmail(String email) {
         CustomerEntity entity = repository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Email không tồn tại"));
+        return ResponseEntity.ok().body(mapper.entityToDto(entity));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<CustomerDto>> getAll(Customerparam param, Optional<Integer> limit, Optional<Integer> page) {
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), Sort.by(Sort.Direction.DESC, "id"));
+        Page<CustomerDto> entity = repository.getAll(param, pageable).map(mapper :: entityToDto);
+        return ResponseEntity.ok().body(entity);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CustomerDto> updateStatus(Integer id) {
+        CustomerEntity entity = repository.getById(id);
+        Boolean status = entity.isStatus();
+        if(status == true){
+            entity.setStatus(false);
+        }else {
+            entity.setStatus(true);
+        }
+        repository.save(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
 }

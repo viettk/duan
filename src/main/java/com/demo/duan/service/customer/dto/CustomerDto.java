@@ -8,6 +8,8 @@ import java.util.Date;
 @Getter
 @Setter
 public class CustomerDto {
+    private Integer id;
+
     private String email;
 
     private String name;
@@ -16,7 +18,7 @@ public class CustomerDto {
 
     private boolean status;
 
-    private Date register_day;
+    private String role;
 
     private Date last_login;
 }

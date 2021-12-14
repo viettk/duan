@@ -1,5 +1,6 @@
 package com.demo.duan.service.bill.dto;
 
+import com.demo.duan.service.discount.dto.DiscountDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +25,7 @@ public class BillDto {
 
     private BigDecimal total;
 
-    private String status_pay;
+    private Integer status_pay;
 
     private String address;
 
@@ -32,15 +33,13 @@ public class BillDto {
 
     private String district;
 
-    private String status_order;
+    private DiscountDto discount;
+
+    private String wards;
+
+    private Integer status_order;
 
     private String describe;
-
-    private String thema;
-
-    private String themb;
-
-    private String themc;
 
     private String id_code;
 }
