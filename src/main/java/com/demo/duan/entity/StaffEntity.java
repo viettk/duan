@@ -1,5 +1,6 @@
 package com.demo.duan.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,10 +45,8 @@ public class StaffEntity implements Serializable {
     @Column(name="phone")
     private String phone;
 
-    @OneToMany(mappedBy = "staff")
-    private List<ReceiptEntity> receipts;
-
    /*Hóa đơn*/
+    @JsonIgnore
     @OneToMany(mappedBy = "id")
     private List<BillEntity> bills;
 }

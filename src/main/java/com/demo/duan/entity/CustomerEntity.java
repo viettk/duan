@@ -1,5 +1,6 @@
 package com.demo.duan.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +46,7 @@ public class CustomerEntity implements Serializable {
     @OneToMany(mappedBy = "customer")
     List<AdressEntity> adress;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "customer")
     private CartEntity cart;
 

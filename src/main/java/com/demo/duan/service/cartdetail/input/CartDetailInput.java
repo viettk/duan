@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 public class CartDetailInput {
-    private Integer cartId;
 
     private Integer productId;
 

@@ -27,7 +27,7 @@ public class CustomerInput {
 
 //    private String token;
 
-    private boolean status;
+    private boolean status = true;
 
 //    private Date register_day;
 //
