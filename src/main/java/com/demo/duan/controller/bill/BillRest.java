@@ -18,7 +18,7 @@ import java.util.Optional;
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/admin/bill")
+@RequestMapping("/bill")
 public class BillRest {
 
     private final BillService service;

@@ -1,23 +1,51 @@
 package com.demo.duan.service.bill;
 
+import com.demo.duan.entity.BillDetailEntity;
 import com.demo.duan.entity.BillEntity;
+import com.demo.duan.entity.CartEntity;
+import com.demo.duan.entity.DiscountEntity;
 import com.demo.duan.repository.bill.BillRepository;
+import com.demo.duan.repository.billdetail.BillDetailRepository;
+import com.demo.duan.repository.cart.CartRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
+import com.demo.duan.repository.discount.DiscountRepository;
 import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.mapper.BillMapper;
 import com.demo.duan.service.bill.param.BillParam;
 import com.demo.duan.service.billdetail.BillDetailService;
+import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
+import com.demo.duan.service.billdetail.mapper.BillDetailMapper;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -28,11 +56,15 @@ public class BillServiceImpl implements BillService{
 
     private  final BillMapper mapper;
 
+    private  final BillDetailMapper billDetailMapper;
+
     private final BillDetailService billDetailService;
 
     private final BillDetailRepository billDetailRepository;
 
-    private final ProductRepository productRepository;
+    private final CartRepository cartRepository;
+
+    private final DiscountRepository discountRepository;
 
     private final CartDetailRepository cartDetailRepository;
 
@@ -219,37 +251,6 @@ public class BillServiceImpl implements BillService{
     /* bill admin*/
 
 
-    @Override
-    public ResponseEntity<BillDto> getOne(Integer id) {
-        BillEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Hóa đơn này không tồn tại"));
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
-    }
-
-    @Override
-    public ResponseEntity<Page<BillDto>> getByEmail(String email, BillParam param, Pageable pageable) {
-        Page<BillDto> result = this.repository.findByEmail(email, param, pageable).map(mapper :: entityToDto);
-        return ResponseEntity.ok().body(result);
-    }
-
-
-    @Override
-    public ResponseEntity<BillDto> update(BillInput input, Integer id) throws RuntimeException{
-        BillEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn này"));
-        this.mapper.inputToEntity(input, entity);
-        LocalDate date = LocalDate.now();
-        entity.setUpdate_date(date);
-        this.repository.save(entity);
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
-    }
-
-
-
-    @Override
-    public ResponseEntity<Page<BillDto>> filterBill(BillParam param, Pageable pageable) {
-        Page<BillDto> result = repository.filterBill(param, pageable).map( mapper :: entityToDto);
-        return ResponseEntity.ok().body(result);
-    }
-
 
     @Override
     @Transactional
@@ -347,7 +348,7 @@ public class BillServiceImpl implements BillService{
     public ResponseEntity<BillDto> update(BillInput input, Integer id) throws RuntimeException{
         BillEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn này"));
         this.mapper.inputToEntity(input, entity);
-        Date date = new Date();
+        LocalDate date = LocalDate.now();
         entity.setUpdate_date(date);
         this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
@@ -357,38 +358,32 @@ public class BillServiceImpl implements BillService{
 	public ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input) throws RuntimeException{
 		BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
 
-		String status = "";
+		Integer status = 0;
 
-		Date date = new Date();
+        LocalDate date = LocalDate.now();
 		switch (input.getStatus_order()){
-	        case "Đã xác nhận":
-	            status = "Đã xác nhận";
+	        case 0:
+	            status = 0;
 	            break;
-	        case "Đang chuẩn bị hàng":
-	            status = "Đang chuẩn bị hàng";
+	        case 1:
+	            status = 1;
 	            break;
-	        case "Đang giao hàng":
-	            status = "Đang giao hàng";
+	        case 2:
+	            status = 2;
 	            break;
-	        case "Hoàn thành":
-	            status = "Hoàn thành";
+	        case 3:
+	            status = 3;
 	            break;
-            case "Thất bại":
-                status = "Thất bại";
+            case 4:
+                status = 4;
                 break;
-            case "Đã hủy":
-                status = "Đã hủy";
-                break;
-            case "Giao hàng thành công":
-                status = "Giao hàng thành công";
-                break;
-            case "Đơn hoàn trả":
-                status = "Đơn hoàn trả";
+            case 5:
+                status = 5;
                 break;
 	        default:
 	            throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
 	    }
-		String status_pay = "";
+		Integer status_pay = null;
 		if(input.getStatus_pay().equals("")) {
 			status_pay = entity.getStatus_pay();
 		}else {
@@ -403,20 +398,17 @@ public class BillServiceImpl implements BillService{
 	@Override
 	public ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input) {
 		BillEntity entity = this.repository.findById(id).orElseThrow( () ->  new RuntimeException("Đơn hàng này không tồn tại!"));
-        String status = "";
-        Date date = new Date();
+        Integer status = 0;
+        LocalDate date = LocalDate.now();
         switch (input.getStatus_order()){
-            case "Đã thanh toán":
-                status = "Đã thanh toán";
+            case 1:
+                status = 1;
                 break;
-            case "Đã hoàn trả":
-                status = "Đã hoàn trả";
+            case 0:
+                status = 0;
                 break;
-            case "Chưa thanh toán":
-                status = "Chưa thanh toán";
-                break;
-            case "Hủy":
-                status = "Thanh toán online";
+            case 2:
+                status = 2;
                 break;
             default:
                 throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");

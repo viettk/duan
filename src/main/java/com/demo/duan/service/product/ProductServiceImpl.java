@@ -429,15 +429,6 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ResponseEntity<ProductDto> returnNumber(Integer id, Integer number) throws RuntimeException{
-        ProductEntity entity = this.productRepository.findById(id).orElseThrow( () -> new RuntimeException("Sản phẩm này không tồn tại"));
-        Integer a = entity.getNumber();
-        entity.setNumber(a + number);
-        this.productRepository.save(entity);
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
-    }
-
-    @Override
     @Transactional
     public void valueDiscount(int value) {
         BigDecimal hunderd = new BigDecimal(100);

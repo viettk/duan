@@ -1,8 +1,6 @@
 package com.demo.duan.service.billdetail;
 
-import com.demo.duan.entity.BillDetailEntity;
-import com.demo.duan.entity.BillEntity;
-import com.demo.duan.entity.CartDetailEntity;
+import com.demo.duan.entity.*;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
@@ -95,42 +93,8 @@ public class BillDetailServiceImpl implements BillDetailService{
         return ResponseEntity.ok().body(lstDto);
     }
 
-    @Override
-    public ResponseEntity<List<BillDetailDto>> getByBill(Integer idBill, Optional<String> field, String known) {
-        if (known.equals("up")){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            List<BillDetailEntity> result = this.repository.findByBill(idBill, sort);
-            return ResponseEntity.ok().body(this.mapper.EntitiesToDtos(result));
-        }
-        else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            List<BillDetailEntity> result = this.repository.findByBill(idBill, sort);
-            return ResponseEntity.ok().body(this.mapper.EntitiesToDtos(result));
-        }
-    }
 
-    @Override
-    public ResponseEntity<BillDetailDto> updateBillDetail(Integer id, BillDetailInput input) throws RuntimeException{
-        BillDetailEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn chi tiết này"));
-        int returnNumber = entity.getNumber() - input.getNumber();
-        BigDecimal returnPrice = entity.getPrice().multiply( new BigDecimal(returnNumber));
-        BigDecimal totalNew = entity.getPrice().multiply(new BigDecimal(input.getNumber()));
-        this.mapper.inputToEntity(input, entity);
-        entity.setTotal(totalNew);
-        this.repository.save(entity);
-        //
-        BillEntity billEntity = billRepository.findById(entity.getBill().getId()).orElseThrow( () -> new RuntimeException("Không thấy Hóa đơn này"));
-        BigDecimal totalBill= billEntity.getTotal().subtract(entity.getPrice().multiply(returnPrice));
-        billEntity.setTotal(totalBill);
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
-    }
 
-    @Override
-    public ResponseEntity<BillDetailDto> getById(Integer id) throws RuntimeException{
-        BillDetailEntity entity = this.repository.findById(id).orElseThrow( () -> new RuntimeException("không tồn tại chi tiết hóa đơn này"));
-        System.out.println(entity.getId());
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
-    }
 
     @Override
     @Transactional

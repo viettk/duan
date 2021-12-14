@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -33,7 +32,7 @@ public class BillInput {
     private String district;
 
     @NotBlank(message = "Phương/xã không được để trống!")
-    String wards;
+    private String wards;
 
     private BigDecimal total;
 

@@ -41,11 +41,5 @@ public class BillDto {
 
     private String describe;
 
-    private String thema;
-
-    private String themb;
-
-    private String themc;
-
     private String id_code;
 }

@@ -73,8 +73,6 @@ public interface ProductService {
 
     List<Integer> soLuongBan5spBanChay(Integer month, Integer year);
 
-    ResponseEntity<ProductDto> returnNumber(Integer id, Integer number);
-
 
     //Giảm giá
     public void valueDiscount(int value);

@@ -37,23 +37,9 @@ public interface BillService {
 
     //bill admin
 
-    ResponseEntity<BillDto>getOne(Integer id);
-
-    ResponseEntity<Page<BillDto>>getByEmail(String email, BillParam param, Pageable pageable);
-
-    ResponseEntity<BillDto>update(BillInput input, Integer id);
-
-    ResponseEntity<BillDto> updateStatusOder(Integer id, BillInput input);
-
-    ResponseEntity<BillDto> updateStatusPay(Integer id, BillInput input);
-
-    ResponseEntity<Page<BillDto>> filterBill(BillParam param, Pageable pageable);
-
     public void CreateBillPdf(Integer billId , String name, String email, String phone, LocalDate date, BigDecimal totalBillMoney, String statusPay);
 
     public ResponseEntity<BillDto> changeStatus_pay(Integer id, String status_pay);
-
-    public ResponseEntity<BillDto> createByCustomer(BillInput input);
 
     ResponseEntity<BillDto>getOne(Integer id);
 
