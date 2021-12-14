@@ -12,7 +12,7 @@ import javax.validation.Valid;
 @RequestMapping("/account")
 @AllArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class CustomerRest {
 
     private final CustomerService service;
@@ -23,7 +23,8 @@ public class CustomerRest {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<CustomerDto> create(@Valid @RequestBody CustomerInput input){
+    public ResponseEntity<Object> create(@Valid @RequestBody CustomerInput input){
+        System.out.println(1);
         return service.create(input);
     }
 
