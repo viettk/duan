@@ -77,7 +77,7 @@ public class BillServiceImpl implements BillService{
 
         /* lưu hóa đơn vào máy */
         BillEntity entity = mapper.inputToEntity(input);
-        entity.setStatus_order("Chờ xác nhận");
+        entity.setStatus_order(0);
         repository.save(entity);
         /* tạo hóa đơn chi tiết */
         BillDetailInput billDetailInput = new BillDetailInput();

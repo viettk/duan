@@ -95,14 +95,6 @@ public class ProductCustomerRest {
         return service.Thongketop5spbanchay();
     }
 
-    @GetMapping("/return/{id}")
-    public ResponseEntity<ProductDto>returnProduct(
-            @PathVariable("id") Integer id,
-            @RequestParam("number") Integer number
-    ){
-        return this.service.returnNumber(id, number);
-    }
-
 //    Giảm giá
     @PostMapping("/giamgia")
     public void giamGia(int value ){

@@ -1,8 +1,6 @@
 package com.demo.duan.service.billdetail;
 
-import com.demo.duan.entity.BillDetailEntity;
-import com.demo.duan.entity.BillEntity;
-import com.demo.duan.entity.CartDetailEntity;
+import com.demo.duan.entity.*;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.cartdetail.CartDetailRepository;
@@ -103,35 +101,6 @@ public class BillDetailServiceImpl implements BillDetailService{
 
     /* bill admin*/
     @Override
-    public ResponseEntity<List<BillDetailDto>> getByBill(Integer idBill, Optional<String> field, String known) {
-        if (known.equals("up")){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            List<BillDetailEntity> result = this.repository.findByBill(idBill, sort);
-            return ResponseEntity.ok().body(this.mapper.EntitiesToDtos(result));
-        }
-        else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            List<BillDetailEntity> result = this.repository.findByBill(idBill, sort);
-            return ResponseEntity.ok().body(this.mapper.EntitiesToDtos(result));
-        }
-    }
-
-    @Override
-    public ResponseEntity<BillDetailDto> updateBillDetail(Integer id, BillDetailInput input) throws RuntimeException{
-        BillDetailEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn chi tiết này"));
-        this.mapper.inputToEntity(input, entity);
-        this.repository.save(entity);
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
-    }
-
-    @Override
-    public ResponseEntity<BillDetailDto> getById(Integer id) throws RuntimeException{
-        BillDetailEntity entity = this.repository.findById(id).orElseThrow( () -> new RuntimeException("không tồn tại chi tiết hóa đơn này"));
-        System.out.println(entity.getId());
-        return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
-    }
-
-    @Override
     @Transactional
     public ResponseEntity<List<BillDetailDto>> getAllAfterOrder(Integer billId) {
         List<BillDetailEntity> entities = repository.getListByCustomer(billId);
@@ -152,8 +121,6 @@ public class BillDetailServiceImpl implements BillDetailService{
         BigDecimal sumPrice = repository.tinhTongPrice(billId);
         return sumPrice;
     }
-
-    //admin
 
     @Override
     public ResponseEntity<List<BillDetailDto>> getByBill(Integer idBill, Optional<String> field, String known) {

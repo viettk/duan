@@ -43,7 +43,6 @@ public interface BillService {
     public void CreateBillPdf(Integer billId , String name, String email, String phone, LocalDate date, BigDecimal totalBillMoney, String statusPay);
 
     public ResponseEntity<BillDto> changeStatus_pay(Integer id, String status_pay);
-    public ResponseEntity<BillDto> createByCustomer(BillInput input);
 
     ResponseEntity<BillDto>getOne(Integer id);
 
