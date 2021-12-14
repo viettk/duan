@@ -407,8 +407,13 @@ public class BillServiceImpl implements BillService{
             case 0:
                 status = 0;
                 break;
+<<<<<<< HEAD
             case 2:
                 status = 2;
+=======
+            case "Hủy":
+                status = "Hủy";
+>>>>>>> parent of 1b72d50 (ok)
                 break;
             default:
                 throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
