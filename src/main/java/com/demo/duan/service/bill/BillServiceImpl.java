@@ -150,7 +150,7 @@ public class BillServiceImpl implements BillService{
                 status = "Chưa thanh toán";
                 break;
             case "Hủy":
-                status = "Hủy";
+                status = "Thanh toán online";
                 break;
             default:
                 throw new RuntimeException("Không có trạng thái này, vui lòng cập nhật lại");
