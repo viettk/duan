@@ -29,8 +29,7 @@ public class StaffRest {
 
     @GetMapping
     public ResponseEntity<Page<StaffDto>>search(
-            @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "p", required = false) String p,
             @RequestParam(value = "status", required = false) Boolean status,
             @RequestParam(value = "role", required = false) Integer role,
             @RequestParam("_limit") Optional<Integer> limit,
@@ -38,7 +37,7 @@ public class StaffRest {
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-        StaffParam param = new StaffParam(email, name, status, role);
+        StaffParam param = new StaffParam(p, status, role);
         if (known.isEmpty()){
             Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
             Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);

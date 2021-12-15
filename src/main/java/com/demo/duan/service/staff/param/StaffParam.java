@@ -9,9 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StaffParam {
 
-    private String email;
-
-    private String name;
+    private String p;
 
     private Boolean status;
 

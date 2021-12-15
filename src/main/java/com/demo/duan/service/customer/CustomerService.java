@@ -10,15 +10,14 @@ import java.util.Optional;
 
 public interface CustomerService {
     /* Khách hàng đăng kí */
-    public ResponseEntity<Object> create(CustomerInput input);
+    ResponseEntity<Object> create(CustomerInput input);
 
     /* Khách hàng đổi mật khẩu */
-    public ResponseEntity<CustomerDto> update(CustomerInput input);
+    ResponseEntity<CustomerDto> update(CustomerInput input);
 
     /* Lấy Email của khách hàng -> đổi lại mật khẩu */
-    public ResponseEntity<CustomerDto> getEmail(String email);
+    ResponseEntity<CustomerDto> getEmail(String email);
 
-    public ResponseEntity<Page<CustomerDto>> getAll(Customerparam param, Optional<Integer> limit, Optional<Integer> page);
-    public ResponseEntity<CustomerDto> updateStatus(Integer id);
-
+    ResponseEntity<Page<CustomerDto>> getAll(Customerparam param, Optional<Integer> limit, Optional<Integer> page);
+    ResponseEntity<CustomerDto> updateStatus(Integer id);
 }

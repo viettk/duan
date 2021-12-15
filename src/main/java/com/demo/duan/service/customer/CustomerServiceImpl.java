@@ -32,14 +32,14 @@ import java.util.Optional;
 @Service
 public class CustomerServiceImpl implements CustomerService{
     @Autowired
-    private  CustomerRepository repository;
+    private CustomerRepository repository;
     @Autowired
-    private  CustomerMapper mapper;
+    private CustomerMapper mapper;
     @Autowired
-    private  CartRepository cartRepository;
+    private CartRepository cartRepository;
     @Autowired
-    private  JwtTokenProvider jwtTokenProvider;
-    private final long JWT_EXPIRATION = 604800000L;
+    private JwtTokenProvider jwtTokenProvider;
+    private long JWT_EXPIRATION = 604800000L;
     @Value("${secrert.login}")
     private String JWT_SECRET;
 
