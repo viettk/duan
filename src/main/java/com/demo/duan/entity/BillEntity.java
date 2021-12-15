@@ -61,15 +61,6 @@ public class BillEntity implements Serializable {
     @Column(name="describe")
     private String describe;
 
-    @Column(name="thema")
-    private String thema;
-
-    @Column(name="themb")
-    private String themb;
-
-    @Column(name="themc")
-    private String themc;
-
     @Column(name="id_code")
     private String id_code;
 
