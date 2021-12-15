@@ -1,6 +1,7 @@
 package com.demo.duan.repository.category;
 
 import com.demo.duan.entity.CategoryEntity;
+import com.demo.duan.entity.ProductEntity;
 import com.demo.duan.service.category.dto.CategoryDto;
 import com.demo.duan.service.category.param.CategoryParam;
 import org.springframework.data.domain.Page;
@@ -34,4 +35,9 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query("select distinct c from CategoryEntity c join ProductEntity  p on c.id = p.category.id  where (:#{#param.name} is null or c.name like %:#{#param.name}%) ")
     List<CategoryEntity> getAllCategoryByName(@Param("param")CategoryParam param);
+
+    @Query("from CategoryEntity p where :name is null or p.name like %:name%")
+    List<CategoryEntity> search(String name);
+
+
 }

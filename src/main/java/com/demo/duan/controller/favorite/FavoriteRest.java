@@ -32,8 +32,8 @@ public class FavoriteRest {
     }
 
     @GetMapping("/san-pham-yeu-thich")
-    public boolean getOne( Integer id, Integer product_id){
-        return service.getOne(id , product_id);
+    public int getOne( Integer id, Integer product_id, String email){
+        return service.getOne(id , product_id, email);
     }
 
     @PostMapping
@@ -43,6 +43,6 @@ public class FavoriteRest {
 
     @PostMapping("/y")
     public ResponseEntity<FavoriteDto> update(@Valid @RequestBody FavoriteInput input) {
-        System.out.println(input.getProductId());
+        System.out.println(input.getProductId() +"cnfdifi");
         return service.delete(input);}
 }

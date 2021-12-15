@@ -24,8 +24,9 @@ public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Intege
     @Query("from FavoriteEntity f where f.customer.id = :customerId and f.product.id = :productId")
     FavoriteEntity finfFavo(Integer customerId, Integer productId);
 
-    @Query("select count(f.id) from FavoriteEntity f where f.customer.id = :customerId and f.product.id = :productId")
-    int count(Integer customerId, Integer productId);
+    @Query("select count(f.id) from FavoriteEntity f where f.customer.id = :customerId and f.product.id = :productId " +
+            "and f.customer.email = :email")
+    int count(@Param("customerId") Integer customerId, @Param("productId") Integer productId,@Param("email") String email);
 
     int countAllByProduct_Id(Integer productId);
 

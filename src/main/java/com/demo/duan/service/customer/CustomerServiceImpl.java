@@ -142,4 +142,36 @@ public class CustomerServiceImpl implements CustomerService{
         repository.save(entity);
         return ResponseEntity.ok().body(mapper.entityToDto(entity));
     }
+
+    // ----------------------------------------------------
+
+    @Override
+    @Transactional
+    public ResponseEntity<Void> disable(Integer id) {
+        Optional<CustomerEntity> entity = repository.findById(id);
+        if(entity.isPresent()){
+            if(entity.get().isStatus()==true){
+                entity.get().setStatus(false);
+            }else{
+                entity.get().setStatus(true);
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<CustomerDto>> fillAll(String email,Boolean status,String known,Integer page) {
+        if(known.equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, "id");
+            Pageable pageable = PageRequest.of(page, 5, sort);
+            Page<CustomerDto> customerDtos = repository.findAllByEmailStartingWithAndStatus(email,status,pageable).map(mapper::entityToDto);
+            return  ResponseEntity.ok(customerDtos);
+        }else{
+            Sort sort =Sort.by(Sort.Direction.DESC, "id");
+            Pageable pageable = PageRequest.of(page, 5, sort);
+            Page<CustomerDto> customerDtos = repository.findAllByEmailStartingWithAndStatus(email,status,pageable).map(mapper::entityToDto);
+            return  ResponseEntity.ok(customerDtos);
+        }
+    }
 }

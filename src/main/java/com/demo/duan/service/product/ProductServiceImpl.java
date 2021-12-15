@@ -262,6 +262,8 @@ public class ProductServiceImpl implements ProductService{
         product.setPrice(product.getPrice_extra().multiply(BigDecimal.valueOf(100-product.getValue_extra())).divide(BigDecimal.valueOf(100)));
         //thêm sản phẩm
         ProductEntity productSave = productRepository.save(product);
+        productSave.setSku("SP"+productSave.getCreateDate().getYear()+productSave.getId());
+        productRepository.save(productSave);
         return ResponseEntity.ok(productSave.getId());
     }
 

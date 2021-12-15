@@ -48,7 +48,7 @@ public interface CartDetailService {
 
     public ResponseEntity<List<CartDetailDto>> createByCustomerNotLogin(Integer id , List<LocalStorageCartDetail> input);
 
-    public Integer soluongtronggio(Integer idCusomer, String email);
+    public int soluongtronggio(Integer idCusomer, String email);
 
 
     // kiểm tra giỏ hàng khách hàng đã đăng ký

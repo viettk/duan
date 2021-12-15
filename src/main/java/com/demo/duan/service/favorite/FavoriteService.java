@@ -17,5 +17,5 @@ public interface FavoriteService {
 
     public int getProduct(Integer productId);
 
-    public boolean getOne(Integer id, Integer product_id);
+    public int getOne(Integer id, Integer product_id, String email);
 }

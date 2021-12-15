@@ -72,7 +72,7 @@ public class CartDetailRest {
     }
 
     @GetMapping("/soluongtronggio")
-    public Integer getSoluongtronggio(Integer idcustomer, String email){
+    public int getSoluongtronggio(Integer idcustomer, String email){
         return service.soluongtronggio(idcustomer, email);
     };
 }

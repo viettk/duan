@@ -18,6 +18,19 @@ public interface DiscountRepository extends JpaRepository<DiscountEntity, Intege
 
     DiscountEntity getByName(String name);
 
+    @Query(nativeQuery = true , value = "from Discount d where DATEDIFF(year, end_day, GETDATE()) = 0" +
+            "and DATEDIFF(month, end_day, GETDATE()) = 0 and DATEDIFF(day, end_day, GETDATE()) > 0 and number > 0")
+    DiscountEntity getDiscountName(String name);
+
+    @Query(nativeQuery = true , value = "select * from Discount d where DATEDIFF(year, end_day, GETDATE()) = 0" +
+            "and DATEDIFF(month, end_day, GETDATE()) = 0 and DATEDIFF(day, end_day, GETDATE()) < 0 and number > 0 and name= :name")
+    Optional<DiscountEntity> searchdiscount(@Param("name") String name);
+
+    //postgresql
+//    @Query(nativeQuery = true , value = "from Discount d where DATE_PART('year', end_day::date ) - DATE_PART('year', start) = 0" +
+//            "and DATEDIFF(month, end_day, GETDATE()) = 0 and DATEDIFF(day, end_day, GETDATE()) > 0 and number > 0")
+//    DiscountEntity getDiscountNamePost(String name);
+
     long countAllByName(String name);
 
     @Query("from DiscountEntity d where (:#{#param.name} is null or d.name like %:#{#param.name}%)" +

@@ -95,13 +95,8 @@ public class FavoriteServiceImpl implements FavoriteService{
 
     @Override
     @Transactional
-    public boolean getOne(Integer id, Integer product_id) {
-        int entity = repository.count(id, product_id);
-        if(entity > 0){
-            return true;
-        }
-        else {
-            return false;
-        }
+    public int getOne(Integer id, Integer product_id, String email) {
+        int entity = repository.count(id, product_id, email);
+        return entity;
     }
 }

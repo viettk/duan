@@ -20,6 +20,8 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity , Integ
     Optional<CustomerEntity> findByEmail(String email);
 
     Optional<CustomerEntity> findByEmailAndStatusIsFalse(String email);
+
+    Optional<CustomerEntity> findByIdAndEmail(Integer id, String email);
     
     CustomerEntity getByEmail(String email);
 
@@ -27,4 +29,6 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity , Integ
             "and (:#{#param.email} is null or c.email like %:#{#param.email}%)" +
             "and (:#{#param.status} = false or c.status = :#{#param.status})")
     Page<CustomerEntity> getAll(@Param("param")Customerparam param, Pageable pageable);
+
+    Page<CustomerEntity> findAllByEmailStartingWithAndStatus(String email,Boolean status,Pageable page);
 }

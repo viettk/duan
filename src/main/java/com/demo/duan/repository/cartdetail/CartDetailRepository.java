@@ -37,7 +37,7 @@ public interface CartDetailRepository extends JpaRepository<CartDetailEntity, In
     Integer checkNumberOfCartDetail(@Param("cartId") Integer cartId);
 
     @Query("select count(cd.id) from CartDetailEntity cd where cd.cart.id = :cartId")
-    Integer coutofCart(@Param("cartId") Integer cartId);
+    int coutofCart(@Param("cartId") Integer cartId);
 
     void deleteAllByCart_Id(Integer cartId);
 

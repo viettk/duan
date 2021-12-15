@@ -25,11 +25,12 @@ public class BillCustomerRest {
 
     private final BillDetailService billDetailService;
 
-    @PostMapping("/dat/{cartId}")
+    @PostMapping("/dat/{id}")
     public ResponseEntity<BillDto> createByCustomer(
-            @PathVariable Integer cartId ,
+            @PathVariable Integer id ,
             @Valid @RequestBody BillInput input){
-        return service.createByCustomer(cartId,input);
+        System.out.println("cnjgo");
+        return service.createByCustomer(id,input);
     }
 
     @PostMapping("/dat")

@@ -47,7 +47,6 @@ public class CartDetailServiceImpl implements CartDetailService{
     @Override
     @Transactional
     public ResponseEntity<CartDetailDto> addToCartDetail(Integer customerId, String email, CartDetailInput input) {
-
         /* Lấy thông tin sản phẩm */
         ProductEntity product = productRepository.getById(input.getProductId());
         /* Lấy thông tin Giỏ hàng */
@@ -275,11 +274,12 @@ public class CartDetailServiceImpl implements CartDetailService{
 
     @Override
     @Transactional
-    public Integer soluongtronggio(Integer idCutsomer, String email) {
+    public int soluongtronggio(Integer idCutsomer, String email) {
         CartEntity entity = cartRepository.getByCustomer_IdAndEmail(idCutsomer, email)
                 .orElseThrow(() -> new RuntimeException("Bạn chưa đăng ký tài khoản") );
-        Integer count  = repository.coutofCart(entity.getId());
+        int count  = repository.coutofCart(entity.getId());
         return count;
+
     }
 
     @Override

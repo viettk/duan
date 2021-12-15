@@ -34,8 +34,6 @@ public class ProductInput {
 
 //    @NotEmpty(message = "Không được để trống ảnh chính sản phẩm")
 
-    private String sku;
-
     private String trait;
 
     private Date releaseDate;

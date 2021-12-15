@@ -68,6 +68,9 @@ public class BillEntity implements Serializable {
     @Column(name="id_code")
     private String id_code;
 
+    @Column(name="type_pay")
+    private String type_pay;
+
     @ManyToOne @JoinColumn(name = "staff_id")
     private StaffEntity staff;
 

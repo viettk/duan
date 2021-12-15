@@ -90,7 +90,7 @@ public class BillServiceImpl implements BillService{
 
         /* Kiểm tra mã giảm giá có khả dụng hay ko */
         if(!input.getDiscountName().equals("")){
-            discount = discountRepository.getByName(input.getDiscountName());
+            discount = discountRepository.getDiscountName(input.getDiscountName());
             entity.setDiscount(discount);
             /* Trừ mã giảm giá */
             discount.setNumber(discount.getNumber() - 1);
@@ -142,7 +142,8 @@ public class BillServiceImpl implements BillService{
 
         /* Kiểm tra mã giảm giá có khả dụng hay ko */
         if(!input.getDiscountName().equals("")){
-            discount = discountRepository.searchDiscountByCustomer(input.getDiscountName())
+            System.out.println(input.getDiscountName());
+            discount = discountRepository.searchdiscount(input.getDiscountName())
                     .orElseThrow(()->new RuntimeException("Mã Giảm giá không khả dụng"));
             entity.setDiscount(discount);
             /* Trừ mã giảm giá */

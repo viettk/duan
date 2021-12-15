@@ -131,4 +131,12 @@ public class CategoryServiceImpl implements CategoryService{
         List<CategoryDto> dtos = mapper.EntitiesToDtos(lstenEntities);
         return ResponseEntity.ok().body(dtos);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<CategoryDto>> getAllCate(String name) {
+        List<CategoryEntity> entities = repository.search(name);
+        List<CategoryDto> categoryDtos = mapper.EntitiesToDtos(entities);
+        return ResponseEntity.ok().body(categoryDtos);
+    }
 }

@@ -44,9 +44,9 @@ public class AdressServiceImpl implements AdressService {
     public ResponseEntity<AdressDto> create(AdressInput input, String email) {
 
         /* KHông cần thiết - Kiểm tra tài khoản đã có hay chưa */
-        CustomerEntity customerEntity =customerRepository.findById(input.getCustomerInput())
+        CustomerEntity customerEntity =customerRepository.findByIdAndEmail(input.getCustomerInput(), email)
                 .orElseThrow(()-> new RuntimeException("Bạn chưa có tài khoản"));
-
+        System.out.println(input.getCustomerInput());
         if(input.getCustomerInput().equals("") ){
             throw new RuntimeException("Bạn chưa có tài khoản");
         }
@@ -54,7 +54,6 @@ public class AdressServiceImpl implements AdressService {
         /* Nếu số lượng địa chỉ > 5 thì ko đc thêm địa chỉ nữa */
         long num = repository.countAllByCustomer_IdAndCustomer_Email(input.getCustomerInput(), email);
         if(num > 3){
-            System.out.println(num);
             throw new RuntimeException("Chỉ có tối đa 3 địa chỉ");
         }
 

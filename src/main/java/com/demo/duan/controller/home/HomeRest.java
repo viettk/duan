@@ -32,4 +32,9 @@ public class HomeRest {
     public ResponseEntity<List<CategoryDto>> getCatebyParen(String parentName){
         return service.getCatebyParen(parentName);
     }
+
+    @GetMapping("/namedm")
+    public ResponseEntity<List<CategoryDto>> finCate(String name){
+        return service.getAllCate(name);
+    }
 }

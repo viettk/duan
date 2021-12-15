@@ -18,10 +18,10 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
     @Query(nativeQuery = true,
-            value = "select p.* " +
+            value = "select top 20 p.* " +
                     "FROM Product  p " +
                     "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price,  p.price_extra, p.value_extra,p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
-                    "ORDER BY p.id desc limit 20")
+                    "ORDER BY p.id desc")
     List<ProductEntity> searchNewArrival();
 
 
@@ -109,22 +109,33 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     List<ProductEntity> search(String name);
 
     @Query(nativeQuery = true,
-            value = "SELECT p.* " +
+            value = "SELECT top 5 p.* " +
                     "FROM Product  p join Bill_detail bd on p.id = bd.product_id " +
                     "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price, p.price_extra, p.value_extra, p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
-                    "ORDER BY SUM(bd.number) desc limit 5")
+                    "ORDER BY SUM(bd.number) desc")
     List<ProductEntity> Thongketop5spbanchay();
 
-    @Query(nativeQuery = true,
-            value = "SELECT p.* FROM Product  p join Bill_detail bd on p.id = bd.product_id join Bill b on b.id = bd.bill_id where date_part('month', b.create_date) = :month and date_part('year', b.create_date) = :year " +
-                    "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price, p.price_extra, p.value_extra,p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
-                    "ORDER BY SUM(bd.number) desc limit 5")
-    List<ProductEntity> Thongketop5spbanchayTheoThangNam(Integer month, Integer year);
+//    @Query(nativeQuery = true,
+//            value = "SELECT p.* FROM Product  p join Bill_detail bd on p.id = bd.product_id join Bill b on b.id = bd.bill_id where date_part('month', b.create_date) = :month and date_part('year', b.create_date) = :year " +
+//                    "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price, p.price_extra, p.value_extra,p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
+//                    "ORDER BY SUM(bd.number) desc limit 5")
+//    List<ProductEntity> Thongketop5spbanchayTheoThangNam(Integer month, Integer year);
+@Query(nativeQuery = true,
+        value = "SELECT top 5 p.* FROM Product  p join Bill_detail bd on p.id = bd.product_id join Bill b on b.id = bd.bill_id where MONTH(b.create_date) = :month and YEAR(b.create_date) = :year " +
+                "GROUP BY  p.id ,p.name,p.category_id,p.status,p.number,p.price, p.price_extra, p.value_extra,p.describe,p.photo,p.create_date,p.sku,p.trait,p.release_date,p.price_release,p.weight,p.height,p.width,p.length " +
+                "ORDER BY SUM(bd.number) desc")
+List<ProductEntity> Thongketop5spbanchayTheoThangNam(Integer month, Integer year);
+
+//    @Query(nativeQuery = true,
+//            value = "SELECT top 5 sum(bd.number) FROM Product  p join Bill_detail bd on p.id = bd.product_id join Bill b on b.id = bd.bill_id where date_part('month', b.create_date) = :month and date_part('year', b.create_date) = :year " +
+//                    "GROUP BY  p.id, p.photo, p.name\n" +
+//                    "ORDER BY SUM(bd.number) desc")
+//    List<Integer> soLuongBan5spBanChay(Integer month, Integer year);
 
     @Query(nativeQuery = true,
-            value = "SELECT sum(bd.number) FROM Product  p join Bill_detail bd on p.id = bd.product_id join Bill b on b.id = bd.bill_id where date_part('month', b.create_date) = :month and date_part('year', b.create_date) = :year " +
+            value = "SELECT top 5 sum(bd.number) FROM Product  p join Bill_detail bd on p.id = bd.product_id join Bill b on b.id = bd.bill_id where MONTH(b.create_date) = :month and YEAR(b.create_date) = :year " +
                     "GROUP BY  p.id, p.photo, p.name\n" +
-                    "ORDER BY SUM(bd.number) desc limit 5")
+                    "ORDER BY SUM(bd.number) desc ")
     List<Integer> soLuongBan5spBanChay(Integer month, Integer year);
 
     List<ProductEntity> findAllByCategory_Id(Integer categoryId);
