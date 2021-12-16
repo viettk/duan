@@ -79,9 +79,9 @@ public class BillServiceImpl implements BillService{
         BillEntity entity = mapper.inputToEntity(input);
         entity = repository.saveAndFlush(entity);
         if(input.getType_pay()){
-            entity.setStatus_order(1);
+            entity.setStatus_order(2);
         }else {
-            entity.setStatus_order(1);
+            entity.setStatus_order(2);
         }
 
         entity.setCreate_date(date);
@@ -133,9 +133,9 @@ public class BillServiceImpl implements BillService{
         BillEntity entity = mapper.inputToEntity(input);
         entity = repository.saveAndFlush(entity);
         if(input.getType_pay()){
-            entity.setStatus_order(1);
+            entity.setStatus_order(2);
         }else{
-            entity.setStatus_order(1);
+            entity.setStatus_order(2);
         }
         entity.setCreate_date(date);
         entity.setUpdate_date(date);
@@ -180,9 +180,10 @@ public class BillServiceImpl implements BillService{
 
     @Override
     @Transactional
-    public ResponseEntity<Page<BillDto>> getCustomerId(String email, Optional<Integer> page, Optional<Integer> limit) {
-        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), Sort.by(Sort.Direction.DESC, "id"));
-        Page<BillDto> dtos = repository.getBillCustomer(email, pageable).map(mapper::entityToDto);
+    public ResponseEntity<Page<BillDto>> getCustomerId(String email, BillParam param ,Optional<Integer> page, Optional<Integer> limit) {
+        Sort sort =Sort.by(Sort.Direction.ASC, "status_order");
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+        Page<BillDto> dtos = repository.getBillCustomer(email, param ,pageable).map(mapper::entityToDto);
         return ResponseEntity.ok().body(dtos);
     }
 
@@ -198,6 +199,18 @@ public class BillServiceImpl implements BillService{
     @Transactional
     public Integer getDonHuy(Integer month, Integer year) {
         return repository.donhuy(month, year);
+    }
+
+    @Override
+    @Transactional
+    public Integer getCOD() {
+        return repository.thongketype_payCOD();
+    }
+
+    @Override
+    @Transactional
+    public Integer getVNPAY() {
+        return repository.thongketype_payVNPAY();
     }
 
     @Override
@@ -239,7 +252,7 @@ public class BillServiceImpl implements BillService{
 
     /* tao id_code */
     private String createCodeId(Integer id_count){
-        int num = 0;
+        int num = 1;
         reloadId(num);
         String id_code = "";
         Date date = new Date();

@@ -72,8 +72,9 @@ public class ForgotServiceImpl implements ForgotService{
             errors.put("email", "Tài khoản đã bị vô hiệu hóa");
             return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
         }
+
         String token  = jwtTokenProvider.generateToken(email.get(),JWT_EXPIRATION,JWT_SECRET);
-        token = "https://nguyenthianhtuyet.herokuapp.com/resetpassword/" + token ;
+        token = "http://localhost:3000/changepassword/" + token ;
         mailService.send(new MailEntity(email.get(),"Bảo mật thông tin","Vui lòng click vào link dưới đây",token));
         return ResponseEntity.ok("Gửi email thành công ! Vui lòng kiểm tra hòm thư");
     }

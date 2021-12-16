@@ -20,7 +20,7 @@ public interface BillService {
 
     public ResponseEntity<BillDto> updateByCustomer(Integer id ,BillInput input);
 
-    public ResponseEntity<Page<BillDto>> getCustomerId(String email, Optional<Integer> page, Optional<Integer> limit);
+    public ResponseEntity<Page<BillDto>> getCustomerId(String email, BillParam param ,Optional<Integer> page, Optional<Integer> limit);
 
     public ResponseEntity<List<BillDetailDto>> getBillDetailCustomer(Integer billId);
 
@@ -29,6 +29,10 @@ public interface BillService {
     public Integer getDonTra (Integer month, Integer year);
 
     public Integer getDonTc (Integer month, Integer year);
+
+    public Integer getCOD();
+
+    public Integer getVNPAY();
 
     public Object sanPhambanchy(Integer month, Integer year);
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 @AllArgsConstructor
 @RestController
-@RequestMapping("change-password")
+@RequestMapping("api/change-password")
 @CrossOrigin(origins = "*")
 public class ChangePasswordRest {
     private final ForgotService forgotService;

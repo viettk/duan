@@ -20,6 +20,9 @@ public class ProductCreateInput {
 
     private boolean status;
 
+    //    @Positive(message = "số lượng phải lớn hơn 0 ")
+    private Integer number;
+
     @NotNull(message = "Không được để trống giá bán")
     @Positive(message = "Giá sản phẩm phải lớn hơn 0 ")
     private BigDecimal price_extra;

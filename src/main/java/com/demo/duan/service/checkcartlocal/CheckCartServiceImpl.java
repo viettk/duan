@@ -26,13 +26,11 @@ public class CheckCartServiceImpl implements CheckCartService{
             if(productEntity.getNumber() < x.getNumber() ){
                 throw new RuntimeException("Sản phẩm " + productEntity.getName() + " không đủ để mua");
             }
-
             if(productEntity.isStatus() == false) {
                 throw new RuntimeException("Sản phẩm "+ productEntity.getName() + " hiện không khả dụng");
             }
-        }
-        if(num >=15){
-            throw new RuntimeException("Bạn không thể mua quá 15 sản phẩm trong 1 đơn hàng");
+
+
         }
         return ResponseEntity.ok().body(inputs);
     }

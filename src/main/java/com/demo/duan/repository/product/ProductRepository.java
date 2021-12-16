@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     Page<ProductEntity> searchBySHF(Pageable pageable );
 
     /* select theo danh mục cha: Mô hình tĩnh */
-    @Query("from ProductEntity p where p.status = true and p.category.parent_name like 'Static Model' ")
+    @Query("from ProductEntity p where p.status = true and p.category.parent_name like 'GUNDAM' ")
     Page<ProductEntity> searchByStaticModel(Pageable pageable );
 
     @Query("from ProductEntity p where p.status = true and p.category.parent_name like 'Model Kit'")

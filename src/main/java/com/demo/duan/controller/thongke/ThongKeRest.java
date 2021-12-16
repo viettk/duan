@@ -65,4 +65,14 @@ public class ThongKeRest {
     public List<BigDecimal> thongkedoanhthu(Integer year){
         return service.thongkedoanhthu(year);
     }
+
+    @GetMapping("/thongkeTypepay")
+    public List<Integer> getTypePay(){
+        List<Integer> lst = new ArrayList<>();
+        Integer cod = service.getCOD();
+        Integer vnpay = service.getVNPAY();
+        lst.add(cod);
+        lst.add(vnpay);
+        return  lst;
+    }
 }

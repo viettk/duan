@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public ResponseEntity<Page<ProductDto>> searchByModelKit() {
-        Pageable pageable = PageRequest.of(0,4);
+        Pageable pageable = PageRequest.of(0,21);
         Page<ProductDto> dto = this.productRepository.searchByModelKit(pageable).map(mapper::entityToDto);
         return ResponseEntity.ok().body(dto);
     }
@@ -99,7 +99,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public ResponseEntity<Page<ProductDto>> searchByStaticModel() {
-        Pageable pageable = PageRequest.of(0,4);
+        Pageable pageable = PageRequest.of(0,21);
         Page<ProductDto> dto = this.productRepository.searchByStaticModel(pageable).map(mapper::entityToDto);
         return ResponseEntity.ok().body(dto);
     }

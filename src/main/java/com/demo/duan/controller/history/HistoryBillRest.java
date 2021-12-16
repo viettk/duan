@@ -2,6 +2,7 @@ package com.demo.duan.controller.history;
 
 import com.demo.duan.service.bill.BillService;
 import com.demo.duan.service.bill.dto.BillDto;
+import com.demo.duan.service.bill.param.BillParam;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,9 +23,10 @@ public class HistoryBillRest {
     @GetMapping
     public ResponseEntity<Page<BillDto>> getBillCustomer(
             String email,
+            BillParam param,
             @RequestParam("_limit") Optional<Integer> limit,
             @RequestParam("_page") Optional<Integer> page){
-        return service.getCustomerId(email, page, limit);
+        return service.getCustomerId(email, param,page, limit);
     }
 
     @GetMapping("/detail")

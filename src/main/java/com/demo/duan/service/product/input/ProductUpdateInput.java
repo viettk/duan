@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,12 +16,15 @@ import java.util.Date;
 public class ProductUpdateInput {
     private Integer id;
     @NotNull(message = "Không được để trống danh mục")
+    @Positive(message = "Không được để trống danh mục")
     private Integer categoryID;
 
     @NotBlank(message = "Không được để trống tên sản phẩm")
     private String name;
 
     private boolean status;
+
+    private Integer number;
 
     @NotNull(message = "Không được để trống giá bán")
     @Positive(message = "Giá sản phẩm phải lớn hơn 0 ")
@@ -35,7 +39,9 @@ public class ProductUpdateInput {
 
     private LocalDate releaseDate;
 
-    @Positive(message = "Giá niêm yết phải lớn hơn 0")
+    @NotNull(message = "Không được để trống giá nhập")
+    @Positive(message = "Giá nhập phải lớn hơn 0")
+//    @Pattern(regexp="^[0-9]*[1-9][0-9]*$",message = "Giá nhập phải là số nguyên")
     private Integer price_release;
 
     @Positive(message = "cân nặng phải lớn hơn 0 ")

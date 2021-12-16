@@ -69,7 +69,7 @@ public class BillEntity implements Serializable {
     private String id_code;
 
     @Column(name="type_pay")
-    private String type_pay;
+    private Boolean type_pay;
 
     @ManyToOne @JoinColumn(name = "staff_id")
     private StaffEntity staff;
