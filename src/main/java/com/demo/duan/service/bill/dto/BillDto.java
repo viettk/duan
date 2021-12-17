@@ -47,4 +47,6 @@ public class BillDto {
     private String themc;
 
     private String id_code;
+
+    private boolean type_pay;
 }

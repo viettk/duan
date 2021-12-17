@@ -479,6 +479,7 @@ public class ProductServiceImpl implements ProductService{
         BigDecimal hunderd = new BigDecimal(100);
         ProductEntity entity = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Mã Sản phẩm không tồn tại"));
         entity.setPrice(entity.getPrice_extra());
+        entity.setValue_extra(value);
         entity.setPrice(entity.getPrice().subtract(entity.getPrice().multiply(BigDecimal.valueOf(value)).divide(hunderd)));
         productRepository.save(entity);
     }

@@ -34,6 +34,18 @@ public interface BillService {
 
     public Integer getVNPAY();
 
+    public Integer getChoxacnhan();
+
+    public Integer getDangChuanbi();
+
+    public Integer getdangGiao();
+
+    public Integer tuchoi();
+
+    public Integer thanhcong();
+
+    public Integer thatbai();
+
     public Object sanPhambanchy(Integer month, Integer year);
 
     public List<BigDecimal> thongkedoanhthu(Integer year);

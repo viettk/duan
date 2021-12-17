@@ -49,7 +49,7 @@ public class CustomerServiceImpl implements CustomerService{
         Map<String, String> errors = new HashMap<>();
         /* Kiểm tra email đã tồn tại hay chưa */
         if(repository.findByEmail(input.getEmail()).isPresent()){
-            errors.put("email", "Email đã tồn tại");
+            errors.put("email", "Email của bạn có vẻ không ổn, mời dùng tài khoản khác");
         }
         /* Kiểm tra nhập lại mật khẩu */
         if(!input.getPassword().equals(input.getRepeatPassword())){
@@ -161,16 +161,16 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     @Transactional
-    public ResponseEntity<Page<CustomerDto>> fillAll(String email,Boolean status,String known,Integer page) {
+    public ResponseEntity<Page<CustomerDto>> fillAll(String email,Boolean status,String known,String field,String name,Integer page) {
         if(known.equals("up")){
-            Sort sort =Sort.by(Sort.Direction.ASC, "id");
-            Pageable pageable = PageRequest.of(page, 5, sort);
-            Page<CustomerDto> customerDtos = repository.findAllByEmailStartingWithAndStatus(email,status,pageable).map(mapper::entityToDto);
+            Sort sort =Sort.by(Sort.Direction.ASC, field);
+            Pageable pageable = PageRequest.of(page, 10, sort);
+            Page<CustomerDto> customerDtos = repository.findAllCustomer(email,status,name,pageable).map(mapper::entityToDto);
             return  ResponseEntity.ok(customerDtos);
         }else{
-            Sort sort =Sort.by(Sort.Direction.DESC, "id");
-            Pageable pageable = PageRequest.of(page, 5, sort);
-            Page<CustomerDto> customerDtos = repository.findAllByEmailStartingWithAndStatus(email,status,pageable).map(mapper::entityToDto);
+            Sort sort =Sort.by(Sort.Direction.DESC, field);
+            Pageable pageable = PageRequest.of(page, 10, sort);
+            Page<CustomerDto> customerDtos = repository.findAllCustomer(email,status,name,pageable).map(mapper::entityToDto);
             return  ResponseEntity.ok(customerDtos);
         }
     }

@@ -23,11 +23,12 @@ public class ProductUpdateInput {
     private String name;
 
     private boolean status;
-
+    @Positive(message = "số lượng phải lớn hơn 0 ")
+    @NotNull(message = "Số lượng không được để trống")
     private Integer number;
 
     @NotNull(message = "Không được để trống giá bán")
-    @Positive(message = "Giá sản phẩm phải lớn hơn 0 ")
+    @Positive(message = "Giá bán phải lớn hơn 0 ")
     private BigDecimal price_extra;
 
     @NotBlank(message = "Không được để trống miêu tả sản phẩm")
@@ -42,7 +43,7 @@ public class ProductUpdateInput {
     @NotNull(message = "Không được để trống giá nhập")
     @Positive(message = "Giá nhập phải lớn hơn 0")
 //    @Pattern(regexp="^[0-9]*[1-9][0-9]*$",message = "Giá nhập phải là số nguyên")
-    private Integer price_release;
+    private BigDecimal price_release;
 
     @Positive(message = "cân nặng phải lớn hơn 0 ")
     private Float weight;

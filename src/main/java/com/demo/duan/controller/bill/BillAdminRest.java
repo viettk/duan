@@ -24,8 +24,8 @@ public class BillAdminRest {
 
     @GetMapping
     public ResponseEntity<Page<BillDto>>findAll(
-            @RequestParam(value = "order", required = false) String order,
-            @RequestParam(value = "pay", required = false) String pay,
+            @RequestParam(value = "order", required = false) Integer order,
+            @RequestParam(value = "pay", required = false) Integer pay,
             @RequestParam(value = "start", required = false) Date start,
             @RequestParam(value = "end", required = false) Date end,
             @RequestParam(value = "_limit", required = false) Optional<Integer> limit,
@@ -33,17 +33,16 @@ public class BillAdminRest {
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-//        BillParam param = new BillParam(order, pay, start, end);
-//        if (known.isEmpty()){
-//            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
-//            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-//            return service.filterBill(param, pageable);
-//        }else {
-//            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-//            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-//            return service.filterBill(param, pageable);
-//        }
-        return null;
+        BillParam param = new BillParam(order, pay, start, end);
+        if (known.isEmpty()){
+            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.filterBill(param, pageable);
+        }else {
+            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.filterBill(param, pageable);
+        }
     }
 
     @GetMapping("/{id}")
@@ -54,8 +53,8 @@ public class BillAdminRest {
     @GetMapping("/email/{email}")
     public ResponseEntity<Page<BillDto>>getByEmail(
             @PathVariable("email") String email,
-            @RequestParam(value = "order", required = false) String order,
-            @RequestParam(value = "pay", required = false) String pay,
+            @RequestParam(value = "order", required = false) Integer order,
+            @RequestParam(value = "pay", required = false) Integer pay,
             @RequestParam(value = "start", required = false) Optional<Date> start,
             @RequestParam(value = "end", required = false) Optional<Date> end,
             @RequestParam(value = "_limit", required = false) Optional<Integer> limit,
@@ -63,21 +62,19 @@ public class BillAdminRest {
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
     ){
-//        BillParam param = new BillParam(order, pay, start.orElse(null), end.orElse(null));
-//        if (known.isEmpty()){
-//            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
-//            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-//            return service.getByEmail(email, param, pageable);
-//        }else {
-//            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-//            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-//            return service.getByEmail(email, param, pageable);
-//        }
-        return null;
+        BillParam param = new BillParam(order, pay, start.orElse(null), end.orElse(null));
+        if (known.isEmpty()){
+            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.getByEmail(email, param, pageable);
+        }else {
+            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
+            return service.getByEmail(email, param, pageable);
+        }
     }
 
-
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<BillDto>updateBill(@PathVariable("id") Integer id, BillInput input){
         return this.service.update(input, id);
     }
@@ -88,7 +85,8 @@ public class BillAdminRest {
     ){
         return this.service.updateStatusOder(id, input);
     }
-    @PostMapping("/status-pay/{id}")
+
+    @PutMapping("/status-pay/{id}")
     public ResponseEntity<BillDto>updateStatusPay(
             @PathVariable("id") Integer id,
             @RequestBody BillInput input

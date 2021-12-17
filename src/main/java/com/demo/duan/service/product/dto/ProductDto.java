@@ -48,7 +48,7 @@ public class ProductDto {
 
     private Date releaseDate;
 
-    private Integer price_release;
+    private BigDecimal price_release;
 
     private Float weight;
 

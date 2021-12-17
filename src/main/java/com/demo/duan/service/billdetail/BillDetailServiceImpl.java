@@ -14,6 +14,7 @@ import com.demo.duan.service.billdetail.mapper.BillDetailMapper;
 import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.mapper.CartDetailMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class BillDetailServiceImpl implements BillDetailService{
 
     private final BillDetailRepository repository;
@@ -115,10 +117,34 @@ public class BillDetailServiceImpl implements BillDetailService{
     }
 
     @Override
+    @Transactional
     public ResponseEntity<BillDetailDto> updateBillDetail(Integer id, BillDetailInput input) throws RuntimeException{
         BillDetailEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn chi tiết này"));
+
+        ProductEntity product = productRepository.findById(entity.getProduct().getId()).orElseThrow(() -> new RuntimeException("Không có sản phẩm này"));
+        int newNumber = input.getNumber();
+        int numberProduct = product.getNumber();
+        int getProduct = newNumber - entity.getNumber();
+        if(newNumber==0){
+            repository.delete(entity);
+            return null;
+        }
+        if(newNumber > numberProduct){
+            throw new RuntimeException("Số lượng sản phẩm trong kho không đủ");
+        }
+        BigDecimal totalNew = entity.getPrice().multiply( new BigDecimal(newNumber));
         this.mapper.inputToEntity(input, entity);
+        entity.setTotal(totalNew);
         this.repository.save(entity);
+        //
+        BillEntity billEntity = billRepository.findById(entity.getBill().getId()).orElseThrow( () -> new RuntimeException("Không thấy Hóa đơn này"));
+        BigDecimal totalBill= repository.totalOfBill(entity.getBill().getId());
+        billEntity.setTotal(totalBill);
+        billRepository.save(billEntity);
+
+        product.setNumber(numberProduct-getProduct);
+        productRepository.save(product);
+        log.info("update bill done: id {} , number {}, total bill:  {}, product: {}",id, newNumber, totalBill, numberProduct-getProduct);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
 

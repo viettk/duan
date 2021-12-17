@@ -71,7 +71,7 @@ public class ProductEntity implements Serializable {
     private LocalDate releaseDate;
 
     @Column(name = "price_release")
-    private Integer price_release;
+    private BigDecimal price_release;
 
     @Column(name = "weight")
     private Float weight;

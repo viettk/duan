@@ -25,6 +25,6 @@ public interface CustomerService {
     public ResponseEntity<Void> disable(Integer id);
 
     /* tìm khách hàng */
-    ResponseEntity<Page<CustomerDto>> fillAll(String email, Boolean status, String known, Integer page);
+    ResponseEntity<Page<CustomerDto>> fillAll(String email, Boolean status, String known,String field,String name, Integer page);
 
 }

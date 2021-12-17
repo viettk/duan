@@ -39,6 +39,36 @@ public class ThongKeRest {
         return  service.getDonTc(month, year);
     }
 
+    @GetMapping("/choxacnhan")
+    public Object choxacnhan(){
+        return  service.getChoxacnhan();
+    }
+
+    @GetMapping("/dangchuanbi")
+    public Object dangchuanbi(){
+        return  service.getDangChuanbi();
+    }
+
+    @GetMapping("/danggiao")
+    public Object danggiao(){
+        return  service.getdangGiao();
+    }
+
+    @GetMapping("/tuchoi")
+    public Object tuchoi(){
+        return  service.tuchoi();
+    }
+
+    @GetMapping("/thatbai")
+    public Object thatbai(){
+        return  service.thatbai();
+    }
+
+    @GetMapping("/thanhcong")
+    public Object thanhcong(){
+        return  service.thanhcong();
+    }
+
     @GetMapping
     public List<Integer> getThongke(Integer month, Integer year){
         List<Integer> lst = new ArrayList<>();

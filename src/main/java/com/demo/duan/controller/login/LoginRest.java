@@ -18,15 +18,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class LoginRest {
     @Autowired
@@ -49,7 +52,7 @@ public class LoginRest {
     @Autowired
     private CustomerMapper mapper;
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<Object> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         // Xác thực từ username và password.
         Map<String, String> errors = new HashMap<>();
@@ -92,4 +95,18 @@ public class LoginRest {
         }
     }
 
+    @PutMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody Optional<String> token){
+        try{
+            String email = tokenProvider.getUserIdFromJWT(token.get().replace("\"",""),JWT_SECRET);
+            CustomerEntity customer = customerRepository.findByEmail(email).orElse(null);
+            if (customer != null) {
+                customer.setLast_login(new Date());
+                customerRepository.save(customer);
+            }
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

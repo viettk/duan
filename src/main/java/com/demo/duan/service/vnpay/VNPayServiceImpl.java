@@ -298,6 +298,7 @@ public class VNPayServiceImpl implements VNPayService{
             Map<String,Object> order= find(time,id,ip);
             if(order.get("vnp_ResponseCode").equals("00")){
                 bill.get().setStatus_pay(1);
+                bill.get().setStatus_order(1);
                 billRepository.save(bill.get());
             }
         }

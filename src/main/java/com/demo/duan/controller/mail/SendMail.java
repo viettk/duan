@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@RequestMapping("/admin")
+@RequestMapping("/api")
 @AllArgsConstructor
 @RestController
 @CrossOrigin("*")

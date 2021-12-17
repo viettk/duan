@@ -59,7 +59,7 @@ public class DiscountServiceImpl implements DiscountService{
             throw new RuntimeException("Số lượng mã giảm giá phải >=0");
         }
 
-        if(input.getOpen_day().isBefore(input.getEnd_day()) == false ){
+        if(input.getOpen_day().compareTo(input.getEnd_day()) > 0  ){
             throw new RuntimeException("Ngày kết thúc phải lớn hơn ngày mở");
         }
 
@@ -81,11 +81,12 @@ public class DiscountServiceImpl implements DiscountService{
         }
 
         if(input.getNumber() < 0){
-            throw new RuntimeException("Số lượng mã giảm giá phải >=0");
+            throw new RuntimeException("Số lượng mã giảm giá phải >= 0");
         }
 
-        if(input.getOpen_day().isBefore(input.getEnd_day()) == false ){
-            throw new RuntimeException("Ngày kết thúc phải lớn hơn ngày mở");
+        if(input.getOpen_day().compareTo(input.getEnd_day()) > 0 ){
+//            throw new RuntimeException("Ngày kết thúc phải lớn hơn hoặc bằng ngày mở");
+            throw new RuntimeException("Ngày mở phải nhỏ hơn ngày kết thức");
         }
 
         mapper.inputToEntity(input, entity);

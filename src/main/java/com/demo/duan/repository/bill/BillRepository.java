@@ -29,13 +29,13 @@ public interface BillRepository extends JpaRepository<BillEntity, Integer> {
 //    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  date_part('month', update_date) = :month and date_part('year', update_date)= :year and status_order = N'Đã hoàn trả'" , nativeQuery = true)
 //    Integer dontra(@Param("month") Integer month, @Param("year") Integer year);
 
-    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  MONTH(update_date) = :month and YEAR(update_date)= :year and status_order = 5" , nativeQuery = true)
+    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  MONTH(update_date) = :month and YEAR(update_date)= :year and status_order = 4" , nativeQuery = true)
     Integer donhuy(@Param("month") Integer month, @Param("year") Integer year);
 
     @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  MONTH(update_date) = :month and YEAR(update_date)= :year and status_order = 4" , nativeQuery = true)
     Integer dontc(@Param("month") Integer month, @Param("year") Integer year);
 
-    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  MONTH(update_date) = :month and YEAR(update_date)= :year and status_order = 2" , nativeQuery = true)
+    @Query(value="sELECT count(Bill.id) as sodonhuy FROM  Bill WHERE  MONTH(update_date) = :month and YEAR(update_date)= :year and status_order = 5" , nativeQuery = true)
     Integer dontra(@Param("month") Integer month, @Param("year") Integer year);
 
     @Query(value="sELECT count(b.id) as sodonhuy FROM  BillEntity b WHERE b.type_pay = false ")
@@ -43,6 +43,24 @@ public interface BillRepository extends JpaRepository<BillEntity, Integer> {
 
     @Query(value="sELECT count(b.id) as sodonhuy FROM  BillEntity b WHERE b.type_pay = true")
     Integer thongketype_payVNPAY();
+
+    @Query(value="sELECT count(b.id) as sodonhuy FROM  BillEntity b WHERE b.status_order = 0")
+    Integer choxacnhan();
+
+    @Query(value="sELECT count(b.id) as sodonhuy FROM  BillEntity b WHERE b.status_order = 1")
+    Integer dangchuanbi();
+
+    @Query(value="sELECT count(b.id) as sodonhuy FROM  BillEntity b WHERE b.status_order = 2")
+    Integer danggiao();
+
+    @Query(value="sELECT count(b.id) as sodonhuy FROM  BillEntity b WHERE b.status_order = 3")
+    Integer thanhcong();
+
+    @Query(value="sELECT count(b.id) as sodonhuy FROM  BillEntity b WHERE b.status_order = 4")
+    Integer thatbai();
+
+    @Query(value="sELECT count(b.id) as sodonhuy FROM  BillEntity b WHERE b.status_order = 5")
+    Integer tuchoi();
 
 //    @Query ( value="SELECT sum(hd.total) FROM Bill hd WHERE date_part('month', create_date) = :month and date_part('year', update_date) = :year" , nativeQuery = true)
 //    BigDecimal thongkedoanhthu(@Param("month")Integer month, Integer year);
