@@ -3,12 +3,15 @@ package com.demo.duan.service.vnpay;
 import com.demo.duan.entity.BillEntity;
 import com.demo.duan.repository.bill.BillRepository;
 import com.demo.duan.service.bill.dto.BillDto;
+import com.demo.duan.service.mail.MailEntity;
+import com.demo.duan.service.mail.MailService;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,6 +33,8 @@ import java.util.*;
 public class VNPayServiceImpl implements VNPayService{
     @Autowired
     BillRepository billRepository;
+    @Autowired
+    MailService mailService;
     @Override
     public ResponseEntity<Object> pay(HttpServletRequest request, BillDto dto) throws IOException {
         String vnp_Version = "2.1.0";//Phiên bản api mà khách hàng kết nối
@@ -298,8 +303,12 @@ public class VNPayServiceImpl implements VNPayService{
             Map<String,Object> order= find(time,id,ip);
             if(order.get("vnp_ResponseCode").equals("00")){
                 bill.get().setStatus_pay(1);
-                bill.get().setStatus_order(1);
                 billRepository.save(bill.get());
+                try {
+                    mailService.sendBill(new MailEntity(bill.get().getEmail(),"Thông báo đặt hàng thành công","",bill.get().getId()));
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return ResponseEntity.ok(status);

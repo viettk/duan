@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +15,8 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class LoginRequest {
     @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không đúng định dạng")
+//    @Email(message = "Email không đúng định dạng")
+    @Pattern(regexp = "([a-zA-Z0-9_.+-])+\\@(([a-zA-Z0-9-])+\\.)+([a-zA-Z0-9]{2,4})+",message = "Email không đúng định dạng")
     private String email;
     @NotBlank(message = "Mật khẩu không được để trống")
     private String password;

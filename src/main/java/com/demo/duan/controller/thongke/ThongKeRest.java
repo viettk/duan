@@ -1,19 +1,24 @@
 package com.demo.duan.controller.thongke;
 
 import com.demo.duan.service.bill.BillService;
+import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.product.ProductService;
 import com.demo.duan.service.product.dto.ProductDto;
+import com.demo.duan.service.thongke.doanhthu.DoanhThuService;
+import com.demo.duan.service.thongke.khachhang.ThongkeCustomerService;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.jni.Local;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -23,6 +28,10 @@ public class ThongKeRest {
     private final BillService service;
 
     private final ProductService productService;
+
+    private final DoanhThuService doanhThuService;
+
+    private final ThongkeCustomerService thongkeCustomerService;
 
     @GetMapping("/donhuy")
     public Object donhanghuy(Integer month, Integer year){
@@ -97,12 +106,29 @@ public class ThongKeRest {
     }
 
     @GetMapping("/thongkeTypepay")
-    public List<Integer> getTypePay(){
+    public List<Integer> getTypePay(Integer month, Integer year){
         List<Integer> lst = new ArrayList<>();
-        Integer cod = service.getCOD();
-        Integer vnpay = service.getVNPAY();
+        Integer cod = service.getCOD(month, year);
+        Integer vnpay = service.getVNPAY(month, year);
         lst.add(cod);
         lst.add(vnpay);
         return  lst;
+    }
+
+    @GetMapping("/gettongadmin")
+    public ResponseEntity<Page<Object>> doanhthu(
+            String opena, String enda,
+            String known, String field,
+            Integer page
+    ){
+        return doanhThuService.doanhthu(opena, enda, known, field, page);
+    }
+
+    @GetMapping("/getAllkhachhang")
+    public ResponseEntity<Page<Object>> khachhang(
+            String known, String field,
+            Integer page
+    ){
+        return thongkeCustomerService.findkhachhang(known, field, page);
     }
 }

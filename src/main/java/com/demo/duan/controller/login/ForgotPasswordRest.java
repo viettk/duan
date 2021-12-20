@@ -15,10 +15,10 @@ import java.util.Optional;
 @CrossOrigin("*")
 @AllArgsConstructor
 public class ForgotPasswordRest {
-   private final ForgotService forgotService;
+    private final ForgotService forgotService;
 
-    @GetMapping()
-    public ResponseEntity<Object> getTokenEmail(@RequestParam("email") Optional<String> email) throws MessagingException {
+    @PostMapping()
+    public ResponseEntity<Object> getTokenEmail(@RequestBody Optional<String> email) throws MessagingException {
         return forgotService.getTokenEmail(email);
     }
     @GetMapping("/check/{token}")

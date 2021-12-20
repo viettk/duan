@@ -63,11 +63,7 @@ public class CustomerServiceImpl implements CustomerService{
             errors.put("password", "Mật khẩu tối đa 15 ký tự");
         }
 
-        /* Xác thực địa chỉ Email(không đầy đủ: chỉ kiểm tra tên miền) */
-        boolean valid = EmailValidator.getInstance().isValid(input.getEmail());
-        if(valid == false){
-            errors.put("email", "Email không đúng định dạng");
-        }
+
         if(!errors.isEmpty()){
             return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
         }

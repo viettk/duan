@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
@@ -34,4 +35,10 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity , Integ
             "and (:#{#email} is null or c.email like %:#{#email}%)" +
             "and (:#{#status} is null or c.status = :#{#status})")
     Page<CustomerEntity> findAllCustomer(String email,Boolean status,String name,Pageable page);
+
+
+    //Thống kê khách hàng cùng với số lần mua hàng, tổng giá trị all hóa đơn
+    @Query(nativeQuery = true, value = "select customer.id, customer.email, count(bill.id), sum(bill.total) from customer " +
+            "join bill on customer.email = bill.email group by customer.id order by count(bill.id);")
+    Page<Object> findAllCustomerBought(Pageable pageable);
 }

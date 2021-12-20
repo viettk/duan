@@ -13,6 +13,8 @@ import com.demo.duan.service.billdetail.input.BillDetailInput;
 import com.demo.duan.service.billdetail.mapper.BillDetailMapper;
 import com.demo.duan.service.cartdetail.dto.CartDetailDto;
 import com.demo.duan.service.cartdetail.mapper.CartDetailMapper;
+import com.demo.duan.service.mail.MailEntity;
+import com.demo.duan.service.mail.MailService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -20,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,7 @@ public class BillDetailServiceImpl implements BillDetailService{
     private final BillRepository billRepository;
 
     private final ProductRepository productRepository;
+    private final MailService mailService;
 
     @Override
     @Transactional
@@ -61,6 +65,14 @@ public class BillDetailServiceImpl implements BillDetailService{
             productEntity.setNumber(productEntity.getNumber() - x.getNumber() );;
         }
 //        repository.saveAll(lst);
+        try {
+            BillEntity bill  = billRepository.getById(input.getBillId());
+            if(!bill.getType_pay()) {
+                mailService.sendBill(new MailEntity(bill.getEmail(), "Thông báo đặt hàng thành công", "", input.getBillId()));
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
 
         List<BillDetailEntity> lst = new ArrayList<>();
         List<BillDetailDto> lstDto = mapper.EntitiesToDtos(lst);
@@ -88,7 +100,14 @@ public class BillDetailServiceImpl implements BillDetailService{
             repository.save(entity);
             billRepository.save(billEntity);
         }
-
+        try {
+            BillEntity bill  = billRepository.getById(id);
+            if(!bill.getType_pay()) {
+                mailService.sendBill(new MailEntity(bill.getEmail(), "Thông báo đặt hàng thành công", "", id));
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
         List<BillDetailEntity> lst = new ArrayList<>();
         List<BillDetailDto> lstDto = mapper.EntitiesToDtos(lst);
         return ResponseEntity.ok().body(lstDto);
@@ -117,7 +136,6 @@ public class BillDetailServiceImpl implements BillDetailService{
     }
 
     @Override
-    @Transactional
     public ResponseEntity<BillDetailDto> updateBillDetail(Integer id, BillDetailInput input) throws RuntimeException{
         BillDetailEntity entity = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Không có hóa đơn chi tiết này"));
 

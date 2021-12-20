@@ -30,9 +30,9 @@ public interface BillService {
 
     public Integer getDonTc (Integer month, Integer year);
 
-    public Integer getCOD();
+    public Integer getCOD(Integer month, Integer year);
 
-    public Integer getVNPAY();
+    public Integer getVNPAY(Integer month, Integer year);
 
     public Integer getChoxacnhan();
 

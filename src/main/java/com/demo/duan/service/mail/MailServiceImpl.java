@@ -1,5 +1,9 @@
 package com.demo.duan.service.mail;
+import com.demo.duan.entity.BillDetailEntity;
+import com.demo.duan.entity.BillEntity;
 import com.demo.duan.entity.CustomerEntity;
+import com.demo.duan.repository.bill.BillRepository;
+import com.demo.duan.repository.billdetail.BillDetailRepository;
 import com.demo.duan.repository.customer.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -13,8 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class MailServiceImpl implements MailService{
@@ -22,6 +31,10 @@ public class MailServiceImpl implements MailService{
     private Environment env;
     @Autowired
     JavaMailSender javaMailSender;
+    @Autowired
+    BillRepository billRepository;
+    @Autowired
+    BillDetailRepository billDetailRepository;
     @Autowired
     CustomerRepository customerRepository;
     List<MimeMessage> queue = new ArrayList<>();
@@ -85,6 +98,51 @@ public class MailServiceImpl implements MailService{
         javaMailSender.send(message);
     }
 
+    @Override
+    public void sendBill(MailEntity mail) throws MessagingException {
+        // Tạo message
+        Locale localeVN = new Locale("vi", "VN");
+        NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
+        String head = "";
+        BillEntity bill = billRepository.getById(mail.getBillID());
+        String mahd = bill.getId_code();
+        String nguoinhan = bill.getName();
+        String sdt = bill.getPhone();
+        String diachi = bill.getWards() + " - " +bill.getDistrict() + " - " + bill.getCity();
+        String ngaydat= bill.getCreate_date().getDayOfMonth() +"-"+bill.getCreate_date().getMonth().getValue()+"-"+bill.getCreate_date().getYear();
+        String type = bill.getType_pay() ? "Thanh toán VNPAY" : "Thanh toán khi nhận hàng";
+        head = head + " <p><b>Mã hóa đơn : </b>"+mahd+"</p>";
+        head = head + " <p><b>Tên người nhận : </b>"+nguoinhan+"</p>";
+        head = head + " <p><b>Số điện thoại : </b>"+sdt+"</p>";
+        head = head + " <p><b>Địa chỉ : </b>"+diachi+"</p>";
+        head = head + " <p><b>Ngày đặt : </b>"+ngaydat+"</p>";
+        head = head + " <p><b>Kiểu thanh toán : </b>"+type+"</p>";
+        head = bill.getType_pay()? (head + " <p><b>Trạng thái thanh toán : </b>Thanh toán thành công !</p>"): head;
+        List<BillDetailEntity> listDetail= billDetailRepository.getListByCustomer(bill.getId());
+        String table = "";
+        for(BillDetailEntity b : listDetail){
+            int i =1;
+            table = table + "<tr>\n" +
+                    "                <td>"+ i++ +"</td>\n" +
+                    "                <td>"+b.getProduct().getSku()+"</td>\n" +
+                    "                <td><img style=\"width: 100px;\" src=\"https://cdn.nguyenkimmall.com/images/detailed/555/may-anh-cho-nguoi-moi.jpg\" /></td>\n" +
+                    "                <td>"+b.getProduct().getName()+"</td>\n" +
+                    "                <td>"+b.getNumber()+"</td>\n" +
+                    "                <td>"+currencyVN.format(b.getPrice())+"</td>\n" +
+                    "                <td>"+currencyVN.format(b.getTotal())+"</td>\n" +
+                    "            </tr>";
+        }
+        String magiamgia = bill.getDiscount()==null ? "Không" : bill.getDiscount().getName() + "Giảm " + currencyVN.format(bill.getDiscount().getValueDiscount());
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
+        helper.setFrom(mail.getFrom());
+        helper.setTo(mail.getTo());
+        helper.setSubject(mail.getSubject());
+        helper.setText(renderHtmlBill(bill.getTotal()+"",head,table,magiamgia), true);
+        helper.setReplyTo(mail.getFrom());
+        javaMailSender.send(message);
+    }
+
 
 //    @Scheduled(fixedDelay = 1000)
 //    public void run() {
@@ -111,5 +169,31 @@ public class MailServiceImpl implements MailService{
                 "        <p style=\"text-align: left;\">"+ content +"</p>\n" +
                 "        <hr><p style=\"text-align: left;\">Bạn đang gặp sự cố? Nếu bạn không thể đặt lại mật khẩu hoặc bạn chưa thử đăng nhập, vui lòng liên hệ với bộ phận hỗ trợ .</p>\n" +
                 "    </div>";
+    }
+
+    public String renderHtmlBill(String total , String head , String table , String magiamgia){
+        return " <h2>Thông báo bạn vừa đặt hàng thành công tại Website Team7</h2>\n" +
+                "    <p>Vui lòng đăng ký tài khoản trước khi đặt hàng để có thể theo dõi được đơn hàng và nhận nhiều ưu đãi khác</p>\n" +
+                "    <h3>Thông tin hóa đơn</h3>\n" + head+
+                "    <table border=\"1\">\n" +
+                "        <thead>\n" +
+                "            <tr>\n" +
+                "                <th>STT</th>\n" +
+                "                <th>Mã sản phẩm</th>\n" +
+                "                <th>Ảnh</th>\n" +
+                "                <th>Tên sản phẩm</th>\n" +
+                "                <th>Số lượng</th>\n" +
+                "                <th>Giá</th>\n" +
+                "                <th>Tổng tiền</th>\n" +
+                "            </tr>\n" +
+                "        </thead>\n" +
+                "        <tbody>\n" +
+                "           \n" + table+
+                "        </tbody>\n" +
+                "        <tfoot>\n" +
+                "            <th colspan=\"4\">Mã giảm giá áp dụng : "+magiamgia+"</th>\n" +
+                "            <th colspan=\"4\">Thành tiền : "+total+"</th>\n" +
+                "        </tfoot>\n" +
+                "    </table>";
     }
 }

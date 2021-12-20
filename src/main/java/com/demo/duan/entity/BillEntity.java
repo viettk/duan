@@ -59,7 +59,7 @@ public class BillEntity implements Serializable {
     @Column(name="status_order")
     private Integer status_order;
 
-    @Column(name="describe")
+    @Column(name="describem")
     private String describe;
 
     @Column(name="wards")

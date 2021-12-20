@@ -46,7 +46,7 @@ public class ProductEntity implements Serializable {
     @Column(name = "value_extra")
     private Integer value_extra;
 
-    @Column(name = "describe")
+    @Column(name = "describem")
     private String describe;
 
     @Column(name = "photo")

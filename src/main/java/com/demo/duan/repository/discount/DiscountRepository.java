@@ -18,14 +18,17 @@ public interface DiscountRepository extends JpaRepository<DiscountEntity, Intege
 
     DiscountEntity getByName(String name);
 
-    @Query(nativeQuery = true , value = "from Discount d where DATEDIFF(year, end_day, GETDATE()) = 0" +
-            "and DATEDIFF(month, end_day, GETDATE()) = 0 and DATEDIFF(day, end_day, GETDATE()) > 0 and number > 0")
-    DiscountEntity getDiscountName(String name);
+//    @Query(nativeQuery = true , value = "from Discount d where DATEDIFF(year, end_day, GETDATE()) = 0" +
+//            "and DATEDIFF(month, end_day, GETDATE()) = 0 and DATEDIFF(day, end_day, GETDATE()) > 0 and number > 0")
+//    DiscountEntity getDiscountName(String name);
 
-    @Query(nativeQuery = true , value = "select * from Discount d where DATEDIFF(year, end_day, GETDATE()) = 0" +
-            " and DATEDIFF(month, end_day, GETDATE()) = 0 and DATEDIFF(day, end_day, GETDATE()) <= 0 " +
-            " and DATEDIFF(year, open_day, GETDATE()) = 0 and DATEDIFF(month, open_day, GETDATE()) = 0 and DATEDIFF(day, open_day, GETDATE()) >= 0 and number > 0 and name= :name")
+    @Query(nativeQuery = true , value = "select * from Discount d where DATEDIFF(end_day, CURDATE()) >= 0" +
+            " and DATEDIFF(open_day, CURDATE()) >= 0 and number > 0 and name= :name")
     Optional<DiscountEntity> searchdiscount(@Param("name") String name);
+
+    @Query(nativeQuery = true , value = "select * from Discount d where DATEDIFF(end_day, CURDATE()) >= 0" +
+            " and DATEDIFF(open_day, CURDATE()) >= 0 and number > 0 and name= :name")
+    DiscountEntity getDiscountName(@Param("name") String name);
 
     //postgresql
 //    @Query(nativeQuery = true , value = "from Discount d where DATE_PART('year', end_day::date ) - DATE_PART('year', start) = 0" +

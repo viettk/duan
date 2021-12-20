@@ -25,6 +25,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,7 @@ import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class BillServiceImpl implements BillService{
 
     private final BillRepository repository;
@@ -202,14 +204,15 @@ public class BillServiceImpl implements BillService{
 
     @Override
     @Transactional
-    public Integer getCOD() {
-        return repository.thongketype_payCOD();
+    public Integer getCOD(Integer month, Integer year) {
+        return repository.thongketype_payCOD(month, year);
     }
 
     @Override
     @Transactional
-    public Integer getVNPAY() {
-        return repository.thongketype_payVNPAY();
+    public Integer getVNPAY(Integer month, Integer year) {
+        System.out.println(month + "-"+year);
+        return repository.thongketype_payVNPAY(month, year);
     }
 
     @Override
@@ -340,6 +343,14 @@ public class BillServiceImpl implements BillService{
         entity.setStatus_pay(status_pay);
         entity.setStatus_order(status);
         entity.setUpdate_date(date);
+        entity.setDescribe(input.getDescribe());
+        entity.setName(input.getName());
+        entity.setPhone(input.getPhone());
+        entity.setAddress(input.getAddress());
+        entity.setDistrict(input.getDistrict());
+        entity.setCity(input.getCity());
+        entity.setWards(input.getWards());
+        log.info("describe: {}", input);
         this.repository.save(entity);
         return ResponseEntity.ok().body(this.mapper.entityToDto(entity));
     }
@@ -356,10 +367,26 @@ public class BillServiceImpl implements BillService{
 
     @Override
     public ResponseEntity<Page<BillDto>> filterBill(BillParam param, Pageable pageable) {
-        Page<BillDto> result = repository.filterBill(param, pageable).map( mapper :: entityToDto);
-        return ResponseEntity.ok().body(result);
+        log.info("ok: {} {}", param.getStatus_order(), param.getStatus_pay());
+        if (param.getStatus_order()==null && param.getStatus_pay()==null){
+            Page<BillDto> result = repository.filterBill(param, pageable).map( mapper :: entityToDto);
+            log.info("false, false: {} {}", param.getStatus_order(), param.getStatus_pay());
+            return ResponseEntity.ok().body(result);
+        }else if(param.getStatus_order()==null && param.getStatus_pay()!=null){
+            Page<BillDto> result = repository.filterBillPay(param, pageable).map( mapper :: entityToDto);
+            log.info("false, true: {} {}", param.getStatus_order(), param.getStatus_pay());
+            return ResponseEntity.ok().body(result);
+        }
+//        else if(param.getStatus_order()==null && param.getStatus_pay()==null && param.getDate_start() != null && param.getDate_end()!= null){
+//            Page<BillDto> result = repository.filterBillDate(param, pageable).map( mapper :: entityToDto);
+//            log.info("false, true: {} {}", param.getStatus_order(), param.getStatus_pay());
+//            return ResponseEntity.ok().body(result);}
+        else{
+            log.info("true, true: {} {}", param.getStatus_order(), param.getStatus_pay());
+            Page<BillDto> result = repository.filterBill(param, pageable).map( mapper :: entityToDto);
+            return ResponseEntity.ok().body(result);
+        }
     }
-
 
     @Override
     @Transactional

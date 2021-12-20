@@ -85,6 +85,8 @@ public class LoginRest {
                 return ResponseEntity.ok(staffDto);
             }else {
                 CustomerEntity customer = customerRepository.findByEmail(loginRequest.getEmail()).get();
+                customer.setLast_login(new Date());
+                customerRepository.save(customer);
                 customer.setToken(jwt);
                 CustomerDto customerDto = customerMapper.entityToDto(customer);
                 customerDto.setRole("USER");
@@ -95,18 +97,17 @@ public class LoginRest {
         }
     }
 
-    @PutMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestBody Optional<String> token){
-        try{
-            String email = tokenProvider.getUserIdFromJWT(token.get().replace("\"",""),JWT_SECRET);
-            CustomerEntity customer = customerRepository.findByEmail(email).orElse(null);
-            if (customer != null) {
-                customer.setLast_login(new Date());
-                customerRepository.save(customer);
-            }
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PutMapping("/logout")
+//    public ResponseEntity<Void> logout(@RequestBody Optional<String> token){
+//        try{
+//            String email = tokenProvider.getUserIdFromJWT(token.get().replace("\"",""),JWT_SECRET);
+//            CustomerEntity customer = customerRepository.findByEmail(email).orElse(null);
+//            if (customer != null) {
+//
+//            }
+//            return ResponseEntity.ok().build();
+//        }catch (Exception e){
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
+//    }
 }

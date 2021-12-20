@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @Getter
 public class ChangePasswordInput {
-    @NotBlank(message = "Không được để trống password")
     private String password;
     @NotBlank(message = "Không được để trống password mới")
     private String newPassword;

@@ -35,7 +35,7 @@ public class ForgotServiceImpl implements ForgotService{
     @Autowired
     private CustomerRepository customerRepository;
     //Thời gian có hiệu lực của chuỗi jwt
-    private final long JWT_EXPIRATION = 3777700000L;
+    private final long JWT_EXPIRATION = 180000L;
     @Value("${secrert.email}")
     private String JWT_SECRET;
     @Value("${secrert.login}")
@@ -50,32 +50,33 @@ public class ForgotServiceImpl implements ForgotService{
             errors.put("email", "Vui lòng nhập email");
             return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
         }
-        boolean valid = EmailValidator.getInstance().isValid(email.get());
+        String newEmail = email.get().replace("\"","");
+        boolean valid = newEmail.matches("([a-zA-Z0-9_.+-])+\\@(([a-zA-Z0-9-])+\\.)+([a-zA-Z0-9]{2,4})+");
         if(valid == false){
             errors.put("email", "Email không đúng định dạng");
             return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
         }
         String username = null;
         // kiểm tra enail tồn tại thì gán vào username
-        if(staffRepository.findByEmail(email.get()).isPresent()) {
-            username = email.get();
-        }else if(customerRepository.findByEmail(email.get()).isPresent()){
-            username = email.get();
+        if(staffRepository.findByEmail(newEmail).isPresent()) {
+            username = newEmail;
+        }else if(customerRepository.findByEmail(newEmail).isPresent()){
+            username = newEmail;
         }
         // nếu username rỗng
         if(username == null){
             errors.put("email", "Email không tồn tại trong hệ thống");
             return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
         }
-        if(customerRepository.findByEmailAndStatusIsFalse(email.get()).isPresent()
-                || staffRepository.findByEmailAndStatusIsFalse(email.get()).isPresent()){
+        if(customerRepository.findByEmailAndStatusIsFalse(newEmail).isPresent()
+                || staffRepository.findByEmailAndStatusIsFalse(newEmail).isPresent()){
             errors.put("email", "Tài khoản đã bị vô hiệu hóa");
             return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
         }
 
-        String token  = jwtTokenProvider.generateToken(email.get(),JWT_EXPIRATION,JWT_SECRET);
-        token = "http://localhost:3000/changepassword/" + token ;
-        mailService.send(new MailEntity(email.get(),"Bảo mật thông tin","Vui lòng click vào link dưới đây",token));
+        String token  = jwtTokenProvider.generateToken(newEmail,JWT_EXPIRATION,JWT_SECRET);
+        token = "http://localhost:3000/resetpassword/" + token ;
+        mailService.send(new MailEntity(newEmail,"Bảo mật thông tin","Vui lòng click vào link dưới đây",token));
         return ResponseEntity.ok("Gửi email thành công ! Vui lòng kiểm tra hòm thư");
     }
 
@@ -150,18 +151,44 @@ public class ForgotServiceImpl implements ForgotService{
         }
         Optional<StaffEntity> staff = staffRepository.findByEmail(email);
         if (staff.isPresent()) {
-            if(!HashPass.hash(input.getPassword()).equals(staff.get().getPassword())){
-                errors.put("password", "Mật khẩu cũ không đúng");
-                return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
-            }if(errors.isEmpty()) {
+            if(HashPass.hash("password@123googlexyz$##$").equals(staff.get().getPassword())){
+                if(!errors.isEmpty()){
+                    return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+                }
                 staff.get().setPassword(HashPass.hash(input.getNewPassword()));
                 staffRepository.save(staff.get());
                 return ResponseEntity.ok("Đổi mật khẩu thành công !");
             }
+            if(!HashPass.hash(input.getPassword()).equals(staff.get().getPassword())){
+                if(input.getPassword().equals("")){
+                    errors.put("password", "Mật khẩu không được để trống");
+                    return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+                }
+                errors.put("password", "Mật khẩu cũ không đúng");
+                return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+            }
+            if(errors.isEmpty()) {
+                staff.get().setPassword(HashPass.hash(input.getNewPassword()));
+                staffRepository.save(staff.get());
+                return ResponseEntity.ok("Đổi mật khẩu thành công !");
+            }
+
         }
         Optional<CustomerEntity> customer = customerRepository.findByEmail(email);
         if (customer.isPresent()) {
+            if(HashPass.hash("password@123googlexyz$##$").equals(customer.get().getPassword()) ){
+                if(!errors.isEmpty()){
+                    return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+                }
+                customer.get().setPassword(HashPass.hash(input.getNewPassword()));
+                customerRepository.save(customer.get());
+                return ResponseEntity.ok("Đổi mật khẩu thành công !");
+            }
             if(!HashPass.hash(input.getPassword()).equals(customer.get().getPassword())){
+                if(input.getPassword().equals("")){
+                    errors.put("password", "Mật khẩu không được để trống");
+                    return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+                }
                 errors.put("password", "Mật khẩu cũ không đúng");
                 return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
             }if(errors.isEmpty()) {

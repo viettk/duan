@@ -4,6 +4,7 @@ import com.demo.duan.entity.BillDetailEntity;
 import com.demo.duan.service.billdetail.dto.BillDetailDto;
 import com.demo.duan.service.billdetail.input.BillDetailInput;
 import lombok.val;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +32,5 @@ public interface BillDetailRepository extends JpaRepository<BillDetailEntity, In
 
     @Query("select sum(cd.total) from BillDetailEntity cd where cd.bill.id = :billId")
     BigDecimal tinhTongPrice(@Param("billId") Integer billId);
+
 }

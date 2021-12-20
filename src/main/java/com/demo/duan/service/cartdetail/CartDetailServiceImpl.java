@@ -57,9 +57,9 @@ public class CartDetailServiceImpl implements CartDetailService{
         BigDecimal total= BigDecimal.ZERO;
 
         /* Kiểm tra trong kho có đủ sp ko */
-        if(product.getNumber() < input.getNumber()){
-            throw new RuntimeException("Sản phẩm không đủ");
-        }
+//        if(product.getNumber() < input.getNumber()){
+//            throw new RuntimeException("Sản phẩm không đủ");
+//        }
 
         /* Kiểm tra sản phẩm đã có sẵn trong Giỏ hàng chưa */
         Integer count = repository.countAllByCart_IdAndProduct_Id(cartEntity.getId(), input.getProductId());
@@ -71,9 +71,6 @@ public class CartDetailServiceImpl implements CartDetailService{
             /* Tăng số lượng trong giỏ hàng chi tiết */
             int number = input.getNumber() ;
             Integer checkNumOfCartDetail = repository.checkNumberOfCartDetail(cartEntity.getId());
-            if(number+checkNumOfCartDetail >= 15){
-                throw new RuntimeException("Giỏ hàng không được quá 15 sản phẩm");
-            }
 
             int newNum = number + entity.getNumber();
             /* Tính lại tổng tiền từng sản phẩm */
@@ -120,9 +117,9 @@ public class CartDetailServiceImpl implements CartDetailService{
         Integer newNumber = entity.getNumber() + 1;
 
         /* Kiểm tra sản phẩm có đủ ko */
-        if(entity.getProduct().getNumber() < newNumber){
-            throw new RuntimeException("Sản phẩm không đủ");
-        }
+//        if(entity.getProduct().getNumber() < newNumber){
+//            throw new RuntimeException("Sản phẩm không đủ");
+//        }
         BigDecimal total = entity.getProduct().getPrice().multiply(BigDecimal.valueOf(newNumber));
         entity.setNumber(newNumber);
         entity.setTotal(total);
@@ -166,9 +163,9 @@ public class CartDetailServiceImpl implements CartDetailService{
         ProductEntity product = productRepository.getById(input.getProductId());
 
         /* Kiểm tra có đủ sản phẩm trong kho để thêm vào giỏ hàng hay ko */
-        if(product.getNumber() < input.getNumber()){
-            throw new RuntimeException("Sản phẩm"+ product.getName() +"trong kho không đủ");
-        }
+//        if(product.getNumber() < input.getNumber()){
+//            throw new RuntimeException("Sản phẩm"+ product.getName() +"trong kho không đủ");
+//        }
 
 //        /* Kiểm tra số lượng trong giỏ phải < 15 */
 //        int checkNumOfCartDetail = repository.checkNumberOfCartDetail(input.getCartId());
@@ -294,13 +291,9 @@ public class CartDetailServiceImpl implements CartDetailService{
             }
 
             if(productEntity.isStatus() == false){
-                throw new RuntimeException("Sản phẩm " + productEntity.getName() + "hiện không khả dụng" );
+                throw new RuntimeException("Sản phẩm " + productEntity.getName() + " hiện không khả dụng" );
             }
         }
         int count = repository.totalItemsCart(cartEntity.getId());
-        if(count > 15){
-            throw new RuntimeException("Bạn chỉ có thể mua tối đa 15 sản phẩm");
-        }
-
     }
 }
