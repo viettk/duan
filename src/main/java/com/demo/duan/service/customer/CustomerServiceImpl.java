@@ -8,6 +8,7 @@ import com.demo.duan.repository.customer.CustomerRepository;
 import com.demo.duan.service.customer.dto.CustomerDto;
 import com.demo.duan.service.customer.input.CustomerInput;
 import com.demo.duan.service.customer.param.CustomerMapper;
+import com.demo.duan.service.customer.param.CustomerParam2;
 import com.demo.duan.service.customer.paramcustomer.Customerparam;
 import com.demo.duan.service.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
@@ -168,6 +169,20 @@ public class CustomerServiceImpl implements CustomerService{
             Pageable pageable = PageRequest.of(page, 10, sort);
             Page<CustomerDto> customerDtos = repository.findAllCustomer(email,status,name,pageable).map(mapper::entityToDto);
             return  ResponseEntity.ok(customerDtos);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Page<Map<String,Object>>> fillAllBy_Bill(CustomerParam2 param2) {
+        if(param2.getKnown().equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, param2.getField());
+            Pageable pageable = PageRequest.of(param2.getPage(), 10, sort);
+            return  ResponseEntity.ok(repository.findCustomer_Bill(param2,pageable));
+        }else{
+            System.out.println(param2.getField());
+            Sort sort =Sort.by(Sort.Direction.DESC, param2.getField());
+            Pageable pageable = PageRequest.of(param2.getPage(), 10, sort);
+            return  ResponseEntity.ok(repository.findCustomer_Bill(param2, pageable));
         }
     }
 }

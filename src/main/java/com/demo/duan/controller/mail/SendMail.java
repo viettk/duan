@@ -21,7 +21,8 @@ import java.util.Optional;
 public class SendMail {
     private final MailService mailService;
     @PostMapping("/sendmail")
-    public ResponseEntity<Void> getEmail(@PathParam("title") String title,@PathParam("content") String content,@PathParam("file") Optional<MultipartFile> file) throws MessagingException {
+    public ResponseEntity<Void> getEmail(@PathParam("title") String title,@PathParam("content") String content
+            ,@PathParam("file") Optional<MultipartFile> file,@PathParam("ids") Integer[] ids) throws MessagingException {
         Map<String, String> errors = new HashMap<>();
         if(title.isEmpty()){
             errors.put("title","Không được để trống tiêu đề");
@@ -32,7 +33,7 @@ public class SendMail {
         if(!errors.isEmpty()){
             return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
         }
-        mailService.sendAll(file.orElse(null),title,content);
+        mailService.sendAll(file.orElse(null),title,content,ids);
         return ResponseEntity.ok().build();
     }
 }

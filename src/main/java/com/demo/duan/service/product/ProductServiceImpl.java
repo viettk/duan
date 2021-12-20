@@ -54,14 +54,14 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> searchByAdmin(ProductParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchByAdmin(param, pageable).map(mapper::entityToDto);
 
             return ResponseEntity.ok().body(dto);
         }
         else if(!known.equals("up") || known.equals("")){
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchByAdmin(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
@@ -109,13 +109,13 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> searchByKhac( ProductParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAllKhac(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else if(!known.equals("up") || known.equals("")){
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAllKhac(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
@@ -131,13 +131,13 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> searchAllByParent(CategoryParam cate, ProductParam param, Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAllSHF(cate, param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else if(!known.equals("up") || known.equals("")){
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAllSHF(cate, param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
@@ -153,13 +153,13 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> searchAllModelKit(ProductParam param, Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAllModelKit(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else if(!known.equals("up") || known.equals("")){
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAllModelKit(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
@@ -175,13 +175,13 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> searchAllStactic( ProductParam param, Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAllStaticModel(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else if(!known.equals("up") || known.equals("")){
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAllStaticModel(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
@@ -197,13 +197,13 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> searchByCategoryName(Integer categoryId,ProductParam param, Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchByCategoryName(categoryId, param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else if(!known.equals("up") || known.equals("")){
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchByCategoryName(categoryId, param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
@@ -218,19 +218,41 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> searchByCategoryParentName(String parentName, Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchByCategoryParentName(parentName, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else if(!known.equals("up") || known.equals("")){
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchByCategoryParentName(parentName, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else{
-            Pageable pageable = PageRequest.of(0, 15);
+            Pageable pageable = PageRequest.of(0, 20);
             Page<ProductDto> dto = this.productRepository.searchByCategoryParentName(parentName, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<ProductDto>> findAllNotSearch(Optional<String> field, String known, Optional<Integer> limit, Optional<Integer> page) {
+        if(known.equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
+            Page<ProductDto> dto = this.productRepository.findNotSearch(pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else if(!known.equals("up") || known.equals("")){
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
+            Page<ProductDto> dto = this.productRepository.findNotSearch(pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Pageable pageable = PageRequest.of(0, 20);
+            Page<ProductDto> dto = this.productRepository.findNotSearch(pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
     }
@@ -355,13 +377,13 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> searchProduct(ProductParam param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.get().equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchByAdmin(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else{
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchByAdmin(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
@@ -485,14 +507,30 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<Page<ProductDto>> getAllproduct(String param, Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page) {
         if(known.get().equals("up")){
             Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAll(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
         else{
             Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(5), sort);
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
             Page<ProductDto> dto = this.productRepository.searchAll(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Page<ProductDto>> getAllNotSearch(Optional<String> field, Optional<String> known, Optional<Integer> limit, Optional<Integer> page) {
+        if(known.get().equals("up")){
+            Sort sort =Sort.by(Sort.Direction.ASC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
+            Page<ProductDto> dto = this.productRepository.findNotSearch(pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(dto);
+        }
+        else{
+            Sort sort =Sort.by(Sort.Direction.DESC, field.orElse("id"));
+            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(20), sort);
+            Page<ProductDto> dto = this.productRepository.findNotSearch(pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(dto);
         }
     }
@@ -500,7 +538,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public ResponseEntity<List<ProductDto>> relatedProducts(Integer priceProduct) {
-        Pageable pageable = PageRequest.of(0,5) ;
+        Pageable pageable = PageRequest.of(0,20) ;
         List<ProductEntity> entities = productRepository.relatedProducts(priceProduct, pageable);
         List<ProductDto> productDtos = mapper.EntitiesToDtos(entities);
         return ResponseEntity.ok().body(productDtos);

@@ -27,4 +27,15 @@ public class HomeAllProduct {
     ){
         return service.getAllproduct(productName, field, known, limit, page);
     }
+
+
+    @GetMapping("/notsearch")
+    public ResponseEntity<Page<ProductDto>> getAll(
+            @RequestParam(name = "_field", required = false) Optional<String> field,
+            @RequestParam(name = "_known", required = false) Optional<String> known,
+            @RequestParam("_limit") Optional<Integer> limit,
+            @RequestParam("_page") Optional<Integer> page
+    ){
+        return service.getAllNotSearch( field, known, limit, page);
+    }
 }

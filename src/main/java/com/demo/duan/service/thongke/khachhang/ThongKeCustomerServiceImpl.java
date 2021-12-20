@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +33,14 @@ public class ThongKeCustomerServiceImpl implements ThongkeCustomerService{
         } else {
 
         }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Page<Map<String, Object>>> findCustomerKhachHang(String opena, String enda, String known, String field, Integer page) {
+//        Pageable pageable = PageRequest.of(page, 7);
+//        Page<Map<String, Object>> maps =
         return null;
     }
 }

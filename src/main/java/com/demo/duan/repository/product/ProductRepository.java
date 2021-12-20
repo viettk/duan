@@ -43,8 +43,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     @Query("from ProductEntity p where p.status = true and p.category.parent_name like 'Model Kit'")
     Page<ProductEntity> searchByModelKit(Pageable pageable );
 
-
-
     /* xem, lọc sản phẩm theo từng danh mục con */
     @Query("from ProductEntity p where p.status = true and p.category.id = :categoryId " +
             "and (:#{#product.name} is null or p.name like %:#{#product.name}%)" +
@@ -96,6 +94,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
     @Query("from ProductEntity p where p.status = true and (p.name is null or p.name LIKE CONCAT('%',:product,'%')) ")
     Page<ProductEntity> searchAll(@Param("product") String product, Pageable pageable );
+
+    @Query("from ProductEntity p where p.status = true")
+    Page<ProductEntity> findNotSearch( Pageable pageable);
 
     // ---------------------------dũng--------------------
     @Query("select p from ProductEntity p where " +

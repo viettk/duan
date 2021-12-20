@@ -69,8 +69,8 @@ public class MailServiceImpl implements MailService{
 
     @Override
     @Transactional
-    public void sendAll(MultipartFile file,String title,String content) throws MessagingException {
-        List<CustomerEntity> customerEntities = customerRepository.findAll();
+    public void sendAll(MultipartFile file,String title,String content,Integer[] ids) throws MessagingException {
+        List<CustomerEntity> customerEntities = customerRepository.findByIdIn(ids);
         List<String> bcc = new ArrayList<String>();
         for(CustomerEntity customer : customerEntities){
             bcc.add(customer.getEmail());

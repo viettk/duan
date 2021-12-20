@@ -5,6 +5,7 @@ import com.demo.duan.service.bill.dto.BillDto;
 import com.demo.duan.service.bill.input.BillInput;
 import com.demo.duan.service.bill.param.BillParam;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,33 +14,54 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/admin/bill")
+@Slf4j
 public class BillAdminRest {
     private final BillService service;
 
     @GetMapping
-    public ResponseEntity<Page<BillDto>>findAll(
+    public ResponseEntity<Page<BillDto>> findAll(
+            @RequestParam(value = "p", required = false) String p,
             @RequestParam(value = "order", required = false) Integer order,
             @RequestParam(value = "pay", required = false) Integer pay,
-            @RequestParam(value = "start", required = false) Date start,
-            @RequestParam(value = "end", required = false) Date end,
+            @RequestParam(value = "start", required = false) String start,
+            @RequestParam(value = "end", required = false) String end,
             @RequestParam(value = "_limit", required = false) Optional<Integer> limit,
             @RequestParam(value = "_page", required = false) Optional<Integer> page,
             @RequestParam(value = "_field", required = false) Optional<String> field,
             @RequestParam(value = "_known", required = false) String known
-    ){
-        BillParam param = new BillParam(order, pay, start, end);
-        if (known.isEmpty()){
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
+    ) {
+        LocalDate dst;
+        LocalDate de;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+
+        BillParam param = new BillParam();
+        if (start==null || end==null) {
+            dst = null;
+            de = null;
+        } else {
+            dst = LocalDate.parse(start, formatter);
+            de = LocalDate.parse(end, formatter);
+            param.setDate_start(dst);
+            param.setDate_end(de);
+        }
+        param.setStatus_order(order);
+        param.setStatus_pay(pay);
+        param.setP(p);
+        log.info("ngày bắt đầu: {}, ngày kết thúc: {}, order: {}, pay: {} p: {}", start, end, order, pay, p);
+        if (known.isEmpty()) {
+            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
             Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
             return service.filterBill(param, pageable);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
+        } else {
+            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
             Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
             return service.filterBill(param, pageable);
         }
@@ -48,30 +70,6 @@ public class BillAdminRest {
     @GetMapping("/{id}")
     public ResponseEntity<BillDto>getOne(@PathVariable("id") Integer id){
         return this.service.getOne(id);
-    }
-
-    @GetMapping("/email/{email}")
-    public ResponseEntity<Page<BillDto>>getByEmail(
-            @PathVariable("email") String email,
-            @RequestParam(value = "order", required = false) Integer order,
-            @RequestParam(value = "pay", required = false) Integer pay,
-            @RequestParam(value = "start", required = false) Optional<Date> start,
-            @RequestParam(value = "end", required = false) Optional<Date> end,
-            @RequestParam(value = "_limit", required = false) Optional<Integer> limit,
-            @RequestParam(value = "_page", required = false) Optional<Integer> page,
-            @RequestParam(value = "_field", required = false) Optional<String> field,
-            @RequestParam(value = "_known", required = false) String known
-    ){
-        BillParam param = new BillParam(order, pay, start.orElse(null), end.orElse(null));
-        if (known.isEmpty()){
-            Sort sort = Sort.by(Sort.Direction.DESC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            return service.getByEmail(email, param, pageable);
-        }else {
-            Sort sort = Sort.by(Sort.Direction.ASC, field.orElse("create_date"));
-            Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1), sort);
-            return service.getByEmail(email, param, pageable);
-        }
     }
 
     @PutMapping("/update/{id}")

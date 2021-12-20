@@ -367,22 +367,34 @@ public class BillServiceImpl implements BillService{
 
     @Override
     public ResponseEntity<Page<BillDto>> filterBill(BillParam param, Pageable pageable) {
-        log.info("ok: {} {}", param.getStatus_order(), param.getStatus_pay());
-        if (param.getStatus_order()==null && param.getStatus_pay()==null){
-            Page<BillDto> result = repository.filterBill(param, pageable).map( mapper :: entityToDto);
-            log.info("false, false: {} {}", param.getStatus_order(), param.getStatus_pay());
-            return ResponseEntity.ok().body(result);
-        }else if(param.getStatus_order()==null && param.getStatus_pay()!=null){
-            Page<BillDto> result = repository.filterBillPay(param, pageable).map( mapper :: entityToDto);
-            log.info("false, true: {} {}", param.getStatus_order(), param.getStatus_pay());
+
+        if(param.getStatus_order()==null && param.getStatus_pay()==null && param.getDate_start() != null && param.getDate_end()!= null && param.getP()==null) {
+            log.info("loc theo ngay");
+            Page<BillDto> result = repository.filterBillDate(param, pageable).map(mapper::entityToDto);
             return ResponseEntity.ok().body(result);
         }
-//        else if(param.getStatus_order()==null && param.getStatus_pay()==null && param.getDate_start() != null && param.getDate_end()!= null){
-//            Page<BillDto> result = repository.filterBillDate(param, pageable).map( mapper :: entityToDto);
-//            log.info("false, true: {} {}", param.getStatus_order(), param.getStatus_pay());
-//            return ResponseEntity.ok().body(result);}
+        if(param.getStatus_order()==null && param.getStatus_pay()==null && param.getDate_start() != null && param.getDate_end()!= null && param.getP()!=null) {
+            log.info("loc theo ngay va p");
+            Page<BillDto> result = repository.filterBillDateP(param, pageable).map(mapper::entityToDto);
+            return ResponseEntity.ok().body(result);
+        }
+        else if(param.getStatus_order()==null && param.getStatus_pay()==null && param.getDate_start() == null && param.getDate_end() == null && param.getP()!=null){
+            Page<BillDto> result = repository.searchBill(param, pageable).map( mapper :: entityToDto);
+            log.info("p: {}", param.getP());
+            return ResponseEntity.ok().body(result);
+        }
+        else if (param.getStatus_order()==null && param.getStatus_pay()==null){
+            log.info("lay tat ca");
+            Page<BillDto> result = repository.filterBill(param, pageable).map( mapper :: entityToDto);
+            return ResponseEntity.ok().body(result);
+        }
+        else if(param.getStatus_order()==null && param.getStatus_pay()!=null){
+            log.info("theo pay");
+            Page<BillDto> result = repository.filterBillPay(param, pageable).map( mapper :: entityToDto);
+            return ResponseEntity.ok().body(result);
+        }
         else{
-            log.info("true, true: {} {}", param.getStatus_order(), param.getStatus_pay());
+            log.info("theo tat ca", param.getStatus_order(), param.getStatus_pay());
             Page<BillDto> result = repository.filterBill(param, pageable).map( mapper :: entityToDto);
             return ResponseEntity.ok().body(result);
         }

@@ -76,13 +76,28 @@ public interface BillRepository extends JpaRepository<BillEntity, Integer> {
     @Query("select b from BillEntity b where :#{#bill.status_order} is null or b.status_order like :#{#bill.status_order} " +
             "and (:#{#bill.status_pay} is null or b.status_pay like :#{#bill.status_pay}) " +
             "and :#{#bill.date_start} is null and :#{#bill.date_end} is null or b.create_date between :#{#bill.date_start} and :#{#bill.date_end} " +
+            " and b.name like %:#{#bill.p}% or b.id_code like %:#{#bill.p}% " +
             "order by b.status_order asc ")
     Page<BillEntity> filterBill(@Param("bill") BillParam param, Pageable pageable);
 
     @Query("select b from BillEntity b where b.status_pay like :#{#bill.status_pay} " +
             "and :#{#bill.date_start} is null and :#{#bill.date_end} is null or b.create_date between :#{#bill.date_start} and :#{#bill.date_end} " +
+            " and b.name like %:#{#bill.p}% or b.id_code like %:#{#bill.p}% " +
             "order by b.status_order asc ")
     Page<BillEntity> filterBillPay(@Param("bill") BillParam param, Pageable pageable);
+
+    @Query("select b from BillEntity b where b.create_date between :#{#bill.date_start} and :#{#bill.date_end} " +
+            "order by b.status_order asc ")
+    Page<BillEntity> filterBillDate(@Param("bill") BillParam param, Pageable pageable);
+
+    @Query("select b from BillEntity b where b.create_date between :#{#bill.date_start} and :#{#bill.date_end} " +
+            " and b.name like %:#{#bill.p}% or b.id_code like %:#{#bill.p}% " +
+            "order by b.status_order asc ")
+    Page<BillEntity> filterBillDateP(@Param("bill") BillParam param, Pageable pageable);
+
+    @Query("select b from BillEntity b where b.name like %:#{#bill.p}% or b.id_code like %:#{#bill.p}% " +
+            " order by b.status_order asc")
+    Page<BillEntity> searchBill(@Param("bill") BillParam param, Pageable pageable);
 
     @Query("select b from BillEntity b where b.email=:email " +
             "and (:#{#bill.status_order} is null or b.status_order=:#{#bill.status_order})" +
